@@ -1,3 +1,5 @@
+"use client"
+
 import {
   Banknote,
   CircleDollarSign,
@@ -5,7 +7,7 @@ import {
   Truck,
   type LucideIcon,
 } from "lucide-react"
-import { Link } from "react-router"
+import Link from "next/link"
 import {
   Area,
   AreaChart,
@@ -294,7 +296,7 @@ function ListCard({
         <ul className="divide-y border-t">{children}</ul>
         <div className="border-t p-3">
           <Button asChild variant="ghost" size="sm" className="w-full">
-            <Link to={to}>View all</Link>
+            <Link href={to}>View all</Link>
           </Button>
         </div>
       </CardContent>

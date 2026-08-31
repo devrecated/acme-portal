@@ -1,3 +1,5 @@
+"use client"
+
 import {
   createContext,
   use,
@@ -37,6 +39,8 @@ export type Permission = keyof typeof PERMISSIONS
 
 interface AuthContextValue {
   user: User | null
+  /** False until localStorage has been read, so SSR and the first paint match. */
+  ready: boolean
   signIn: (userId: string) => void
   signOut: () => void
   /** Demo affordance: view the portal as any seeded teammate. */
@@ -64,11 +68,18 @@ const writeStoredUserId = (id: string | null) => {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [userId, setUserId] = useState<string | null>(() => readStoredUserId())
+  const [userId, setUserId] = useState<string | null>(null)
+  const [ready, setReady] = useState(false)
 
   useEffect(() => {
+    setUserId(readStoredUserId())
+    setReady(true)
+  }, [])
+
+  useEffect(() => {
+    if (!ready) return
     writeStoredUserId(userId)
-  }, [userId])
+  }, [ready, userId])
 
   const user = useMemo(
     () => seedUsers.find((candidate) => candidate.id === userId) ?? null,
@@ -87,8 +98,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   )
 
   const value = useMemo<AuthContextValue>(
-    () => ({ user, signIn, signOut, switchUser: signIn, can }),
-    [user, signIn, signOut, can],
+    () => ({ user, ready, signIn, signOut, switchUser: signIn, can }),
+    [user, ready, signIn, signOut, can],
   )
 
   return <AuthContext value={value}>{children}</AuthContext>

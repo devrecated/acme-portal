@@ -1,56 +1,30 @@
 # Acme Fleet Portal
 
-A dealer portal for commercial vehicle sales. Sales reps work leads and contacts,
-the yard tracks inventory, and the finance desk moves credit applications from
-submitted to funded.
+**[Live demo →](https://acme-portal-five.vercel.app)**
 
-The data layer is mock data held in memory. Every read and write goes through a
-repository interface, so swapping in a real backend means writing one new
-implementation rather than touching the UI.
+This repository is a **demonstration of [Autodevelop](https://devrecated.github.io/autodevelop/)**, Devrecated’s Cursor plugin for GitHub Projects, tickets, and confirmed stakeholder mail. The product you see here — a commercial vehicle dealer portal — was built as a working example of what Autodevelop can produce: a real app, with real roles, shipped from tickets instead of a meeting.
 
-## Running it
+It is not a production dealership system. The data is mock and held in memory. Use it to see the plugin’s process, then install Autodevelop on your own product repo.
 
-```bash
-pnpm install
-pnpm dev
-```
+## What Autodevelop is
 
-The app serves on the port Vite picks (5173 unless it is taken). There is no
-password — pick an identity on the sign-in screen and the app adopts that user's
-role for the session.
+Official vendor plugins give the agent an API. Autodevelop gives the agent a **process**.
 
-| Script | What it does |
-| --- | --- |
-| `pnpm dev` | Dev server with HMR |
-| `pnpm build` | Type-check, then produce a production bundle in `dist/` |
-| `pnpm preview` | Serve the built bundle |
-| `pnpm lint` | Oxlint |
+On most projects the hard part is not writing code; it is keeping requests, decisions, and delivery aligned. Autodevelop makes that alignment a byproduct of doing the work:
 
-## Features
+- **Tickets are the source of truth.** A chat request, a note, or a URL becomes a GitHub Project issue with acceptance criteria. Nothing ships without a ticket.
+- **A complete paper trail.** Claim, progress, verification, pull request, preview, and stakeholder email all write back to the ticket.
+- **Confirmed stakeholder mail.** Email goes out only after an explicit confirm, and only to allowlisted recipients. Hooks never send mail on their own.
+- **Ship gates.** Staging and production deploys wait for exact phrases in chat so nothing reaches an environment by accident.
+- **Asynchronous, 24/7 communication.** Stakeholders use tickets and confirmed email instead of synchronous calls. Developers stay in the editor.
 
-**Dashboard** — units in stock, inventory value, open pipeline, and applications
-awaiting credit, plus a twelve-month revenue chart, inventory status breakdown,
-next follow-ups, and recent applications.
+The public handbook is at [devrecated.github.io/autodevelop](https://devprecated.github.io/autodevelop/). Start with the [Client guide](https://devprecated.github.io/autodevelop/guide.html).
 
-**Inventory** — searchable, filterable, sortable table of vehicles. Add and edit
-through a validated form; open a row for a detail sheet. Cost and margin are
-visible only to roles that carry `inventory.viewCost`.
+## What this demo shows
 
-**Leads** — a kanban board across the pipeline stages. Drag a card to move a lead;
-the stage change persists.
+Acme Fleet is a dealer portal for commercial vehicle sales. Sales reps work leads and contacts, the yard tracks inventory, and the finance desk moves credit applications from submitted to funded.
 
-**CRM** — contacts and companies in tabbed views, with a per-contact activity
-timeline.
-
-**Financing** — credit applications with an estimated monthly payment, and status
-controls for the finance desk.
-
-**Users** — invite users, change roles, and deactivate accounts.
-
-## Roles
-
-Permissions are declared in `src/auth/auth-context.tsx` and enforced two ways:
-`RequirePermission` gates a route, and `Can` hides an element.
+Open the [live demo](https://acme-portal-five.vercel.app), pick an identity on the sign-in screen (there is no password), and switch roles. The sidebar, cost columns, and edit controls change with the signed-in permission set — the same kind of product surface Autodevelop is meant to keep delivering against tickets.
 
 | Role | Reach |
 | --- | --- |
@@ -60,13 +34,85 @@ Permissions are declared in `src/auth/auth-context.tsx` and enforced two ways:
 | Finance | Applications and inventory only; no leads, no CRM |
 | Viewer | Read-only across the dashboard, inventory, leads, and CRM |
 
-Sidebar entries hide themselves when the signed-in user lacks the permission, so
-a rep never sees a link that would bounce them.
+**Dashboard** — units in stock, inventory value, open pipeline, applications awaiting credit, a twelve-month revenue chart, and next follow-ups.
 
-## How it is put together
+**Inventory** — searchable, filterable, sortable vehicles. Add and edit through a validated form. Cost and margin stay hidden from roles without `inventory.viewCost`.
+
+**Leads** — a kanban board. Drag a card to change stage; the change persists for the session.
+
+**CRM** — contacts and companies, with a per-contact activity timeline.
+
+**Financing** — credit applications with an estimated monthly payment and status controls for the finance desk.
+
+**Users** — invite teammates, change roles, and deactivate accounts.
+
+## Install Autodevelop
+
+Install the plugin **once at user scope**. Instance bindings (board ids, people, mail allowlist, policies) stay in the consumer repo — this one uses `.cursor/skills/acme/autodevelop/`.
+
+From the Autodevelop kit repo:
+
+```bash
+pnpm autodevelop:import
+pnpm autodevelop:import --apply
+```
+
+The first command is a dry-run. After `--apply`, reload Cursor (**Developer: Reload Window**). Same outcome as Customize → Install → **user**, or:
+
+```bash
+ln -sfn /path/to/autodevelop ~/.cursor/plugins/local/autodevelop
+```
+
+Then:
+
+1. Paste the operator-issued subscription token under **Plugins → Configure**. Do not commit it.
+2. Sign in: `pnpm autodevelop login` (or `npx @devprecated/autodevelop login` when the thin package is published).
+3. An operator with `org.manage` opens **Connect GitHub** in the operator console and installs the Autodevelop GitHub App.
+4. Bind the consumer instance (`config.json`, `people.json`, `.policies/`). Say **bootstrap** only if field ids are still missing.
+5. Run `pnpm doctor`. It never writes mail and never invents a confirm token.
+
+Cloud Agents do not load `~/.cursor` plugins. Copy the kit into that workspace, or install the plugin at project scope. Do not copy another client’s instance folder.
+
+Full sequence: [Install](https://devprecated.github.io/autodevelop/install.html) · [Configure](https://devprecated.github.io/autodevelop/configure.html) · [Initial setup](https://devprecated.github.io/autodevelop/workflows/initial-setup.html)
+
+## Capabilities
+
+These are the workflows a team actually runs. Each starts from chat; the agent does not invent a ticket or send mail without the matching phrase.
+
+| You want to… | What you say / do |
+| --- | --- |
+| Turn a request into work | Notes, a URL, or a chat ask → numbered preview → **create** (or **use #N**) |
+| Claim the next item | **pull-project-work**, then pick a ticket |
+| Keep the audit trail | Progress comments, then **verify-ticket** against acceptance criteria |
+| Mail a stakeholder | Review to / subject / body / ticket. Recipients must be on the allowlist. Explicit yes, then the confirm token |
+| Land work on this repo | `YES PUSH TO MASTER` (this demo is single-branch) |
+| Ship | `DEPLOYED TO STAGING` or `DEPLOYED TO PRODUCTION` after the matching git gate |
+
+Skills are grouped into tickets, mail, ship, and setup. Slash wrappers (`/ui`, `/backend`, `/new-feature`, `/debug`, `/testing`, `/communication`, `/release`) pick a bucket so you do not have to name a skill. The [skill catalog](https://devprecated.github.io/autodevelop/skill-catalog.html) is the public inventory.
+
+This Acme instance is bound in `.cursor/skills/acme/autodevelop/config.json`. It is single-branch: shared work lands on `master`. There is no separate production branch.
+
+## Run the demo locally
+
+```bash
+pnpm install
+pnpm dev
+```
+
+The app serves on the port Next.js picks (3000 unless it is taken).
+
+| Script | What it does |
+| --- | --- |
+| `pnpm dev` | Next.js dev server |
+| `pnpm build` | Production build |
+| `pnpm start` | Serve the production build |
+| `pnpm lint` | Oxlint |
+
+## How the portal is put together
 
 ```
 src/
+  app/          Next.js App Router pages and layouts
   auth/         session context and permission guards
   components/
     common/     PageHeader, StatCard, DataTable, StatusBadge, EmptyState
@@ -78,25 +124,14 @@ src/
   types/        domain models and their enums
 ```
 
-React 19 on Vite, routed with React Router. Styling is Tailwind CSS v4 with
-shadcn/ui. Server state is TanStack Query; forms are React Hook Form with Zod
-schemas. Charts are Recharts, icons are Lucide.
+Next.js App Router on React 19. Styling is Tailwind CSS v4 with shadcn/ui. Server state is TanStack Query; forms are React Hook Form with Zod schemas. Charts are Recharts, icons are Lucide.
 
-Feature routes are lazy-loaded. That keeps Recharts out of the initial bundle for
-anyone who does not open the dashboard first.
+`DataRepository` in `src/data/repository.ts` is the whole contract with the UI. The seed in `src/data/seed.ts` is deterministic, so screenshots and demos stay stable. Money is stored in whole dollars and formatted through `lib/format.ts`.
 
-### Replacing the mock data
+## Further reading
 
-`DataRepository` in `src/data/repository.ts` is the whole contract. Write a class
-that satisfies it against a real API and swap the instance the query hooks
-import. The seed lives in `src/data/seed.ts` and is deterministic, so screenshots
-and demos stay stable.
-
-## Conventions
-
-Domain types and their allowed values live in `src/types/index.ts`. When you add
-a status or a stage, add it there and to the tone map in
-`components/common/status-badge.tsx` so it renders with the right colour.
-
-Money is stored in whole dollars and formatted at the edge through
-`lib/format.ts`. Do not format inside a component.
+- Live app: [acme-portal-five.vercel.app](https://acme-portal-five.vercel.app)
+- Autodevelop handbook: [devrecated.github.io/autodevelop](https://devprecated.github.io/autodevelop/)
+- [What Autodevelop is](https://devprecated.github.io/autodevelop/overview.html)
+- [Client guide](https://devprecated.github.io/autodevelop/guide.html)
+- [Onboard a client](https://devprecated.github.io/autodevelop/onboard-client.html)

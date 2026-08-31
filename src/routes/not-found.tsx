@@ -1,4 +1,4 @@
-import { Link } from "react-router"
+import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
 
@@ -13,7 +13,7 @@ export function NotFoundPage() {
         </p>
       </div>
       <Button asChild variant="outline" size="sm">
-        <Link to="/">Back to dashboard</Link>
+        <Link href="/">Back to dashboard</Link>
       </Button>
     </div>
   )

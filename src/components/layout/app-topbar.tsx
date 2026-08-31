@@ -1,6 +1,8 @@
+"use client"
+
 import { LogOut, Monitor, Moon, Sun, UserCog } from "lucide-react"
+import { usePathname } from "next/navigation"
 import { useTheme } from "next-themes"
-import { useLocation } from "react-router"
 
 import { useAuth } from "@/auth/auth-context"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -35,7 +37,7 @@ const TITLES: Record<string, string> = {
 
 export function AppTopbar() {
   const { user, signOut, switchUser } = useAuth()
-  const { pathname } = useLocation()
+  const pathname = usePathname()
   const { theme, setTheme } = useTheme()
 
   const title = TITLES[pathname] ?? "Acme Fleet"

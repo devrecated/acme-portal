@@ -1,3 +1,5 @@
+"use client"
+
 import { Banknote, CheckCircle2, Clock, Search, TrendingUp } from "lucide-react"
 import { useMemo, useState } from "react"
 

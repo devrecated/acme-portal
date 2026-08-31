@@ -1,3 +1,5 @@
+"use client"
+
 import {
   Banknote,
   Contact2,
@@ -6,7 +8,8 @@ import {
   Truck,
   Users,
 } from "lucide-react"
-import { NavLink } from "react-router"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 
 import { useAuth, type Permission } from "@/auth/auth-context"
 import {
@@ -42,6 +45,7 @@ const OPERATIONS: NavItem[] = [
 
 export function AppSidebar() {
   const { can } = useAuth()
+  const pathname = usePathname()
 
   const renderGroup = (label: string, items: NavItem[]) => {
     const visible = items.filter((item) => can(item.permission))
@@ -54,16 +58,16 @@ export function AppSidebar() {
           <SidebarMenu>
             {visible.map((item) => (
               <SidebarMenuItem key={item.to}>
-                <NavLink to={item.to} end={item.to === "/"}>
-                  {({ isActive }) => (
-                    <SidebarMenuButton asChild isActive={isActive} tooltip={item.title}>
-                      <span>
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </span>
-                    </SidebarMenuButton>
-                  )}
-                </NavLink>
+                <SidebarMenuButton
+                  asChild
+                  isActive={item.to === "/" ? pathname === "/" : pathname.startsWith(item.to)}
+                  tooltip={item.title}
+                >
+                  <Link href={item.to}>
+                    <item.icon />
+                    <span>{item.title}</span>
+                  </Link>
+                </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
           </SidebarMenu>

@@ -1,3 +1,5 @@
+"use client"
+
 import { zodResolver } from "@hookform/resolvers/zod"
 import { MoreHorizontal, Search, UserPlus, Users as UsersIcon } from "lucide-react"
 import { useMemo, useState } from "react"

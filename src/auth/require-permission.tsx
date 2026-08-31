@@ -1,8 +1,11 @@
+"use client"
+
 import { ShieldOff } from "lucide-react"
-import type { ReactNode } from "react"
-import { Navigate, useLocation } from "react-router"
+import { useRouter, usePathname } from "next/navigation"
+import { useEffect, type ReactNode } from "react"
 
 import { useAuth, type Permission } from "@/auth/auth-context"
+import { PageSkeleton } from "@/components/common/page-skeleton"
 import { Button } from "@/components/ui/button"
 
 /** Gate for a whole route. Signed-out users go to the sign-in screen. */
@@ -13,11 +16,18 @@ export function RequirePermission({
   permission: Permission
   children: ReactNode
 }) {
-  const { user, can } = useAuth()
-  const location = useLocation()
+  const { user, can, ready } = useAuth()
+  const pathname = usePathname()
+  const router = useRouter()
 
-  if (!user) {
-    return <Navigate to="/sign-in" state={{ from: location.pathname }} replace />
+  useEffect(() => {
+    if (ready && !user) {
+      router.replace(`/sign-in?from=${encodeURIComponent(pathname)}`)
+    }
+  }, [ready, user, pathname, router])
+
+  if (!ready || !user) {
+    return <PageSkeleton />
   }
 
   if (!can(permission)) {

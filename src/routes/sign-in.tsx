@@ -1,7 +1,11 @@
+"use client"
+
 import { Truck } from "lucide-react"
-import { Navigate, useLocation, useNavigate } from "react-router"
+import { useRouter, useSearchParams } from "next/navigation"
+import { useEffect } from "react"
 
 import { useAuth } from "@/auth/auth-context"
+import { PageSkeleton } from "@/components/common/page-skeleton"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -13,6 +17,7 @@ import {
 } from "@/components/ui/card"
 import { seedUsers } from "@/data/seed"
 import { initials } from "@/lib/format"
+import { safeReturnTo } from "@/lib/return-to"
 import { ROLE_LABELS } from "@/types"
 
 /**
@@ -20,20 +25,30 @@ import { ROLE_LABELS } from "@/types"
  * which is what drives every permission check in the app.
  */
 export function SignInPage() {
-  const { user, signIn } = useAuth()
-  const navigate = useNavigate()
-  const location = useLocation()
+  const { user, signIn, ready } = useAuth()
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const from = safeReturnTo(searchParams.get("from"))
 
-  if (user) {
-    const from = (location.state as { from?: string } | null)?.from ?? "/"
-    return <Navigate to={from} replace />
-  }
+  useEffect(() => {
+    if (ready && user) {
+      router.replace(from)
+    }
+  }, [ready, user, from, router])
 
   const handleSignIn = (id: string) => {
     signIn(id)
-    navigate((location.state as { from?: string } | null)?.from ?? "/", {
-      replace: true,
-    })
+    router.replace(from)
+  }
+
+  if (!ready || user) {
+    return (
+      <div className="flex min-h-svh items-center justify-center p-6">
+        <div className="w-full max-w-md">
+          <PageSkeleton />
+        </div>
+      </div>
+    )
   }
 
   return (

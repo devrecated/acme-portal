@@ -1,3 +1,5 @@
+"use client"
+
 import { Plus, Search, Truck } from "lucide-react"
 import { useMemo, useState } from "react"
 
