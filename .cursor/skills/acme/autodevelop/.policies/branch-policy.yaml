@@ -1,0 +1,10 @@
+# Copyright (c) 2026 Devrecated
+# Instance copy for the Acme Fleet Portal.
+# This repository is single-branch: shared work lands on master. There is no production branch.
+# /commit-push-release and /promote-master-to-release must refuse. Use /commit-push-master.
+# Do not fetch origin/release.
+staging: master
+production: master
+singleBranch: true
+askStaging: false
+askProduction: false

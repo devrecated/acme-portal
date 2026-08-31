@@ -1,0 +1,7 @@
+# Copyright (c) 2026 Devrecated
+# Instance copy for the Acme Fleet Portal.
+conventionalCommits: optional
+subjectStyle: imperative
+clientsMayChangeConvention: true
+allowNoVerify: false
+allowForcePush: false

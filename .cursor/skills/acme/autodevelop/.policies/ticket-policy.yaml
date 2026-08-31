@@ -1,0 +1,8 @@
+# Copyright (c) 2026 Devrecated
+# Instance copy for the Acme Fleet Portal.
+requiredForProductWork: true
+kitTreesExempt: true
+wayfinderMaxTickets: 1
+previewBeforeCreate: true
+childIssues: false
+bindVia: "#N"
