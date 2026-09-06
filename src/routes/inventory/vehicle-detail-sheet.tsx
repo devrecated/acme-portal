@@ -3,6 +3,7 @@ import type { ReactNode } from "react"
 
 import { Can } from "@/auth/require-permission"
 import { VehicleStatusBadge } from "@/components/common/status-badge"
+import { VehiclePhoto } from "@/components/common/vehicle-photo"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import {
@@ -60,6 +61,11 @@ export function VehicleDetailSheet({
         </SheetHeader>
 
         <div className="space-y-6 px-4">
+          <VehiclePhoto
+            vehicle={vehicle}
+            className="aspect-[16/9] w-full rounded-lg"
+          />
+
           <section className="grid grid-cols-2 gap-4">
             <Detail label="Asking price">
               <span className="text-lg font-semibold tabular-nums">
@@ -82,7 +88,7 @@ export function VehicleDetailSheet({
 
           <section className="grid grid-cols-2 gap-x-4 gap-y-4">
             <Detail label="Body type">{vehicle.bodyType}</Detail>
-            <Detail label="Weight class">{vehicle.gvwrClass}</Detail>
+            <Detail label="Segment">{vehicle.gvwrClass}</Detail>
             <Detail label="Fuel">{vehicle.fuel}</Detail>
             <Detail label="Condition">{vehicle.condition}</Detail>
             <Detail label="Mileage">{formatMiles(vehicle.mileage)}</Detail>

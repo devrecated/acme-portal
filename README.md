@@ -2,7 +2,7 @@
 
 **[Live demo →](https://acme-portal-five.vercel.app)**
 
-This repository is a **demonstration of [Autodevelop](https://devrecated.github.io/autodevelop/)**, Devrecated’s Cursor plugin for GitHub Projects, tickets, and confirmed stakeholder mail. The product you see here — a commercial vehicle dealer portal — was built as a working example of what Autodevelop can produce: a real app, with real roles, shipped from tickets instead of a meeting.
+This repository is a **demonstration of [Autodevelop](https://devrecated.github.io/autodevelop/)**, Devrecated’s Cursor plugin for GitHub Projects, tickets, and confirmed stakeholder mail. The product you see here — an exotic sports car dealer portal — was built as a working example of what Autodevelop can produce: a real app, with real roles, shipped from tickets instead of a meeting.
 
 It is not a production dealership system. The data is mock and held in memory. Use it to see the plugin’s process, then install Autodevelop on your own product repo.
 
@@ -22,7 +22,7 @@ The public handbook is at [devrecated.github.io/autodevelop](https://devprecated
 
 ## What this demo shows
 
-Acme Fleet is a dealer portal for commercial vehicle sales. Sales reps work leads and contacts, the yard tracks inventory, and the finance desk moves credit applications from submitted to funded.
+Acme Fleet is a dealer portal for Lamborghini, Ferrari, Porsche, McLaren, and Bentley. Sales reps work leads and collectors, the showroom tracks inventory, and the finance desk moves credit applications from submitted to funded.
 
 Open the [live demo](https://acme-portal-five.vercel.app), pick an identity on the sign-in screen (there is no password), and switch roles. The sidebar, cost columns, and edit controls change with the signed-in permission set — the same kind of product surface Autodevelop is meant to keep delivering against tickets.
 
@@ -107,6 +107,7 @@ The app serves on the port Next.js picks (3000 unless it is taken).
 | `pnpm build` | Production build |
 | `pnpm start` | Serve the production build |
 | `pnpm lint` | Oxlint |
+| `pnpm run deploy` | Production deploy to Vercel |
 
 ## How the portal is put together
 

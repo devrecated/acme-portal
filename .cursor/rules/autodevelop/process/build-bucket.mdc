@@ -1,0 +1,23 @@
+---
+description: API, services, and schema files load Autodevelop build playbooks
+globs:
+  - "services/**"
+  - "functions/**"
+  - "**/*.sql"
+  - "**/api/**"
+alwaysApply: false
+---
+
+# API and schema files load build playbooks
+
+Copyright (c) 2026 Devrecated.
+
+When these files are in play, load Autodevelop API and services playbooks (or honor `/backend` or `/business-logic` if they typed it). Use what comes back. Do not invent that text. Do not name a third-party skill as the tool.
+
+Never say bucket, MCP, or tool names in chat.
+
+If playbooks do not load, say only: Autodevelop is not connected. Run `npx autodevelop login` and reload this window. Then stop.
+
+Must never: mail, deploy, invent a ticket number.
+
+Product work still needs a bound ticket. See [ticket-required](ticket-required.mdc). Wrapper rules: [mcp-wrappers](mcp-wrappers.mdc).

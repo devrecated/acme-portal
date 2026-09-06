@@ -1,0 +1,41 @@
+---
+description: Update Autodevelop handbook workflows when a Devrecated kit file changes
+globs:
+  - .cursor/skills/autodevelop/**
+  - .cursor/hooks/autodevelop/**
+  - .cursor/rules/autodevelop/**
+alwaysApply: false
+---
+
+# Autodevelop docs
+
+Copyright (c) 2026 Devrecated.
+
+This rule applies **only** when you add, edit, rename, or remove a file under:
+
+- `.cursor/skills/autodevelop/`
+- `.cursor/hooks/autodevelop/`
+- `.cursor/rules/autodevelop/`
+
+It does **not** apply to a consumer instance folder, `third-party/`, or product app code.
+
+In the **same change**, update the public handbook in [autodevelop-docs/](../../../autodevelop-docs/index.md) when the change is customer-visible. Follow `/update-autodevelop-docs`.
+
+- Put the change in the workflow a developer would follow. Link the real `SKILL.md`, `.mdc`, or hook from that page.
+- Do **not** add a handbook page per skill, rule, or hook.
+- New end-to-end path → new file under `autodevelop-docs/workflows/`, a row on the public index, and a `WORKFLOWS` entry in `inventory.mjs`.
+- New hook that should run → add it to `.cursor/hooks.json`.
+- Run `pnpm docs:check`. Stop if it fails.
+- Do not invent client names. Do not paste `SKILL.md` verbatim.
+- Do not copy `docs/internal/` into the public submodule.
+
+## Two trees
+
+| Tree | Audience | Published |
+|---|---|---|
+| `autodevelop-docs/` (submodule) | Customers and their engineers | Yes — VitePress |
+| `docs/internal/` | Devrecated and kit authors | No |
+
+Customer-facing workflows go in `autodevelop-docs/workflows/`. Architecture, decision records, routing, the engagement path, and product-shape drafts go under `docs/internal/`. A public page may say that architecture lives under `docs/internal/`; it must not link into that tree.
+
+Changing a bucket, loop, wrapper, or router rule also means updating `docs/internal/flows/`. `pnpm autodevelop:docs:check` runs the flows check and fails on drift.

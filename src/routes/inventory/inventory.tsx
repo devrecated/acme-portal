@@ -1,6 +1,6 @@
 "use client"
 
-import { Plus, Search, Truck } from "lucide-react"
+import { Car, Plus, Search } from "lucide-react"
 import { useMemo, useState } from "react"
 
 import { useAuth } from "@/auth/auth-context"
@@ -8,6 +8,7 @@ import { DataTable, type Column } from "@/components/common/data-table"
 import { EmptyState } from "@/components/common/empty-state"
 import { PageHeader } from "@/components/common/page-header"
 import { VehicleStatusBadge } from "@/components/common/status-badge"
+import { VehiclePhoto } from "@/components/common/vehicle-photo"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -71,13 +72,19 @@ export function InventoryPage() {
         header: "Vehicle",
         sortValue: (v) => `${v.make} ${v.model}`,
         cell: (v) => (
-          <div className="space-y-0.5">
-            <p className="font-medium">
-              {v.year} {v.make} {v.model}
-            </p>
-            <p className="text-xs text-muted-foreground">
-              {v.bodyType} · {v.gvwrClass} · {v.fuel}
-            </p>
+          <div className="flex items-center gap-3">
+            <VehiclePhoto
+              vehicle={v}
+              className="size-12 shrink-0 rounded-md"
+            />
+            <div className="space-y-0.5">
+              <p className="font-medium">
+                {v.year} {v.make} {v.model}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {v.bodyType} · {v.gvwrClass} · {v.fuel}
+              </p>
+            </div>
           </div>
         ),
       },
@@ -143,7 +150,7 @@ export function InventoryPage() {
     <>
       <PageHeader
         title="Inventory"
-        description={`${vehicles.length} units on the books across every yard.`}
+        description={`${vehicles.length} cars on the books across every showroom.`}
         actions={
           can("inventory.edit") ? (
             <Button onClick={openCreate}>
@@ -167,7 +174,7 @@ export function InventoryPage() {
           value={status}
           onValueChange={(value) => setStatus(value as VehicleStatus | "all")}
         >
-          <SelectTrigger className="sm:w-48">
+          <SelectTrigger className="w-full sm:w-48">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -190,7 +197,7 @@ export function InventoryPage() {
         initialSort={{ key: "stock", direction: "desc" }}
         emptyState={
           <EmptyState
-            icon={Truck}
+            icon={Car}
             title="No vehicles match those filters"
             description="Try a different search term or clear the status filter."
           />

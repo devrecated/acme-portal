@@ -1,0 +1,18 @@
+---
+description: /wayfinder files one board ticket with a checklist, never a fan-out of issues
+alwaysApply: true
+---
+
+# Wayfinder one ticket
+
+Copyright (c) 2026 Devrecated.
+
+`/wayfinder` charts a large, foggy effort. In this repo it must not mint a wall of GitHub issues.
+
+- Create **at most one** board ticket, through [`/create-ticket`](../../../../services/host/skills/autodevelop/board/create-ticket/SKILL.md). If a ticket for the effort already exists, bind it. Do not open a second issue.
+- Put Destination, Notes, Decisions so far, and remaining questions in **that ticket body** as a markdown **checklist or roadmap**.
+- Never create child issues, sub-issues, or a fan-out of `#N`s for each decision. Never label a swarm `wayfinder:map` plus `wayfinder:*` children.
+- Research notes go on a throwaway `research/<name>` branch. Link the asset from the one ticket. Do not file a research issue per investigation.
+- Resolve by checking items off and commenting on the same ticket. Close the ticket when the way is clear enough to hand off to product work.
+
+Vendored [wayfinder](../../../skills/third-party/process/wayfinder/SKILL.md) text that says “create child issues” does **not** apply here. This rule wins.

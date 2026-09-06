@@ -1,13 +1,16 @@
 "use client"
 
+import { useGSAP } from "@gsap/react"
+import gsap from "gsap"
 import {
   Banknote,
   CircleDollarSign,
   Target,
-  Truck,
+  Car,
   type LucideIcon,
 } from "lucide-react"
 import Link from "next/link"
+import { useRef } from "react"
 import {
   Area,
   AreaChart,
@@ -49,6 +52,8 @@ import {
 } from "@/lib/format"
 import { VEHICLE_STATUS_LABELS } from "@/types"
 
+gsap.registerPlugin(useGSAP)
+
 const revenueConfig = {
   revenue: { label: "Revenue", color: "var(--chart-1)" },
 } satisfies ChartConfig
@@ -61,6 +66,35 @@ export function DashboardPage() {
   const { data: summary, isLoading } = useDashboardSummary()
   const { data: leads = [] } = useLeads()
   const { data: applications = [] } = useApplications()
+  const root = useRef<HTMLDivElement>(null)
+
+  useGSAP(
+    () => {
+      if (isLoading || !summary) return
+      const mm = gsap.matchMedia()
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        gsap.fromTo(
+          ".motion-stat",
+          { autoAlpha: 0, y: 14 },
+          { autoAlpha: 1, y: 0, duration: 0.4, stagger: 0.06, ease: "power2.out" },
+        )
+        gsap.fromTo(
+          ".motion-panel",
+          { autoAlpha: 0, y: 18 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.45,
+            stagger: 0.08,
+            delay: 0.12,
+            ease: "power2.out",
+          },
+        )
+      })
+      return () => mm.revert()
+    },
+    { scope: root, dependencies: [isLoading, summary] },
+  )
 
   const followUps = leads
     .filter((lead) => lead.nextFollowUpAt)
@@ -78,10 +112,10 @@ export function DashboardPage() {
     })) ?? []
 
   return (
-    <>
+    <div ref={root} className="space-y-5 sm:space-y-6">
       <PageHeader
         title="Dashboard"
-        description="Where the yard, the pipeline, and the finance desk stand today."
+        description="Where the showroom, the pipeline, and the finance desk stand today."
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -93,33 +127,37 @@ export function DashboardPage() {
               label="Units in stock"
               value={formatNumber(summary.inventoryCount)}
               hint={`${summary.availableCount} available to sell`}
-              icon={Truck}
+              icon={Car}
               accent
+              className="motion-stat"
             />
             <StatCard
               label="Inventory value"
               value={formatCompactCurrency(summary.inventoryValue)}
               hint="Combined asking price"
               icon={CircleDollarSign}
+              className="motion-stat"
             />
             <StatCard
               label="Open pipeline"
               value={formatCompactCurrency(summary.pipelineValue)}
               hint={`${summary.openLeads} active leads`}
               icon={Target}
+              className="motion-stat"
             />
             <StatCard
               label="Awaiting credit"
               value={formatNumber(summary.applicationsInReview)}
               hint={`${summary.fundedThisMonth} funded this month`}
               icon={Banknote}
+              className="motion-stat"
             />
           </>
         )}
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
+        <Card className="motion-panel lg:col-span-2">
           <CardHeader>
             <CardTitle>Revenue</CardTitle>
             <CardDescription>Closed business over the last twelve months</CardDescription>
@@ -178,7 +216,7 @@ export function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="motion-panel">
           <CardHeader>
             <CardTitle>Inventory by status</CardTitle>
             <CardDescription>Every unit currently on the books</CardDescription>
@@ -266,7 +304,7 @@ export function DashboardPage() {
           ))}
         </ListCard>
       </div>
-    </>
+    </div>
   )
 }
 
@@ -284,7 +322,7 @@ function ListCard({
   children: React.ReactNode
 }) {
   return (
-    <Card className="gap-0 pb-0">
+    <Card className="motion-panel gap-0 pb-0">
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2">
           <Icon className="size-4 text-muted-foreground" />

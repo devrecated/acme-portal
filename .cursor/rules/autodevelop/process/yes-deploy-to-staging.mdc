@@ -1,0 +1,14 @@
+---
+description: Local staging deploy requires exact DEPLOYED TO STAGING
+alwaysApply: true
+---
+
+# Local staging deploy gate
+
+Copyright (c) 2026 Devrecated.
+
+Do **not** run `pnpm env:stg` or `pnpm deploy:stg*` for a **local staging ship** (`/deploy-staging-local`) unless this conversation contains the exact phrase `DEPLOYED TO STAGING` (all caps). Approving an audit, “yes”, or “deploy it” is not enough.
+
+Do not `env:stg` until `HEAD` is `master` and matches `origin/master`. On a feature branch, ask whether to push it, land it on `master` (`/commit-push-branch` then `/commit-push-master`), then continue. If they say no, stop.
+
+This phrase does not push git and does not deploy production. See `deploy-staging-local`.

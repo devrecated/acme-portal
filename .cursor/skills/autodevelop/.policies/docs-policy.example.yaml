@@ -1,0 +1,16 @@
+# Copyright (c) 2026 Devrecated
+# Copy to .cursor/skills/<instance>/autodevelop/.policies/docs-policy.yaml
+publicHandbook: autodevelop-docs/
+internalHandbook: docs/internal/
+internalOperatorDocs: services/host/docs/
+publishedPricingAllowed: false
+noMarginOrUnitEconomicsInRepo: true
+noProductivityMultipleClaims: true
+professionalVoice: true
+noChatAsidesInFiles: true
+# Public handbook states what the product does. Operator runbooks stay private.
+# publishedPricingAllowed covers the subscription price and included support-hour band.
+# noMarginOrUnitEconomicsInRepo always stays true: margin, absorbed model spend, and
+# gross margin per account belong in the private operator handbook, never in the tree.
+# internalHandbook is in-repo Devrecated architecture. Never copy it into the public submodule.
+# Do not link internalHandbook pages from publicHandbook pages.

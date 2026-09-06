@@ -1,0 +1,69 @@
+---
+description: Finished product language in handbook, hosted UI, and skills — not chat notes
+globs:
+  - docs/**
+  - ROADMAP.md
+  - web/**
+  - services/**
+  - .cursor/skills/autodevelop/**
+  - .cursor/rules/autodevelop/**
+alwaysApply: true
+---
+
+# Professional product voice
+
+Copyright (c) 2026 Devrecated.
+
+Write **finished product language**. Complete sentences. Present tense for what exists. No scratch-pad fragments.
+
+## Do not paste the chat
+
+Never put the user’s words, quotes, or negotiation into a file. That includes “like we said”, “the user wants”, “for now we’ll”, “Stripe is later”, “TODO from chat”.
+
+Implement the behavior. Document **what the product does**, not how the thread decided it.
+
+Not-yet-built work goes in `ROADMAP.md` as a normal phase — not asides in install or product pages.
+
+## Two hosted apps (do not collapse these)
+
+| App | Who signs in | Invitations | Registration |
+|---|---|---|---|
+| Ticket UI | Organization members | Yes — members are invited, then they sign in | No public signup |
+| Operator console (orgs, tokens) | Operators | No — create the user in the Supabase dashboard, then they sign in | No public signup |
+
+Do **not** describe both apps as invite-only. Public signup is off on both. The Cursor plugin still uses the subscription token for MCP; that is not a UI login.
+
+## Audience
+
+- Customer-facing handbook (`docs/**`): user-visible facts only. No card-processor names, “manual until billing”, or internal scaffolding.
+- Operator docs (gitignored `services/host/docs/`): runbook tone, still professional — not Slack.
+- [no-chat-leak](../process/no-chat-leak.mdc) still applies: no “don’t tell the client” asides.
+- UI strings: labels a customer would see in a shipped product (`Sign in`, `Invite expired`). Not `Bearer TOKEN planned`.
+
+## Money
+
+Published commercial terms are product facts. Write them plainly in `README.md` and `docs/**`: the subscription price and the included support-hour band.
+
+Everything behind that price stays out of tracked files — margin, gross-margin-per-account, model spend, inference cost absorbed per seat, blended token cost, and anything else a client would negotiate against or a competitor would price against. Those live in the private operator handbook.
+
+State a number only where you can defend it. Do not publish a productivity multiple. Publish the measures the product actually reports: cycle time, change failure rate, and code turnover rate.
+
+```md
+<!-- BAD -->
+Manual subscriptions. Stripe is later. Tokens are hashed in Supabase; the raw value appears once.
+
+<!-- BAD -->
+$10,000 a month, of which roughly $1,400 goes to inference, so margin holds near 80%.
+
+<!-- BAD -->
+Teams ship 10x more.
+
+<!-- GOOD -->
+An operator issues each subscription. Tokens are stored as hashes. The secret is shown once when issued.
+
+<!-- GOOD -->
+$10,000 per month includes 25 to 40 support hours.
+
+<!-- GOOD -->
+We baseline cycle time, change failure rate, and code turnover rate in your repository and report against them monthly.
+```

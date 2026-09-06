@@ -1,0 +1,19 @@
+---
+description: If a user is upset about a hook, offer to add it to hookignore.yaml
+alwaysApply: true
+---
+
+# Hook ignore
+
+Copyright (c) 2026 Devrecated.
+
+Local kill-switch: `.cursor/hooks/hookignore.yaml` (gitignored). Missing file = every hook on. Example: `.cursor/hooks/hookignore.example.yaml`.
+
+If the user is upset about a hook (nags, wrong ticket, worktree footer, shell deny, leftover session):
+
+1. Ask whether they want it added to `hookignore.yaml`.
+2. If yes and the file is missing, copy the example, then set that hook to `false` or add its name under `ignore:`.
+3. Name the hook from the script basename (`ticket-progress-files`, `worktree-status`, `session-end-nudge`, …).
+4. Do not commit `hookignore.yaml`.
+
+Hooks already call `exitIfHookDisabled`. Do not delete hook scripts to silence them.

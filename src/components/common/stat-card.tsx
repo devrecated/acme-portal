@@ -9,15 +9,17 @@ export function StatCard({
   hint,
   icon: Icon,
   accent = false,
+  className,
 }: {
   label: string
   value: string
   hint?: string
   icon: LucideIcon
   accent?: boolean
+  className?: string
 }) {
   return (
-    <Card>
+    <Card className={className}>
       <CardContent className="flex items-start justify-between gap-4 p-5">
         <div className="space-y-1">
           <p className="text-sm font-medium text-muted-foreground">{label}</p>

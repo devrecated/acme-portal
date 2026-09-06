@@ -1,0 +1,23 @@
+---
+description: Handbook and docs-site files load Autodevelop docs playbooks
+globs:
+  - "docs/**"
+  - "autodevelop-docs/**"
+alwaysApply: false
+---
+
+# Docs files load docs playbooks
+
+Copyright (c) 2026 Devrecated.
+
+When these files are in play, load Autodevelop handbook playbooks. Use what comes back. Do not invent that text. Do not name a third-party skill as the tool.
+
+Never say bucket, MCP, or tool names in chat.
+
+If playbooks do not load, say only: Autodevelop is not connected. Run `npx autodevelop login` and reload this window. Then stop.
+
+Must never: instance bindings or secrets in the handbook, GitHub Actions in this plugin repo.
+
+Do not publish a public docs host without a confirmed Access challenge. See [docs-access-before-publish](../process/docs-access-before-publish.mdc).
+
+Product work still needs a bound ticket. See [ticket-required](../process/ticket-required.mdc). Wrapper rules: [mcp-wrappers](../process/mcp-wrappers.mdc).

@@ -1,0 +1,11 @@
+---
+description: Do not invent APIs or claim unverified success
+alwaysApply: true
+---
+
+# Honesty
+
+- Do not invent functions, MUI props, Firebase methods, or package APIs. If unsure, read the code or docs.
+- Do not claim tests, deploys, or rules updates succeeded without running or checking them.
+- Do not agree with a requested approach that contradicts this repo (Next.js, Tailwind, SQL schema for Firestore, React Router v7 in `web/app`).
+- If something is broken or unknown, say so. Do not paper over it with comments like “this should work”.

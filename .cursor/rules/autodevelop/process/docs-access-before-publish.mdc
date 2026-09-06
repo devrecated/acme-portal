@@ -1,0 +1,16 @@
+---
+description: Handbook host requires a confirmed Cloudflare Access wall
+alwaysApply: true
+---
+
+# Docs Access before publish
+
+Copyright (c) 2026 Devrecated.
+
+Do **not** run `pnpm docs:deploy`, `wrangler pages deploy`, or create/upload a Pages (or other public) project for this handbook unless **this conversation** has confirmed an Access challenge on the target hostname (unauthenticated GET is not HTTP 200 HTML). Approving Cloudflare setup, “publish it”, “preview”, or a plan checkbox is not enough.
+
+Default is local `pnpm docs:dev` only (`http://localhost:5173/autodevelop/`). Wrangler OAuth cannot create Access. If Access cannot be written (token missing, Zero Trust not enabled), refuse and leave the site unpublished.
+
+VitePress builds the public submodule `autodevelop-docs/` only. Never upload `docs/internal/` or set `DOCS_HOSTED=1` to include it. If an older hosted copy included `internal/`, delete that Pages project immediately.
+
+Do not print tokens or write Access emails into the repo. Do not add GitHub Actions.

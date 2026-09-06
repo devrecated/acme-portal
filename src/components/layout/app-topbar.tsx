@@ -1,6 +1,8 @@
 "use client"
 
 import { LogOut, Monitor, Moon, Sun, UserCog } from "lucide-react"
+
+import { AutodevelopTicketsLink } from "@/components/autodevelop-tickets"
 import { usePathname } from "next/navigation"
 import { useTheme } from "next-themes"
 
@@ -43,8 +45,8 @@ export function AppTopbar() {
   const title = TITLES[pathname] ?? "Acme Fleet"
 
   return (
-    <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center gap-2 border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/75">
-      <SidebarTrigger className="-ml-1" />
+    <header className="sticky top-0 z-10 flex min-h-14 shrink-0 items-center gap-2 border-b bg-background/95 px-4 pt-[env(safe-area-inset-top)] backdrop-blur supports-[backdrop-filter]:bg-background/75">
+      <SidebarTrigger className="-ml-1 size-9" />
       <Separator orientation="vertical" className="mr-1 !h-4" />
       <span className="text-sm font-medium">{title}</span>
 
@@ -116,6 +118,10 @@ export function AppTopbar() {
                     ))}
                 </DropdownMenuSubContent>
               </DropdownMenuSub>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <AutodevelopTicketsLink view="mine" />
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onSelect={signOut}>
                 <LogOut className="size-4" /> Sign out

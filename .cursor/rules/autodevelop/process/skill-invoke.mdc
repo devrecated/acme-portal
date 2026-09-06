@@ -1,0 +1,22 @@
+---
+description: Devrecated skill-invoke.yaml says which skills are manual vs automatic
+alwaysApply: true
+---
+
+# Skill invoke
+
+Copyright (c) 2026 Devrecated.
+
+Read `.cursor/skills/autodevelop/skill-invoke.yaml` before starting a Devrecated skill.
+
+- `manual` — only if the user named the skill or `/slash` **in this chat**. Do not start it from a hook, leftover session, or ambient guess.
+- `automatic` — may start when the task matches.
+- Missing name — follow that skill’s `disable-model-invocation` frontmatter (`true` = manual).
+
+`checkout-worktree` and `rogue-worktree-cleanup` are **manual**. Do not scan or switch worktrees unless they asked.
+
+When you start a Devrecated skill, record it (gitignored log):
+
+```bash
+node .cursor/skills/autodevelop/skill-invoke.mjs record <name> <manual|automatic>
+```

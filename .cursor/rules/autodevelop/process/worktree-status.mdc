@@ -1,0 +1,27 @@
+---
+description: End every reply with the worktree footer when this window is a linked worktree
+alwaysApply: true
+---
+
+# Worktree status footer
+
+Copyright (c) 2026 Devrecated.
+
+When this window’s folder is a **linked git worktree** (`.git` is a file, not a directory), end **every** reply with this block, values filled in:
+
+```text
+- worktree: <directory>
+- branch: <name>
+- commits: <origin/master..HEAD onelines or (none)>
+- created: <iso date>
+- pushed: <true|false>
+- checkout: cursor --reuse-window <directory>
+```
+
+`pushed` is `true` only if an upstream exists and HEAD is not ahead.
+
+A `stop` hook may send one follow-up if you omit the block. Append it and stop. Do not start new work.
+
+Primary checkout: omit the block.
+
+To silence the hook: [hookignore](hookignore.mdc) (`worktree-status`).

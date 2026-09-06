@@ -1,0 +1,42 @@
+---
+description: Where new skills, hooks, and rules belong
+alwaysApply: true
+---
+
+# Skill origin
+
+Copyright (c) 2026 Devrecated.
+
+New Cursor artifacts go in one of these three trees under `.cursor/skills|hooks|rules/`:
+
+| Tree | Put it here when |
+|---|---|
+| `autodevelop/` | Autodevelop product or workflow, including generic rules we authored (process, cybersecurity, frontend, design, testing, documents). |
+| `<client-name>/` | Their board, domains, people, shipping process, or other client IP. Only in the client repo (or optional fork). |
+| `third-party/` | Vendored from open source. Do not edit except to vendor-update. |
+
+Same split for skills, hooks, and rules. Do not reuse a skill folder name or rule filename across trees.
+
+- Do **not** add a fourth top-level category folder (no `.cursor/rules/frontend/` beside `autodevelop/`). Fold authored rules under `autodevelop/<category>/`.
+- Do not put client or product names in `autodevelop/` or `third-party/`.
+- Do not open-source the consumer instance folder.
+- Product app code (CORS, `package.json`, GHA) stays in the app, not under `.cursor/skills`.
+- Rules, skills, and hooks **created in chat** that belong to the Autodevelop workflow go under `.cursor/{rules,skills,hooks}/autodevelop/…`.
+- New Devrecated `SKILL.md` and `.mdc` files include `Copyright (c) 2026 Devrecated.`
+
+Instance bindings (board ids, preview project, mail allowlist, `.policies/`, `.configuration/`) live under the consumer’s `<client-name>/` folder (typically `<client-name>/autodevelop/config.json`, `.policies/`, and `.configuration/`), not inside `autodevelop/` and not inside the user-scope plugin.
+
+This repository keeps two Cursor trees:
+
+| Tree | Role |
+|---|---|
+| `.cursor/` | What this Autodevelop checkout uses to operate on itself. Cursor loads it as the workspace kit. |
+| `.cursor-template/` | The shippable product. `plugin.json` and `pnpm autodevelop:import` point here. Customer machines get this tree. |
+
+Product rules, hooks, commands, and agents that customers should receive go in **both** places until you change them: edit `.cursor/`, then copy the file into `.cursor-template/`. Do not put instance bindings or `services/` in `.cursor-template/`.
+
+The kit loads via **user-scope plugin install** (`/import-autodevelop` or `pnpm autodevelop:import`). The client repo commits only `<client-name>/` trees + instance `config.json` / `people.json` / `.policies/` / `.configuration/`. A fork or submodule is optional (pinning or heavy customization), not the load path.
+
+Do not add a skill unless this chat asked. See [no-unsolicited-skills.mdc](no-unsolicited-skills.mdc).
+
+Follow [marketplace-plugin.mdc](marketplace-plugin.mdc): add only official plugin components. This product is proprietary; do not treat public Marketplace review as the distribution path unless a human relicensed the root.

@@ -75,8 +75,8 @@ export function DataTable<T>({
 
   return (
     <div className="overflow-hidden rounded-lg border bg-card">
-      <div className="overflow-x-auto">
-        <Table>
+      <div className="overflow-x-auto overscroll-x-contain [-webkit-overflow-scrolling:touch]">
+        <Table className="min-w-[40rem]">
           <TableHeader>
             <TableRow className="hover:bg-transparent">
               {columns.map((column) => (

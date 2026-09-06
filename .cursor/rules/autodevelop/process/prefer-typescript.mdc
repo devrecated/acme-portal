@@ -1,0 +1,22 @@
+---
+description: Prefer TypeScript for new services and modules where possible
+alwaysApply: true
+---
+
+# Prefer TypeScript
+
+Copyright (c) 2026 Devrecated.
+
+Write new code in **TypeScript** where the runtime and build allow it.
+
+- New services (e.g. a standalone MCP server, the ticket API, an agent runtime) start as TypeScript with a `tsconfig.json` and a build or a TS-aware runtime. Do not start a new service in plain `.mjs`.
+- New modules inside an existing tree follow that tree's language. If the tree is TypeScript, add `.ts`. If the tree is still `.mjs` and has no TS build, a new `.ts` file that nothing can compile is worse than matching the tree — add TypeScript to that tree first, or keep the file consistent and note the migration.
+- Type the boundaries: tool inputs/outputs, MCP request/response shapes, policy and capability manifests, and any credential-carrying interface get explicit types. No `any` at a trust boundary.
+
+## Do not churn working code
+
+This rule does not authorize a mass `.mjs` -> `.ts` rewrite. Per [anti-overengineering](anti-overengineering.mdc):
+
+- Do not convert a working `.mjs` file to TypeScript unless you are already changing it substantially or the task is that migration.
+- Migrate a tree to TypeScript deliberately (add `tsconfig.json`, build script, and tests), not file-by-file drive-by.
+- The `.cursor/skills/**/scripts/*.mjs` local hands stay `.mjs` unless a migration is planned — they run under the plugin with no build step.

@@ -7,6 +7,7 @@ import { useAuth } from "@/auth/auth-context"
 import { PageSkeleton } from "@/components/common/page-skeleton"
 import { AppSidebar } from "@/components/layout/app-sidebar"
 import { AppTopbar } from "@/components/layout/app-topbar"
+import { PageEnter } from "@/components/motion/page-enter"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 
 export function AppShell({ children }: { children: ReactNode }) {
@@ -22,7 +23,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   if (!ready || !user) {
     return (
-      <div className="flex min-h-svh items-center justify-center p-6">
+      <div className="flex min-h-dvh items-center justify-center p-4 sm:p-6">
         <div className="w-full max-w-4xl">
           <PageSkeleton />
         </div>
@@ -35,7 +36,9 @@ export function AppShell({ children }: { children: ReactNode }) {
       <AppSidebar />
       <SidebarInset>
         <AppTopbar />
-        <main className="flex-1 space-y-6 p-4 sm:p-6">{children}</main>
+        <main className="flex-1 space-y-5 overflow-x-hidden px-4 py-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:space-y-6 sm:p-6">
+          <PageEnter>{children}</PageEnter>
+        </main>
       </SidebarInset>
     </SidebarProvider>
   )

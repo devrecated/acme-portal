@@ -1,8 +1,10 @@
 "use client"
 
-import { Truck } from "lucide-react"
+import { useGSAP } from "@gsap/react"
+import gsap from "gsap"
+import { Car } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 
 import { useAuth } from "@/auth/auth-context"
 import { PageSkeleton } from "@/components/common/page-skeleton"
@@ -20,6 +22,8 @@ import { initials } from "@/lib/format"
 import { safeReturnTo } from "@/lib/return-to"
 import { ROLE_LABELS } from "@/types"
 
+gsap.registerPlugin(useGSAP)
+
 /**
  * Stand-in for real authentication. Picking a teammate sets the session role,
  * which is what drives every permission check in the app.
@@ -29,6 +33,28 @@ export function SignInPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const from = safeReturnTo(searchParams.get("from"))
+  const root = useRef<HTMLDivElement>(null)
+
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia()
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        const tl = gsap.timeline({ defaults: { ease: "power2.out" } })
+        tl.fromTo(
+          "[data-motion='brand']",
+          { autoAlpha: 0, y: 12 },
+          { autoAlpha: 1, y: 0, duration: 0.4 },
+        ).fromTo(
+          ".account-choice",
+          { autoAlpha: 0, y: 10 },
+          { autoAlpha: 1, y: 0, duration: 0.35, stagger: 0.05 },
+          "-=0.15",
+        )
+      })
+      return () => mm.revert()
+    },
+    { scope: root },
+  )
 
   useEffect(() => {
     if (ready && user) {
@@ -43,7 +69,7 @@ export function SignInPage() {
 
   if (!ready || user) {
     return (
-      <div className="flex min-h-svh items-center justify-center p-6">
+      <div className="flex min-h-dvh items-center justify-center p-4 sm:p-6">
         <div className="w-full max-w-md">
           <PageSkeleton />
         </div>
@@ -52,16 +78,22 @@ export function SignInPage() {
   }
 
   return (
-    <div className="flex min-h-svh items-center justify-center bg-muted/40 p-6">
+    <div
+      ref={root}
+      className="flex min-h-dvh items-center justify-center bg-muted/40 px-4 py-8 pb-[max(2rem,env(safe-area-inset-bottom))] sm:p-6"
+    >
       <div className="w-full max-w-md space-y-6">
-        <div className="flex flex-col items-center gap-3 text-center">
+        <div
+          data-motion="brand"
+          className="flex flex-col items-center gap-3 text-center"
+        >
           <div className="flex size-11 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <Truck className="size-6" />
+            <Car className="size-6" />
           </div>
           <div className="space-y-1">
             <h1 className="text-2xl font-semibold tracking-tight">Acme Fleet</h1>
             <p className="text-sm text-muted-foreground">
-              Commercial vehicle sales portal
+              Exotic sports car sales portal
             </p>
           </div>
         </div>
@@ -81,7 +113,7 @@ export function SignInPage() {
                 <Button
                   key={candidate.id}
                   variant="ghost"
-                  className="h-auto w-full justify-start gap-3 px-3 py-2.5"
+                  className="account-choice h-auto min-h-12 w-full justify-start gap-3 px-3 py-3"
                   onClick={() => handleSignIn(candidate.id)}
                 >
                   <Avatar className="size-8">
@@ -95,9 +127,13 @@ export function SignInPage() {
                     </span>
                     <span className="block text-xs font-normal text-muted-foreground">
                       {candidate.title}
+                      <span className="sm:hidden">
+                        {" "}
+                        · {ROLE_LABELS[candidate.role]}
+                      </span>
                     </span>
                   </span>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="hidden text-xs text-muted-foreground sm:inline">
                     {ROLE_LABELS[candidate.role]}
                   </span>
                 </Button>

@@ -1,0 +1,94 @@
+{
+  "version": 1,
+  "hooks": {
+    "beforeShellExecution": [
+      {
+        "command": "node .cursor/hooks/autodevelop/cybersecurity/guard-shell.mjs",
+        "failClosed": true,
+        "timeout": 10
+      },
+      {
+        "command": "node .cursor/hooks/autodevelop/cybersecurity/guard-stakeholder-mail.mjs",
+        "failClosed": true,
+        "timeout": 8
+      }
+    ],
+    "afterShellExecution": [
+      {
+        "command": "node .cursor/hooks/autodevelop/process/pr-link-hint.mjs",
+        "matcher": "gh\\s+pr\\s+create",
+        "timeout": 8
+      },
+      {
+        "command": "node .cursor/hooks/autodevelop/process/ready-for-feedback.mjs",
+        "matcher": "gh\\s+pr\\s+create",
+        "timeout": 8
+      }
+    ],
+    "postToolUse": [
+      {
+        "command": "node .cursor/hooks/autodevelop/code-generation/nudge-edits.mjs",
+        "matcher": "Write|StrReplace",
+        "timeout": 10
+      },
+      {
+        "command": "node .cursor/hooks/autodevelop/process/ticket-progress-files.mjs",
+        "matcher": "Write|StrReplace",
+        "timeout": 8
+      },
+      {
+        "command": "node .cursor/hooks/autodevelop/process/ticket-required.mjs",
+        "matcher": "Write|StrReplace",
+        "timeout": 8
+      }
+    ],
+    "sessionStart": [
+      {
+        "command": "node .cursor/hooks/autodevelop/process/session-context.mjs",
+        "timeout": 5
+      },
+      {
+        "command": "node .cursor/hooks/autodevelop/process/ticket-session.mjs",
+        "timeout": 5
+      }
+    ],
+    "sessionEnd": [
+      {
+        "command": "node .cursor/hooks/autodevelop/process/log-session-outcome.mjs",
+        "timeout": 8
+      },
+      {
+        "command": "node .cursor/hooks/autodevelop/process/session-end-nudge.mjs",
+        "timeout": 5
+      }
+    ],
+    "beforeSubmitPrompt": [
+      {
+        "command": "node .cursor/hooks/autodevelop/cybersecurity/gate-prompt.mjs",
+        "matcher": "UserPromptSubmit",
+        "timeout": 5
+      }
+    ],
+    "afterAgentResponse": [
+      {
+        "command": "node .cursor/hooks/autodevelop/process/worktree-status.mjs",
+        "timeout": 8
+      }
+    ],
+    "stop": [
+      {
+        "command": "node .cursor/hooks/autodevelop/process/ticket-required.mjs",
+        "timeout": 8
+      },
+      {
+        "command": "node .cursor/hooks/autodevelop/process/plan-completion-check.mjs",
+        "timeout": 8
+      },
+      {
+        "command": "node .cursor/hooks/autodevelop/process/worktree-status.mjs",
+        "timeout": 8,
+        "loop_limit": 1
+      }
+    ]
+  }
+}

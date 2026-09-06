@@ -324,7 +324,7 @@ function InviteUserDialog({
 
           <div className="space-y-2">
             <Label>Title</Label>
-            <Input {...register("title")} placeholder="Fleet account executive" />
+            <Input {...register("title")} placeholder="Client advisor" />
           </div>
 
           <div className="space-y-2">

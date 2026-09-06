@@ -9,6 +9,7 @@ import { EmptyState } from "@/components/common/empty-state"
 import { PageHeader } from "@/components/common/page-header"
 import { StatCard } from "@/components/common/stat-card"
 import { ApplicationStatusBadge } from "@/components/common/status-badge"
+import { VehiclePhoto } from "@/components/common/vehicle-photo"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -188,7 +189,7 @@ export function FinancingPage() {
           value={status}
           onValueChange={(value) => setStatus(value as ApplicationStatus | "all")}
         >
-          <SelectTrigger className="sm:w-48">
+          <SelectTrigger className="w-full sm:w-48">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -307,14 +308,22 @@ function ApplicationSheet({
           {vehicle ? (
             <>
               <Separator />
-              <section className="space-y-1.5">
+              <section className="space-y-2">
                 <p className="text-xs font-medium text-muted-foreground">Vehicle</p>
-                <p className="text-sm">
-                  {vehicle.year} {vehicle.make} {vehicle.model}
-                </p>
-                <p className="font-mono text-xs text-muted-foreground">
-                  {vehicle.stockNumber} · {vehicle.vin}
-                </p>
+                <div className="flex items-center gap-3">
+                  <VehiclePhoto
+                    vehicle={vehicle}
+                    className="size-14 shrink-0 rounded-md"
+                  />
+                  <div>
+                    <p className="text-sm">
+                      {vehicle.year} {vehicle.make} {vehicle.model}
+                    </p>
+                    <p className="font-mono text-xs text-muted-foreground">
+                      {vehicle.stockNumber} · {vehicle.vin}
+                    </p>
+                  </div>
+                </div>
               </section>
             </>
           ) : null}

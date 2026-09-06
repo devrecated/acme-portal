@@ -1,0 +1,11 @@
+# Copyright (c) 2026 Devrecated
+# Copy to .cursor/skills/<instance>/autodevelop/.policies/skill-use-policy.yaml
+# Do not list every skill here. Invoke flags live in skill-invoke.yaml.
+strictness: normal
+invokeSource: .cursor/skills/autodevelop/skill-invoke.yaml
+excludeNames: []
+excludeGlobs: []
+allowNames: []
+# normal = follow skill-invoke.yaml (manual vs automatic).
+# strict = only invoke allowNames, or automatic when skill-invoke.yaml says so,
+# and never an excluded name or glob.

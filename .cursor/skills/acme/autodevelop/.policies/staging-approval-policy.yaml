@@ -1,0 +1,9 @@
+# Copyright (c) 2026 Devrecated
+# Copy to .cursor/skills/<instance>/autodevelop/.policies/staging-approval-policy.yaml
+# Declares that approval is required. Kit phrases stay in the rules.
+# Git: YES PUSH TO MASTER when branch-policy.askStaging is true.
+# Local deploy: DEPLOYED TO STAGING.
+approvalRequired: true
+gitConfirmFollowsBranchAsk: true
+deployConfirmRequired: true
+requireHeadOnStaging: true

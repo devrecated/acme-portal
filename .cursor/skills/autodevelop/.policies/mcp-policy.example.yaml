@@ -1,0 +1,10 @@
+# Copyright (c) 2026 Devrecated
+# Copy to .cursor/skills/<instance>/autodevelop/.policies/mcp-policy.yaml
+stdioReadOnly: true
+remoteRequiresToken: true
+lapseString: Your billing has expired
+remoteMustNotWriteMail: true
+remoteMustNotCreateIssues: true
+remoteMustNotDeploy: true
+# Stdio tools stay on-machine. Remote tools need the subscription token.
+# After CLI login, install writes a versioned pack. When VERSION differs from the host, ask before installing again.

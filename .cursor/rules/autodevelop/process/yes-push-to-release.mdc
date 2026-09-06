@@ -1,0 +1,28 @@
+---
+description: Production ship and production-branch push require exact YES PUSH TO RELEASE when askProduction is true
+alwaysApply: true
+---
+
+# Production ship gate
+
+The target branch is **`branches.production`** (kit default `release`) on a **two-branch** instance. See [branch-policy.mdc](branch-policy.mdc).
+
+When the instance is single-branch (`singleBranch` or staging === production), `/promote-master-to-release` and `/commit-push-release` **refuse**. Use `/commit-push-master`. Do not fetch `origin/release`. `YES PUSH TO RELEASE` does not apply.
+
+`YES PUSH TO RELEASE` applies **only** when there is a distinct production branch and `askProduction` is true. Then do **not** merge staging → production, or commit or push the production branch, unless this conversation contains the exact phrase `YES PUSH TO RELEASE` (all caps). The production branch is read-only for the agent until then. Approving risks, “ship it”, or a plan checkbox is not enough. The phrase stays `YES PUSH TO RELEASE` even if YAML renamed the production branch.
+
+When the instance is two-branch and `askProduction` is false, that phrase is **not** required for a production-branch commit or push. Still no force-push. Still no secrets. Promote still follows `/promote-master-to-release`.
+
+`YES PUSH TO RELEASE` is **git** (promote / hotfix push). A local production deploy on the production branch is `/deploy-production-local` and needs **`DEPLOYED TO PRODUCTION`**.
+
+When they asked for **promote** (`/promote-master-to-release`) and the production git gate is satisfied (`YES PUSH TO RELEASE` in this chat, or `askProduction` is false):
+
+1. `pnpm env:prod` first. Confirm the app env is the production Firebase project.
+2. Sequential services only: `pnpm deploy:prod:sequential`. Check each service before the next.
+3. Do **not** run `pnpm release:prod` / `scripts/release-env.sh --prod` from chat.
+
+If one service lands, finish the rest. See `promote-master-to-release`.
+
+Normal production path: `/commit-push-master`, then `/promote-master-to-release` (ask **this batch** vs **remote staging**, then a heavy risk list).
+
+`/commit-push-release` is **hotfix only**. The same phrase there is **git only** — commit and push, no merge, no `env:prod`. If they have not said hotfix, refuse and send them to the two-step path. `/commit-push-branch` must refuse when HEAD is the instance staging or production name.

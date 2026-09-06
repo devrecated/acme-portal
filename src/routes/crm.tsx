@@ -168,10 +168,10 @@ export function CrmPage() {
     },
     {
       key: "fleet",
-      header: "Fleet size",
+      header: "Collection",
       sortValue: (c) => c.fleetSize,
       className: "tabular-nums",
-      cell: (c) => `${formatNumber(c.fleetSize)} units`,
+      cell: (c) => `${formatNumber(c.fleetSize)} cars`,
     },
     {
       key: "contacts",
@@ -347,7 +347,7 @@ function ContactSheet({
             <Detail label="Added">{formatDate(contact.createdAt)}</Detail>
             {company ? (
               <>
-                <Detail label="Fleet size">{formatNumber(company.fleetSize)} units</Detail>
+                <Detail label="Collection">{formatNumber(company.fleetSize)} cars</Detail>
                 <Detail label="Location">
                   {company.city}, {company.state}
                 </Detail>

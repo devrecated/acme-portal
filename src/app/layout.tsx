@@ -1,7 +1,9 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Geist } from "next/font/google"
+import Script from "next/script"
 
 import { Providers } from "@/components/providers"
+import { ticketsEmbedSrc } from "@/lib/autodevelop"
 
 import "./globals.css"
 
@@ -16,10 +18,20 @@ export const metadata: Metadata = {
     template: "%s · Acme Fleet",
   },
   description:
-    "Acme Fleet — commercial vehicle sales portal for inventory, leads, financing, and CRM.",
+    "Acme Fleet — exotic sports car sales portal for inventory, leads, financing, and CRM.",
   icons: {
     icon: "/favicon.svg",
   },
+}
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#faf9f6" },
+    { media: "(prefers-color-scheme: dark)", color: "#1c1917" },
+  ],
 }
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -27,6 +39,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className={geistSans.variable} suppressHydrationWarning>
       <body>
         <Providers>{children}</Providers>
+        <Script src={ticketsEmbedSrc()} strategy="afterInteractive" />
       </body>
     </html>
   )

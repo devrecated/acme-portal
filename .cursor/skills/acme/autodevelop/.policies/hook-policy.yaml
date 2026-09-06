@@ -1,0 +1,18 @@
+# Copyright (c) 2026 Devrecated
+# Copy to .cursor/skills/<instance>/autodevelop/.policies/hook-policy.yaml
+# Local kill-switch is gitignored hookignore.yaml. Missing file = every hook on.
+hooksNeverSendMail: true
+hooksNeverInventConfirmToken: true
+requiredOn:
+  - ticket-required
+  - worktree-status
+  - guard-stakeholder-mail
+  - guard-shell
+mayDisable:
+  - ticket-progress-files
+  - session-end-nudge
+  - session-context
+  - ready-for-feedback
+  - pr-link-hint
+  - nudge-edits
+  - version-changelog-nudge

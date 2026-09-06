@@ -1,0 +1,14 @@
+---
+description: Local production deploy requires exact DEPLOYED TO PRODUCTION
+alwaysApply: true
+---
+
+# Local production deploy gate
+
+Copyright (c) 2026 Devrecated.
+
+Do **not** run `pnpm env:prod` or `pnpm deploy:prod*` for a **local production ship** (`/deploy-production-local`) unless this conversation contains the exact phrase `DEPLOYED TO PRODUCTION` (all caps). Approving an audit, “yes”, or “deploy it” is not enough.
+
+HEAD must be `release` and match `origin/release`. If the tree is dirty or ahead, `/commit-push-release` first (`YES PUSH TO RELEASE` is git only on that skill). When branch policy is single-branch, this gate does not apply: there is no production branch. Do not check out `release` or fetch `origin/release`.
+
+This phrase does not merge `master` → `release`. Merge is `/promote-master-to-release`. See `deploy-production-local`.

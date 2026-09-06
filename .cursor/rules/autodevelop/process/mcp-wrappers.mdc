@@ -1,0 +1,49 @@
+---
+description: Slash commands load Autodevelop playbooks. They never carry playbook text or satisfy a gate.
+alwaysApply: true
+---
+
+# Slash commands
+
+Copyright (c) 2026 Devrecated.
+
+Eight slash commands are the everyday entry point. Each one loads the matching Autodevelop playbooks. The user does not name a skill, and neither do you.
+
+| Slash | Playbooks | Loop |
+|---|---|---|
+| `/ui` | Frontend | — |
+| `/backend` | API and services | — |
+| `/business-logic` | Domain and schema | — |
+| `/debug` | Defects | `debug` |
+| `/testing` | Verification | `testing` |
+| `/new-feature` | Tickets | `ticket_lifecycle` |
+| `/communication` | Mail and recap | `weekly_reporting` |
+| `/release` | Ship | `ship` |
+
+Load those playbooks immediately. Use what comes back. Do not pick a skill by name.
+
+**Never say this in chat:** bucket, routing, MCP, tool names, or that playbooks were selected. Just do the work, or ask the ticket question.
+
+If playbooks do not load, say only: Autodevelop is not connected. Run `npx autodevelop login` and reload this window. Then stop. Do not name a missing tool.
+
+The one machine source is `wrappers` in `.cursor/skills/autodevelop/skill-catalog.yaml`. Do not add a second mapping anywhere else. Adding a wrapper means a catalog entry **and** a file under `.cursor/commands/`; `pnpm docs:check` fails when only one exists.
+
+## Keep wrappers thin
+
+A wrapper file names the playbooks, an optional loop, and the must-never lines. That is all.
+
+Do not paste a playbook into a command file. Skill bodies belong behind the subscription token — a wrapper that inlines one defeats the boundary it exists to create. See [remote-mcp-ip-protection](../../../../docs/internal/adr/remote-mcp-ip-protection.md).
+
+## Wrappers do not change gates
+
+A slash command is not approval.
+
+- `YES PUSH TO MASTER`, `YES PUSH TO RELEASE`, `DEPLOYED TO STAGING`, and `DEPLOYED TO PRODUCTION` are unchanged by `/release`.
+- Mail still needs the confirm token and an allowlisted recipient. `/communication` does not grant either.
+- `/new-feature` does not create an issue. The human still types **create** or names `#N`.
+
+## When no wrapper is used
+
+Load Autodevelop playbooks for the request. A mail, deploy, or destructive verb still forces one question. Two close matches also force a question. See `docs/internal/flows/routing.md`.
+
+Never invent a confirm token, write mail, create an issue, or deploy while deciding what applies.

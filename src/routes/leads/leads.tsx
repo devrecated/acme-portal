@@ -69,13 +69,13 @@ export function LeadsPage() {
       />
 
       {isLoading ? (
-        <div className="grid gap-3 lg:grid-cols-6">
+        <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-1 lg:mx-0 lg:grid lg:grid-cols-6 lg:overflow-visible lg:px-0">
           {LEAD_STAGES.map((stage) => (
-            <Skeleton key={stage} className="h-72" />
+            <Skeleton key={stage} className="h-72 w-[min(100%,18rem)] shrink-0 lg:w-auto" />
           ))}
         </div>
       ) : (
-        <div className="grid gap-3 lg:grid-cols-6">
+        <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 lg:mx-0 lg:grid lg:grid-cols-6 lg:overflow-visible lg:px-0">
           {LEAD_STAGES.map((stage) => {
             const stageLeads = byStage.get(stage) ?? []
             const stageValue = stageLeads.reduce((sum, lead) => sum + lead.value, 0)
@@ -91,7 +91,7 @@ export function LeadsPage() {
                 onDragLeave={() => setDropTarget((c) => (c === stage ? null : c))}
                 onDrop={() => handleDrop(stage)}
                 className={cn(
-                  "flex min-h-72 flex-col rounded-lg border bg-muted/40 transition-colors",
+                  "flex min-h-72 w-[min(100%,18rem)] shrink-0 snap-start flex-col rounded-lg border bg-muted/40 transition-colors lg:w-auto",
                   dropTarget === stage && "border-primary bg-primary/5",
                 )}
               >

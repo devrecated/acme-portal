@@ -1,5 +1,5 @@
 /**
- * Domain model for Acme Fleet — commercial vehicle sales.
+ * Domain model for Acme Fleet — exotic sports car sales.
  *
  * Every entity is a plain serialisable object so the same shapes work
  * against the in-memory repository today and a real backend later.
@@ -61,31 +61,29 @@ export const VEHICLE_STATUS_LABELS: Record<VehicleStatus, string> = {
 }
 
 export const BODY_TYPES = [
-  "Box truck",
-  "Cargo van",
-  "Flatbed",
-  "Dump truck",
-  "Refrigerated",
-  "Tractor",
-  "Stake bed",
-  "Service body",
+  "Coupe",
+  "Convertible",
+  "Roadster",
+  "Grand Tourer",
+  "SUV",
+  "Spyder",
 ] as const
 
 export type BodyType = (typeof BODY_TYPES)[number]
 
-/** FHWA vehicle classes by gross vehicle weight rating. */
+/** How the desk groups a car for buyers — not a weight rating. */
 export const GVWR_CLASSES = [
-  "Class 3",
-  "Class 4",
-  "Class 5",
-  "Class 6",
-  "Class 7",
-  "Class 8",
+  "Supercar",
+  "Hypercar",
+  "Grand Tourer",
+  "Sports car",
+  "Luxury GT",
+  "Performance SUV",
 ] as const
 
 export type GvwrClass = (typeof GVWR_CLASSES)[number]
 
-export const FUEL_TYPES = ["Diesel", "Gasoline", "Electric", "CNG", "Hybrid"] as const
+export const FUEL_TYPES = ["Gasoline", "Hybrid", "Electric"] as const
 
 export type FuelType = (typeof FUEL_TYPES)[number]
 
@@ -111,6 +109,8 @@ export interface Vehicle {
   soldAt?: ISODate
   createdAt: ISODate
   notes?: string
+  /** Public path to a photo of this exact model. */
+  imageUrl?: string
 }
 
 /* ---------------------------------- leads --------------------------------- */
@@ -251,7 +251,7 @@ export interface Company {
   website?: string
   city: string
   state: string
-  /** Number of vehicles the customer runs today. */
+  /** Number of cars the client already owns. */
   fleetSize: number
   ownerId?: string
   createdAt: ISODate
