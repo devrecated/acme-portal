@@ -1,0 +1,18 @@
+---
+description: Product work must be on the GitHub Project board before it proceeds
+alwaysApply: true
+---
+
+# Ticket required
+
+Copyright (c) 2026 Devrecated.
+
+No product work without a board ticket. Clients need a visible audit log of tasks in the repo.
+
+- **Exempt:** Devrecated `.cursor` kit trees (`skills|hooks|rules/autodevelop`, `third-party`, `agents`, `plans`, `commands`), the Autodevelop handbook (`docs/**` except a client hostname folder), and other Devrecated-only IP. Those may proceed without a ticket.
+- **Not exempt:** app, API, functions, models, client docs, instance bindings (any folder under `.cursor/skills` that is not a kit folder), anything the client can see or run.
+- If this session has no claimed/created issue (`session.json`) and the work is not exempt: **stop implementing**. Follow `/create-ticket` only after they say **create**, or bind `#N` if they pick an existing issue from the list.
+- Hooks must not use `followup_message` (that injects a new chat turn). Use `additional_context` so the agent asks in the **same** reply. Devrecated `.cursor/autodevelop` kit work stays silent.
+- Do not create issues in the same turn as the preview. Hooks never create issues.
+
+If they already named `#N`, bind that session and continue. Do not invent a ticket number.

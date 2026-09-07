@@ -1,0 +1,63 @@
+---
+description: This repo is a proprietary Cursor plugin — only add official plugin components
+alwaysApply: true
+---
+
+# Proprietary plugin only
+
+Copyright (c) 2026 Devrecated.
+
+This repository **is** the Autodevelop [Cursor Plugin](https://cursor.com/docs/plugins.md). It is a **proprietary** product. Distribute via Team Marketplace, a private listing, or `pnpm autodevelop:import` — not a public permissive Marketplace listing unless a human explicitly relicenses the root.
+
+Every agent may add **only** what Cursor officially loads from a plugin. Before adding a file or dependency, check [Plugins reference](https://cursor.com/docs/reference/plugins.md). If the type is not listed there, **do not add it**.
+
+## Official plugin components (allowed)
+
+Cursor Plugin (`.cursor-plugin/plugin.json`) may contain only:
+
+| Component | Where in this repo |
+|---|---|
+| Skills | `.cursor-template/skills/**/SKILL.md` plus that skill’s scripts/docs (workspace `.cursor/skills` is this repo’s own copy) |
+| Rules | `.cursor-template/rules/**/*.mdc` |
+| Hooks | `.cursor-template/hooks.json` and `.cursor-template/hooks/**` |
+| Commands | `.cursor-template/commands/**` |
+| Agents | `.cursor-template/agents/**` and skill `agents/` YAML |
+| MCP | root `mcp.json` (stdio today; authenticated remote MCP is the IP boundary) |
+| Variables | `plugin.json` `variables` for user-supplied MCP env (including a subscription token) |
+
+Supporting kit files that are **not** plugin payloads but are allowed: handbook `docs/`, tests, root `package.json` scripts that run kit tests/import, `LICENSE` / `NOTICE`, `.cursor-plugin/plugin.json`.
+
+## MCP
+
+- **Stdio (shipped):** in-tree read-only server. No mail, issues, or deploys.
+- **Authenticated remote MCP (planned IP boundary):** `streamable-http` / `sse` with OAuth or a subscription token via plugin `variables`. Skill bodies and hosted product logic may live there. Hooks and always-apply rules **cannot** — Cursor loads those as local files. See [docs/internal/adr/remote-mcp-ip-protection.md](../../../../docs/internal/adr/remote-mcp-ip-protection.md).
+- MCP tools still must not write Firestore `mail`, create issues, or deploy. Those stay skills + confirm phrases.
+
+## Forbidden in this repo
+
+- GitHub Actions or `.github/workflows` **as if the plugin installs CI**. Consumer apps own CI.
+- Instance bindings (`config.json`, `people.json`, `.policies/`, `.configuration/`, board ids, allowlists, client names) in the plugin payload. Kit `.policies/*.example.yaml` and `.configuration/*.example.*` files may ship.
+- Secrets, tokens, service-account JSON, baked API keys.
+- Product app code (CORS, Hosting, Next, Firestore rules for a client app).
+- VS Code / Open VSX extensions, `.vsix`, editor themes.
+- Unauthenticated remote MCP that sends repo or user data off-machine.
+- Copyleft deps or files (GPL, AGPL, LGPL) in the plugin payload.
+- A second plugin format (`plugin.json` at repo root) unless replacing this Cursor Plugin on purpose.
+- Margin, unit economics, absorbed model spend, or profitability numbers (see [no-chat-leak](no-chat-leak.mdc)). Published subscription pricing and the included support-hour band **are** allowed in `README.md` and `docs/**` — see [professional-voice](../documents/professional-voice.mdc).
+- Relicensing to permissive or a public Marketplace submit unless the user explicitly asks.
+
+```text
+<!-- BAD — not a plugin component -->
+.github/workflows/ci.yml
+
+<!-- BAD — unauthenticated remote MCP, secrets, silent writes -->
+npx some-firebase-mcp with FIREBASE_KEY=...
+
+<!-- GOOD — official components -->
+.cursor/commands/new-feature.md
+.cursor/rules/autodevelop/process/ticket-required.mdc
+mcp.json → node ${PLUGIN_ROOT}/…/server.mjs  (stdio, read-only, user env)
+mcp.json → authenticated remote URL + ${TOKEN}  (planned IP boundary)
+```
+
+If the user asks for a forbidden artifact, refuse. Do not “put it in the kit anyway.” Relicense the repo root only when they explicitly ask.

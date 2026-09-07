@@ -1,0 +1,16 @@
+---
+description: Keep plan todos accurate while executing
+alwaysApply: true
+---
+
+# Plan completion
+
+Applies **only** while executing a plan the user **Built** (or named for implement) in this session. Injected leftover todos from another chat are not that. See [plan-requires-build.mdc](plan-requires-build.mdc).
+
+When executing a Built plan (`.cursor/plans/*.plan.md`):
+
+- Leave frontmatter `todos` accurate. Mark `completed` only after the work exists in the repo.
+- Do not mark a todo complete because you described it or planned to do it.
+- If you skip a todo, say so in the plan or cancel it — do not leave it `pending` and silently drop it.
+- The `plan-completion-check` stop hook lists leftover pending todos and missing inventory paths. Treat that follow-up as work to finish, not noise.
+- Fail open: the hook never blocks. You still owe the remaining items.

@@ -23,6 +23,9 @@ out
 *.key
 serviceAccount*.json
 
+# Local Autodevelop bind (credentials path, not the token)
+.cursor/local/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -33,4 +36,3 @@ serviceAccount*.json
 *.njsproj
 *.sln
 *.sw?
-.env*

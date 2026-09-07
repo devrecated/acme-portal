@@ -1,0 +1,16 @@
+---
+description: Never send stakeholder mail without confirm
+alwaysApply: true
+---
+
+# Stakeholder mail
+
+Write Firestore `mail` (`{ to, message: { subject, html } }`) only after an explicit yes.
+
+- Show **to, subject, HTML-as-text, ticket link, Firestore project** and wait.
+- Recipients must be on the instance `mail.allowlist`. To send elsewhere, the user must retype the address.
+- Run `send-stakeholder-mail.mjs` with `--confirm <token>`. No token → do not write.
+- Hooks never send mail, never write `mail`, and never invent a confirm token.
+- Do not use Mail.app, mailto, or a Gmail API.
+- Do not log the message body, tokens, or raw PII.
+- Target project must not be in `forbiddenProjects`.

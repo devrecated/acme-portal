@@ -1,0 +1,20 @@
+---
+description: Load instance .policies/ YAML before commit, mail, deploy, or skill-invoke exceptions
+alwaysApply: true
+---
+
+# Instance policies
+
+Copyright (c) 2026 Devrecated.
+
+Before you commit, send mail, deploy, or make a skill-invoke exception, load instance policy:
+
+```bash
+node .cursor/skills/autodevelop/scripts/policies-load.mjs
+```
+
+That script finds the repo-root workspace bind `.autodevelop/.policies/` first, then the legacy `.cursor/skills/<instance>/autodevelop/.policies/` the same way as `config.json` (first non-kit instance folder). It merges each `*.yaml` (not `*.example.yaml`) over the kit examples in `.cursor/skills/autodevelop/.policies/`. A missing folder uses those examples. The CLI prints policy names and sources only — not allowlists, tokens, or message bodies.
+
+Kit examples ship with the plugin. Instance copies stay under `<instance>/autodevelop/.policies/`. Do not put a live instance folder in the plugin payload.
+
+Branch names and ask flags: [branch-policy.mdc](branch-policy.mdc). Hyperparameters: [configuration.mdc](configuration.mdc). Handbook table: [docs/configure.md](../../../../docs/configure.md).

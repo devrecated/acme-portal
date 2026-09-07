@@ -70,9 +70,9 @@ const EMPTY: FormValues = {
   year: currentYear,
   make: "",
   model: "",
-  bodyType: "Box truck",
-  gvwrClass: "Class 6",
-  fuel: "Diesel",
+  bodyType: "Coupe",
+  gvwrClass: "Supercar",
+  fuel: "Gasoline",
   condition: "Used",
   status: "available",
   mileage: 0,
@@ -132,7 +132,7 @@ export function VehicleFormDialog({
           <DialogDescription>
             {isEditing
               ? "Update the unit's specification, pricing, or status."
-              : "Enter the unit's details to put it on the books."}
+              : "Enter the car's details to put it on the books."}
           </DialogDescription>
         </DialogHeader>
 
@@ -144,7 +144,7 @@ export function VehicleFormDialog({
             <Field label="VIN" error={errors.vin?.message}>
               <Input
                 {...register("vin")}
-                placeholder="1FVACWDT8LHLM4821"
+                placeholder="ZHWUC1ZD8MLA10421"
                 className="font-mono uppercase"
               />
             </Field>
@@ -155,10 +155,10 @@ export function VehicleFormDialog({
               <Input type="number" {...register("year")} />
             </Field>
             <Field label="Make" error={errors.make?.message}>
-              <Input {...register("make")} placeholder="Freightliner" />
+              <Input {...register("make")} placeholder="Lamborghini" />
             </Field>
             <Field label="Model" error={errors.model?.message}>
-              <Input {...register("model")} placeholder="M2 106" />
+              <Input {...register("model")} placeholder="Huracán EVO" />
             </Field>
           </div>
 
@@ -170,7 +170,7 @@ export function VehicleFormDialog({
                 options={BODY_TYPES.map((v) => ({ value: v, label: v }))}
               />
             </Field>
-            <Field label="Weight class">
+            <Field label="Segment">
               <SelectField
                 value={watch("gvwrClass")}
                 onChange={(v) => setValue("gvwrClass", v as FormValues["gvwrClass"])}

@@ -1,0 +1,16 @@
+---
+description: Default git branch is master, never main — names may come from branch-policy.yaml
+alwaysApply: true
+---
+
+# Default branch
+
+Copyright (c) 2026 Devrecated.
+
+MAIN IS NOT THE MAIN BRANCH, IT IS MASTER.
+
+- Default / staging branch: **`master`**. The kit default production name is **`release`** for two-branch consumer repos. This Autodevelop repository is single-branch (`master` only): instance `config.json` sets `singleBranch: true` and does not name a `release` branch. There is no `main` branch unless instance `config.json` / `branch-policy.yaml` names it.
+- Instance `.autodevelop/config.json` (repo-root workspace bind; legacy `.cursor/skills/<instance>/autodevelop/config.json`) with `singleBranch` / `branches` is authoritative. `.policies/branch-policy.yaml` may repeat the same names. They must not contradict. Load them via [branch-policy.mdc](branch-policy.mdc) before you treat a branch as shared. Do not fetch `origin/release` or run `/promote-master-to-release` when the instance is single-branch.
+- Do not `checkout main`, `rebase origin/main`, or write `refs/heads/main` unless that file sets a role to `main`. Default remains `master` / `origin/master`.
+- Cursor `/worktree` and `/apply-worktree` “main” means the **primary checkout directory**, not a git branch named `main`. Apply onto whatever branch that checkout is on (usually the staging name).
+- Say `master` or “primary checkout” when the instance still uses the defaults. Do not call the default branch “main”.

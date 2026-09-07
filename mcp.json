@@ -1,0 +1,18 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "autodevelop": {
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/.cursor/skills/autodevelop/mcp/server.mjs"
+      ]
+    },
+    "autodevelop-host": {
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/node_modules/@devrecated/autodevelop/packages/cli/bin.mjs",
+        "mcp"
+      ]
+    }
+  }
+}

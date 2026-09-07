@@ -1,0 +1,27 @@
+---
+description: package.json + Makefile conventions for deploy/build commands
+alwaysApply: true
+---
+
+# Repo scripts conventions
+
+## Canonical commands live in root `package.json`
+
+When you add a deploy, release, env sync, docker build, or other **important** runnable command:
+
+1. Add it to the root [`package.json`](package.json) `scripts` first.
+2. Match existing names: `deploy:<area>:<stg|prod>`, `docs:*`, `docker:build:*`, `env:stg` / `env:prod`.
+3. Prefer calling shared shell under `scripts/` from those npm scripts when logic is multi-step.
+
+GitHub Actions and local docs must invoke the **same** `pnpm` script (or the same `scripts/*.sh`), not a divergent inline recipe.
+
+## Makefile is for documented pipelines — not a full mirror
+
+- Use [`Makefile`](Makefile) for **commented orchestration** (flags, pipelines) that wrap `pnpm run …` or `./scripts/…`.
+- Do **not** reimplement logic in Make.
+- Do **not** mirror every trivial script (`dev:app`, `lint`, etc.) into Make.
+- Docs pipelines: prefer `make docs ARGS='--stg'` → `./scripts/docs.sh` → `pnpm deploy:docs:stg` (Cloud Run).
+
+## Docs hosting note
+
+If the consumer serves docs from Cloud Run, use the service names from the instance VitePress binding. Do not publish docs as Firebase Hosting `public/dist` unless that is the configured path.

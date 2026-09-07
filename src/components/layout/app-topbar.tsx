@@ -1,10 +1,13 @@
 "use client"
 
 import { LogOut, Monitor, Moon, Sun, UserCog } from "lucide-react"
+
+import { AutodevelopTicketsLink } from "@/components/autodevelop-tickets"
 import { usePathname } from "next/navigation"
 import { useTheme } from "next-themes"
 
 import { useAuth } from "@/auth/auth-context"
+import { useSandbox } from "@/sandbox/sandbox-context"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -39,16 +42,40 @@ export function AppTopbar() {
   const { user, signOut, switchUser } = useAuth()
   const pathname = usePathname()
   const { theme, setTheme } = useTheme()
+  const sandbox = useSandbox()
 
   const title = TITLES[pathname] ?? "Acme Fleet"
+  const banner = sandbox.patch?.widgets?.topbarBanner?.text
+  const dealerName = sandbox.patch?.copy?.dealerName
 
   return (
-    <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center gap-2 border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/75">
-      <SidebarTrigger className="-ml-1" />
-      <Separator orientation="vertical" className="mr-1 !h-4" />
-      <span className="text-sm font-medium">{title}</span>
+    <header className="sticky top-0 z-50 shrink-0 border-b bg-background/95 pt-[env(safe-area-inset-top)] backdrop-blur supports-[backdrop-filter]:bg-background/75">
+      {sandbox.patch ? (
+        <p
+          data-feature-demo-anchor="sandbox-banner"
+          className="border-b bg-primary px-4 py-2 text-center text-sm text-primary-foreground"
+        >
+          {banner ? `${banner} ` : null}
+          This tab only. Close it or Reset to drop the overlay.
+        </p>
+      ) : null}
+      <div className="flex min-h-14 items-center gap-2 px-4">
+      <SidebarTrigger className="-ml-1 size-9" />
+      <Separator orientation="vertical" className="mr-1 hidden !h-4 sm:block" />
+      <span className="hidden text-sm font-medium sm:inline">
+        {title}
+        {dealerName ? ` · ${dealerName}` : ""}
+      </span>
 
       <div className="ml-auto flex items-center gap-1">
+        <Button className="min-h-11" variant="outline" onClick={sandbox.openDialog}>
+          Try Autodevelop
+        </Button>
+        {sandbox.patch ? (
+          <Button className="min-h-11" variant="ghost" onClick={() => void sandbox.reset()}>
+            Reset
+          </Button>
+        ) : null}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" aria-label="Change theme">
@@ -74,7 +101,11 @@ export function AppTopbar() {
         {user ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-9 gap-2 px-2">
+              <Button
+                variant="ghost"
+                className="h-9 gap-2 px-2"
+                aria-label={`Account menu for ${user.firstName} ${user.lastName}`}
+              >
                 <Avatar className="size-6">
                   <AvatarFallback className="text-[10px]">
                     {initials(user.firstName, user.lastName)}
@@ -117,12 +148,17 @@ export function AppTopbar() {
                 </DropdownMenuSubContent>
               </DropdownMenuSub>
               <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <AutodevelopTicketsLink view="mine" />
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
               <DropdownMenuItem onSelect={signOut}>
                 <LogOut className="size-4" /> Sign out
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         ) : null}
+      </div>
       </div>
     </header>
   )

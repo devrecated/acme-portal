@@ -1,0 +1,11 @@
+# Copyright (c) 2026 Devrecated
+# Copy to .cursor/skills/<instance>/autodevelop/.policies/environments-policy.yaml
+# Cloud project ids stay in config.json (firebase.* and preview.*).
+ids:
+  - staging
+  - production
+  - preview
+defaultStagingName: staging
+defaultProductionName: production
+# Git branch names for staging and production come from branch-policy.yaml.
+# Do not add a third hosted cloud.

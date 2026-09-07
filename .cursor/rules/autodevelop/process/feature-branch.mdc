@@ -1,0 +1,17 @@
+---
+description: Start unrelated feature work on a new branch off master or release
+alwaysApply: true
+---
+
+# Feature branch
+
+Copyright (c) 2026 Devrecated.
+
+MAIN IS NOT THE MAIN BRANCH, IT IS MASTER. Staging and production **names** come from instance `.policies/branch-policy.yaml` (two-branch defaults `master` / `release`; a single-branch instance has only the staging name). See [branch-policy.mdc](branch-policy.mdc). When **all** of these are true, do not stay on the staging or production branch:
+
+- The work is a new feature, fix, or a **big plan unrelated** to the current dirty tree or this chat
+- HEAD is the instance staging or production name (not already a feature branch)
+
+Then suggest a name (`feat/…`, `fix/…`, `chore/…`, `docs/…`) and follow `/create-branch` unless the user overrides (stay on this branch / skip).
+
+User override wins. Small in-place fixes on the staging branch that belong to this chat do not need a branch. Do not put a client or product name in the branch when the work is generic process.

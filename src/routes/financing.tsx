@@ -6,18 +6,13 @@ import { useMemo, useState } from "react"
 import { useAuth } from "@/auth/auth-context"
 import { DataTable, type Column } from "@/components/common/data-table"
 import { EmptyState } from "@/components/common/empty-state"
+import { FilterChip } from "@/components/common/filter-chip"
 import { PageHeader } from "@/components/common/page-header"
 import { StatCard } from "@/components/common/stat-card"
 import { ApplicationStatusBadge } from "@/components/common/status-badge"
+import { VehiclePhoto } from "@/components/common/vehicle-photo"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import {
   Sheet,
   SheetContent,
@@ -42,11 +37,29 @@ import {
   type FinanceApplication,
 } from "@/types"
 
+type StatusFilter = ApplicationStatus | "all"
+
 export function FinancingPage() {
   const { data: applications = [], isLoading } = useApplications()
   const [search, setSearch] = useState("")
-  const [status, setStatus] = useState<ApplicationStatus | "all">("all")
+  const [status, setStatus] = useState<StatusFilter>("all")
   const [selected, setSelected] = useState<FinanceApplication | null>(null)
+
+  const counts = useMemo(() => {
+    const next: Record<StatusFilter, number> = {
+      all: applications.length,
+      draft: 0,
+      submitted: 0,
+      in_review: 0,
+      approved: 0,
+      declined: 0,
+      funded: 0,
+    }
+    for (const application of applications) {
+      next[application.status] += 1
+    }
+    return next
+  }, [applications])
 
   const filtered = useMemo(() => {
     const term = search.trim().toLowerCase()
@@ -83,11 +96,11 @@ export function FinancingPage() {
       header: "Application",
       sortValue: (a) => a.applicationNumber,
       cell: (a) => (
-        <div className="space-y-0.5">
+        <div className="min-w-0 space-y-0.5">
           <p className="font-mono text-xs text-muted-foreground">
             {a.applicationNumber}
           </p>
-          <p className="font-medium">{a.applicantName}</p>
+          <p className="truncate font-medium">{a.applicantName}</p>
         </div>
       ),
     },
@@ -95,13 +108,15 @@ export function FinancingPage() {
       key: "lender",
       header: "Lender",
       sortValue: (a) => a.lender,
-      cell: (a) => <span className="text-muted-foreground">{a.lender}</span>,
+      className: "hidden text-muted-foreground md:table-cell",
+      headerClassName: "hidden md:table-cell",
+      cell: (a) => a.lender,
     },
     {
       key: "amount",
       header: "Amount",
       sortValue: (a) => a.amount,
-      className: "text-right tabular-nums font-medium",
+      className: "text-right font-medium tabular-nums",
       headerClassName: "text-right",
       cell: (a) => formatCurrency(a.amount),
     },
@@ -109,7 +124,8 @@ export function FinancingPage() {
       key: "terms",
       header: "Terms",
       sortValue: (a) => a.rate,
-      className: "tabular-nums",
+      className: "hidden tabular-nums lg:table-cell",
+      headerClassName: "hidden lg:table-cell",
       cell: (a) => (
         <span className="text-muted-foreground">
           {formatPercent(a.rate)} · {a.termMonths} mo
@@ -120,7 +136,8 @@ export function FinancingPage() {
       key: "credit",
       header: "Credit",
       sortValue: (a) => a.creditScore ?? 0,
-      className: "tabular-nums",
+      className: "hidden tabular-nums xl:table-cell",
+      headerClassName: "hidden xl:table-cell",
       cell: (a) => a.creditScore ?? "—",
     },
     {
@@ -133,21 +150,26 @@ export function FinancingPage() {
       key: "submitted",
       header: "Submitted",
       sortValue: (a) => a.submittedAt ?? "",
+      className: "hidden xl:table-cell",
+      headerClassName: "hidden xl:table-cell",
       cell: (a) => (
         <span className="text-muted-foreground">{formatDate(a.submittedAt)}</span>
       ),
     },
   ]
 
+  const filteredLabel =
+    search || status !== "all"
+      ? `${filtered.length} of ${applications.length} applications match`
+      : "Credit applications moving between the desk and our lenders."
+
   return (
     <>
-      <PageHeader
-        title="Financing"
-        description="Credit applications moving between the desk and our lenders."
-      />
+      <PageHeader title="Financing" description={filteredLabel} />
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
         <StatCard
+          compact
           label="Awaiting decision"
           value={String(pending.length)}
           hint={formatCompactCurrency(pending.reduce((s, a) => s + a.amount, 0))}
@@ -155,18 +177,21 @@ export function FinancingPage() {
           accent
         />
         <StatCard
+          compact
           label="Approved"
           value={String(approved.length)}
           hint="Ready to fund"
           icon={CheckCircle2}
         />
         <StatCard
+          compact
           label="Funded"
           value={String(funded.length)}
           hint={formatCompactCurrency(funded.reduce((s, a) => s + a.amount, 0))}
           icon={Banknote}
         />
         <StatCard
+          compact
           label="Approval rate"
           value={`${approvalRate.toFixed(0)}%`}
           hint={`${decided.length} decisions returned`}
@@ -174,32 +199,43 @@ export function FinancingPage() {
         />
       </div>
 
-      <div className="flex flex-col gap-3 sm:flex-row">
-        <div className="relative flex-1">
-          <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+      <div className="flex flex-col gap-3">
+        <div className="relative">
+          <Search
+            className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+            aria-hidden
+          />
           <Input
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search by applicant, application number, or lender"
+            name="financing-search"
+            autoComplete="off"
+            spellCheck={false}
+            aria-label="Search applications"
+            placeholder="Applicant, application number, lender…"
             className="pl-9"
           />
         </div>
-        <Select
-          value={status}
-          onValueChange={(value) => setStatus(value as ApplicationStatus | "all")}
-        >
-          <SelectTrigger className="sm:w-48">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All statuses</SelectItem>
+        <fieldset className="min-w-0">
+          <legend className="sr-only">Filter by status</legend>
+          <div className="flex gap-2 overflow-x-auto overscroll-x-contain pb-0.5 [-webkit-overflow-scrolling:touch]">
+            <FilterChip
+              label="All"
+              count={counts.all}
+              active={status === "all"}
+              onClick={() => setStatus("all")}
+            />
             {APPLICATION_STATUSES.map((value) => (
-              <SelectItem key={value} value={value}>
-                {APPLICATION_STATUS_LABELS[value]}
-              </SelectItem>
+              <FilterChip
+                key={value}
+                label={APPLICATION_STATUS_LABELS[value]}
+                count={counts[value]}
+                active={status === value}
+                onClick={() => setStatus(value)}
+              />
             ))}
-          </SelectContent>
-        </Select>
+          </div>
+        </fieldset>
       </div>
 
       <DataTable
@@ -259,21 +295,22 @@ function ApplicationSheet({
 
   return (
     <Sheet open onOpenChange={onOpenChange}>
-      <SheetContent className="w-full overflow-y-auto sm:max-w-lg">
-        <SheetHeader>
+      <SheetContent className="w-full gap-0 overflow-y-auto p-0 sm:max-w-lg">
+        <SheetHeader className="border-b pr-14">
           <div className="flex items-start justify-between gap-3">
-            <div className="space-y-1">
-              <SheetTitle>{application.applicantName}</SheetTitle>
+            <div className="min-w-0 space-y-1">
+              <SheetTitle className="text-pretty">{application.applicantName}</SheetTitle>
               <SheetDescription className="font-mono">
                 {application.applicationNumber}
+                {application.companyName ? ` · ${application.companyName}` : ""}
               </SheetDescription>
             </div>
             <ApplicationStatusBadge status={application.status} />
           </div>
         </SheetHeader>
 
-        <div className="space-y-6 px-4">
-          <section className="grid grid-cols-2 gap-4">
+        <div className="space-y-5 p-4">
+          <section className="grid grid-cols-2 gap-3 rounded-xl bg-muted/50 p-3">
             <Detail label="Amount financed">
               <span className="text-lg font-semibold tabular-nums">
                 {formatCurrency(application.amount)}
@@ -289,9 +326,7 @@ function ApplicationSheet({
             </Detail>
           </section>
 
-          <Separator />
-
-          <section className="grid grid-cols-2 gap-x-4 gap-y-4">
+          <section className="grid grid-cols-2 gap-x-4 gap-y-3.5">
             <Detail label="Lender">{application.lender}</Detail>
             <Detail label="Down payment">
               {formatCurrency(application.downPayment)}
@@ -307,14 +342,24 @@ function ApplicationSheet({
           {vehicle ? (
             <>
               <Separator />
-              <section className="space-y-1.5">
+              <section className="space-y-2">
                 <p className="text-xs font-medium text-muted-foreground">Vehicle</p>
-                <p className="text-sm">
-                  {vehicle.year} {vehicle.make} {vehicle.model}
-                </p>
-                <p className="font-mono text-xs text-muted-foreground">
-                  {vehicle.stockNumber} · {vehicle.vin}
-                </p>
+                <div className="flex items-center gap-3 rounded-xl bg-muted/40 p-2.5">
+                  <VehiclePhoto
+                    vehicle={vehicle}
+                    width={72}
+                    height={48}
+                    className="h-12 w-16 shrink-0 rounded-md"
+                  />
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-medium">
+                      {vehicle.year} {vehicle.make} {vehicle.model}
+                    </p>
+                    <p className="truncate font-mono text-xs text-muted-foreground">
+                      {vehicle.stockNumber} · {vehicle.vin}
+                    </p>
+                  </div>
+                </div>
               </section>
             </>
           ) : null}

@@ -1,0 +1,24 @@
+---
+description: Version and changelog files load Autodevelop ship playbooks — not a ship phrase
+globs:
+  - VERSION
+  - "**/changelog.md"
+  - "**/appVersion.ts"
+alwaysApply: false
+---
+
+# Version files load ship playbooks
+
+Copyright (c) 2026 Devrecated.
+
+When these files are in play, load Autodevelop ship playbooks (or honor `/release` if they typed it). Use what comes back. Do not invent that text.
+
+Never say bucket, MCP, or tool names in chat.
+
+If playbooks do not load, say only: Autodevelop is not connected. Run `npx autodevelop login` and reload this window. Then stop.
+
+This does **not** satisfy `YES PUSH TO MASTER`, `YES PUSH TO RELEASE`, `DEPLOYED TO STAGING`, or `DEPLOYED TO PRODUCTION`. See [yes-push-to-master](yes-push-to-master.mdc), [yes-push-to-release](yes-push-to-release.mdc).
+
+Must never: push or deploy without the exact phrase in chat.
+
+Wrapper rules: [mcp-wrappers](mcp-wrappers.mdc).

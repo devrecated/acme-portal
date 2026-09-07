@@ -1,0 +1,22 @@
+---
+description: Load instance .configuration/ hyperparameters before remote MCP or model-facing questions
+alwaysApply: true
+---
+
+# Instance configuration
+
+Copyright (c) 2026 Devrecated.
+
+Before remote MCP or a model-facing question the pre-query hook applies to, load instance configuration:
+
+```bash
+node .cursor/skills/autodevelop/scripts/configuration-load.mjs
+```
+
+That script finds the repo-root workspace bind `.autodevelop/.configuration/` first, then the legacy `.cursor/skills/<instance>/autodevelop/.configuration/` the same way as `config.json` (first non-kit instance folder). It merges `hyperparameters.config` and `hyperparameters.yaml` over the kit examples in `.cursor/skills/autodevelop/.configuration/`. A missing folder uses those examples. The CLI prints file names and sources only — not every numeric value.
+
+When `precision` is `low` or source fields are missing, run the **expand-hyperparameters** agent so `hyperparameters.yaml` is filled before the hook consumes knobs.
+
+Kit examples ship with the plugin. Instance copies stay under `<instance>/autodevelop/.configuration/`. Do not put a live instance folder in the plugin payload.
+
+Handbook: [docs/configure.md](../../../../docs/configure.md).

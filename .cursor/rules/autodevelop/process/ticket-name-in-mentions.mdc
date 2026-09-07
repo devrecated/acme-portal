@@ -1,0 +1,20 @@
+---
+description: Always include the GitHub issue title when mentioning a ticket
+alwaysApply: true
+---
+
+# Ticket name in mentions
+
+Copyright (c) 2026 Devrecated.
+
+When you refer to a board ticket, write the number **and** the issue title in the same phrase.
+
+```text
+#877 Admin portal UX redesign + improvements + mobile
+```
+
+Not `#877` alone. Not “ticket 877” without the name.
+
+- Chat, recaps, risk lists, PR comments, and “want a progress comment on #N?” all use this form.
+- If you do not have the title, run `gh issue view N --json title` before you mention it. Do not invent a title.
+- After the first mention in a reply, later mentions in that same reply may use `#N` only.

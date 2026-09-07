@@ -1,0 +1,17 @@
+---
+description: Do not add a Cursor skill unless this chat asked for one
+alwaysApply: true
+---
+
+# Do not invent skills
+
+Copyright (c) 2026 Devrecated.
+
+Do **not** add a new `SKILL.md`, skill folder, or `skill-invoke.yaml` entry unless **this chat** contains a clear ask:
+
+- “create a skill” / “create skill” / “make a skill”, or
+- they invoked **create-skill** (Cursor `create-skill` / `/create-skill`, or this repo’s equivalent)
+
+Operator CLIs, packers, doctor, deploy wrappers, and `scripts/*.mjs` are **not** skills. Put those in `scripts/` or root `package.json`.
+
+If they asked to “implement X” without saying skill, implement as a script, hook, rule, or hosted code — not a skill.

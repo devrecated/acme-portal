@@ -1,0 +1,15 @@
+---
+description: Do not execute a plan until the user clicks Build
+alwaysApply: true
+---
+
+# Plan requires Build
+
+Copyright (c) 2026 Devrecated.
+
+A `.cursor/plans/*.plan.md` file, injected pending todos, or “Plan still has unfinished work” is **not** permission to implement.
+
+- Execute a plan only after the user clicks **Build**, or clearly asks to implement **that named plan** in this chat.
+- Do not start tickets, installs, or code from another chat’s leftover todos.
+- Leave those todos `pending`. Do not mark that plan done.
+- `plan-completion` applies only while executing a plan that was Built in this session.

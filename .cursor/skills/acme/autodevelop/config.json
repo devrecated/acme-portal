@@ -1,20 +1,14 @@
 {
-  "productName": "Acme Fleet Portal",
-  "stakeholderLabel": "Client",
+  "slug": "acme",
+  "productName": "acme",
   "board": {
     "provider": "github"
   },
-  "github": {
-    "owner": "devrecated",
-    "repo": "acme-portal"
+  "mail": {
+    "allowlist": []
   },
   "singleBranch": true,
   "branches": {
     "staging": "master"
-  },
-  "mail": {
-    "allowlist": [],
-    "allowOverridePhrase": "send anyway"
-  },
-  "forbiddenProjects": []
+  }
 }

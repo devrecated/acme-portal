@@ -141,6 +141,28 @@ export const useUpdateLead = () =>
     "Lead updated",
   )
 
+export const useReorderLead = () => {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: ({
+      id,
+      stage,
+      index,
+    }: {
+      id: string
+      stage: Lead["stage"]
+      index: number
+    }) => repository.reorderLead(id, stage, index),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: queryKeys.leads })
+      void client.invalidateQueries({ queryKey: queryKeys.dashboard })
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Could not move that lead")
+    },
+  })
+}
+
 export const useDeleteLead = () =>
   useRepositoryMutation(
     (id: string) => repository.deleteLead(id),

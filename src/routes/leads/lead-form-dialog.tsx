@@ -157,7 +157,7 @@ export function LeadFormDialog({
               <Input {...register("contactName")} placeholder="Alonzo Reyes" />
             </Field>
             <Field label="Company">
-              <Input {...register("companyName")} placeholder="Northgate Logistics" />
+              <Input {...register("companyName")} placeholder="Meridian Private Office" />
             </Field>
           </div>
 

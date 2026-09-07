@@ -1,0 +1,55 @@
+---
+description: Instance .policies/branch-policy.yaml names staging/production and when those branches are read-only
+alwaysApply: true
+---
+
+# Branch policy
+
+Copyright (c) 2026 Devrecated.
+
+Load instance branch names before any commit, push, or merge onto a shared branch.
+
+```bash
+node .cursor/skills/autodevelop/scripts/branches-load.mjs
+```
+
+That script finds the repo-root workspace bind `.autodevelop/config.json` (`singleBranch` / `branches`) and `.autodevelop/.policies/branch-policy.yaml` first, then falls back to the legacy `.cursor/skills/*/autodevelop/config.json` and `.policies/branch-policy.yaml` the same way (first non-kit instance folder). **config.json is authoritative** for branch mode. If both files set a mode, they must agree — the loader refuses a mix of single-branch and two-branch. A missing pair uses the product defaults: staging `master`, production `release`, `askStaging: false`, `askProduction: false`, two-branch. Kit example: `.cursor/skills/autodevelop/.policies/branch-policy.example.yaml` and `config.example.json`. Do not put a live instance `branch-policy.yaml` in the plugin payload or under `.cursor/skills/autodevelop/` except as that example.
+
+The same folder holds the other instance policies. See [policies.mdc](policies.mdc).
+
+## Legacy path
+
+If `.policies/branch-policy.yaml` is missing, the loader still reads `.cursor/skills/<instance>/autodevelop/branches.yaml` for one release. Treat that path as legacy and copy it to `.policies/branch-policy.yaml`.
+
+## Names
+
+`branches.staging` and `branches.production` are the repository branches. Do not assume `master` / `release` when the instance file renamed them. Do not assume a branch named `main` unless this file names it. See [default-branch.mdc](default-branch.mdc).
+
+## Single-branch
+
+When `singleBranch` is true (instance `config.json` or branch-policy), or `staging` and `production` are the same name, the instance has one shared branch.
+
+- The loader prints `mode: single-branch` and a refuse note (this Autodevelop repo: `master` only).
+- `/commit-push-release` and `/promote-master-to-release` **refuse**. Use `/commit-push-master`.
+- Do not fetch `origin/release`. Do not tell people to promote.
+- `askProduction` is false. `YES PUSH TO RELEASE` does not apply.
+
+A missing file and the kit example stay two-branch (`master` / `release`) for other consumer repos.
+
+## Read-only until confirm
+
+When `askStaging` is true, the staging branch is **read-only** for the agent: no commit, no push, no merge onto it, until **this conversation** contains the exact phrase `YES PUSH TO MASTER` (all caps).
+
+When `askProduction` is true **and** the instance has a distinct production branch, that branch is **read-only** until **this conversation** contains `YES PUSH TO RELEASE`.
+
+Those two phrases are the gates even if YAML renamed the branches. Approving a plan, “yes”, “ship it”, or a checkbox is not enough.
+
+When `askStaging` is false, committing or pushing the staging branch does **not** require `YES PUSH TO MASTER`. When `askProduction` is false, the production branch does **not** require `YES PUSH TO RELEASE`. Still no force-push. Still no secrets.
+
+Optional YAML `protected: [staging, production]` turns the matching ask flag on.
+
+## Feature branches
+
+`/commit-push-branch` must refuse when HEAD is the instance staging or production name. Use `/commit-push-master` on staging. Use `/commit-push-release` on production only when the instance is two-branch.
+
+Do not write this policy into LICENSE, NOTICE, or client-facing asides. Instance YAML stays under `<instance>/autodevelop/.policies/`.

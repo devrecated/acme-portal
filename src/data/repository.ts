@@ -30,6 +30,7 @@ import { LEAD_STAGES, VEHICLE_STATUSES } from "@/types"
  * one new implementation — no page changes.
  */
 export interface DataRepository {
+  reset(): void
   listVehicles(): Promise<Vehicle[]>
   getVehicle(id: string): Promise<Vehicle | undefined>
   createVehicle(input: Omit<Vehicle, "id" | "createdAt">): Promise<Vehicle>
@@ -39,6 +40,7 @@ export interface DataRepository {
   listLeads(): Promise<Lead[]>
   createLead(input: Omit<Lead, "id" | "createdAt" | "leadNumber">): Promise<Lead>
   updateLead(id: string, patch: Partial<Lead>): Promise<Lead>
+  reorderLead(id: string, stage: LeadStage, index: number): Promise<Lead>
   deleteLead(id: string): Promise<void>
 
   listApplications(): Promise<FinanceApplication[]>
@@ -102,6 +104,16 @@ export class InMemoryRepository implements DataRepository {
   private companies = clone(seedCompanies)
   private activities = clone(seedActivities)
 
+  reset() {
+    this.vehicles = clone(seedVehicles)
+    this.leads = clone(seedLeads)
+    this.applications = clone(seedApplications)
+    this.users = clone(seedUsers)
+    this.contacts = clone(seedContacts)
+    this.companies = clone(seedCompanies)
+    this.activities = clone(seedActivities)
+  }
+
   /* -------------------------------- vehicles ------------------------------ */
 
   listVehicles() {
@@ -146,10 +158,16 @@ export class InMemoryRepository implements DataRepository {
       const n = Number.parseInt(lead.leadNumber.replace("L-", ""), 10)
       return Number.isFinite(n) && n > max ? n : max
     }, 1000)
+    const stagePeers = this.leads.filter((item) => item.stage === input.stage)
+    const minOrder = stagePeers.reduce(
+      (min, item) => Math.min(min, item.sortOrder ?? 0),
+      0,
+    )
     const lead: Lead = {
       ...input,
       id: nextId("l", this.leads),
       leadNumber: `L-${highest + 1}`,
+      sortOrder: minOrder - 1,
       createdAt: new Date().toISOString(),
     }
     this.leads = [lead, ...this.leads]
@@ -162,6 +180,21 @@ export class InMemoryRepository implements DataRepository {
     const updated = { ...this.leads[index], ...patch }
     this.leads[index] = updated
     return delay(clone(updated))
+  }
+
+  reorderLead(id: string, stage: LeadStage, index: number) {
+    const lead = this.leads.find((item) => item.id === id)
+    if (!lead) throw new Error(`Lead ${id} not found`)
+    lead.stage = stage
+    const peers = this.leads
+      .filter((item) => item.stage === stage && item.id !== id)
+      .toSorted((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+    const at = Math.max(0, Math.min(index, peers.length))
+    peers.splice(at, 0, lead)
+    peers.forEach((item, order) => {
+      item.sortOrder = order
+    })
+    return delay(clone(lead))
   }
 
   deleteLead(id: string) {

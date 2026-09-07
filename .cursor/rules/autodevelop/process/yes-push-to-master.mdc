@@ -1,0 +1,16 @@
+---
+description: Staging push requires exact YES PUSH TO MASTER when askStaging is true
+alwaysApply: true
+---
+
+# Staging ship gate
+
+The target branch is **`branches.staging`** (default `master`). See [branch-policy.mdc](branch-policy.mdc).
+
+When `askStaging` is true, do **not** commit, push, or merge onto that branch unless this conversation contains the exact phrase `YES PUSH TO MASTER` (all caps). The branch is read-only for the agent until then. Approving risks, “yes”, “ship it”, or a plan checkbox is not enough. The phrase stays `YES PUSH TO MASTER` even if YAML renamed the staging branch.
+
+When `askStaging` is false, that phrase is **not** required. Still no force-push. Still no secrets.
+
+`/commit-push-branch` must refuse when HEAD is the instance staging or production name. Use `/commit-push-master` on the staging branch.
+
+This phrase is git only. It does not merge production or run a local staging deploy. Local staging is `/deploy-staging-local` (`DEPLOYED TO STAGING`). After a staging push on a **two-branch** instance, production merge is `/promote-master-to-release`, not `/commit-push-release`. On a **single-branch** instance there is no promote step. See `commit-push-master`.

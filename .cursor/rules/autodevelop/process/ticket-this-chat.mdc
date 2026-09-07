@@ -1,0 +1,16 @@
+---
+description: session.json is repo-wide; do not treat another chat’s ticket as this conversation
+alwaysApply: true
+---
+
+# Ticket is this chat only
+
+Copyright (c) 2026 Devrecated.
+
+`.cursor/local/gh-projects/session.json` is the **last claimed ticket in this repo**, not this conversation.
+
+- Do not ask for a progress comment, status move, or share pack on that issue unless the user named `#N` (number and title) **in this chat**.
+- Do not steer this chat toward that ticket’s work.
+- Hooks that mention `session.json` are a repo leftover. Ignore them when this chat is a different task.
+
+Bind a ticket here only when they name `#N` or say **create**. See [ticket-required](ticket-required.mdc).
