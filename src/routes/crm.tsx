@@ -15,6 +15,7 @@ import { useMemo, useState } from "react"
 
 import { DataTable, type Column } from "@/components/common/data-table"
 import { EmptyState } from "@/components/common/empty-state"
+import { FilterChip } from "@/components/common/filter-chip"
 import { PageHeader } from "@/components/common/page-header"
 import { ContactStageBadge } from "@/components/common/status-badge"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -31,7 +32,14 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useActivities, useCompanies, useContacts, useUsers } from "@/data/queries"
 import { formatDate, formatNumber, formatRelative, initials } from "@/lib/format"
-import type { ActivityKind, Company, Contact } from "@/types"
+import {
+  CONTACT_STAGES,
+  CONTACT_STAGE_LABELS,
+  type ActivityKind,
+  type Company,
+  type Contact,
+  type ContactStage,
+} from "@/types"
 
 const ACTIVITY_ICONS: Record<ActivityKind, LucideIcon> = {
   call: Phone,
@@ -41,12 +49,16 @@ const ACTIVITY_ICONS: Record<ActivityKind, LucideIcon> = {
   task: NotebookPen,
 }
 
+type StageFilter = ContactStage | "all"
+
 export function CrmPage() {
   const { data: contacts = [], isLoading: contactsLoading } = useContacts()
   const { data: companies = [], isLoading: companiesLoading } = useCompanies()
   const { data: users = [] } = useUsers()
 
   const [search, setSearch] = useState("")
+  const [stage, setStage] = useState<StageFilter>("all")
+  const [tab, setTab] = useState("contacts")
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null)
 
   const companyNames = useMemo(
@@ -61,12 +73,25 @@ export function CrmPage() {
     return owner ? `${owner.firstName} ${owner.lastName}` : "Unassigned"
   }
 
+  const stageCounts = useMemo(() => {
+    const next: Record<StageFilter, number> = {
+      all: contacts.length,
+      prospect: 0,
+      opportunity: 0,
+      customer: 0,
+      inactive: 0,
+    }
+    for (const contact of contacts) next[contact.stage] += 1
+    return next
+  }, [contacts])
+
   const term = search.trim().toLowerCase()
 
   const filteredContacts = useMemo(() => {
-    if (!term) return contacts
-    return contacts.filter((contact) =>
-      [
+    return contacts.filter((contact) => {
+      if (stage !== "all" && contact.stage !== stage) return false
+      if (!term) return true
+      return [
         contact.firstName,
         contact.lastName,
         contact.email,
@@ -75,9 +100,9 @@ export function CrmPage() {
       ]
         .join(" ")
         .toLowerCase()
-        .includes(term),
-    )
-  }, [contacts, companyNames, term])
+        .includes(term)
+    })
+  }, [contacts, companyNames, term, stage])
 
   const filteredCompanies = useMemo(() => {
     if (!term) return companies
@@ -96,16 +121,14 @@ export function CrmPage() {
       sortValue: (c) => `${c.lastName} ${c.firstName}`,
       cell: (c) => (
         <div className="flex items-center gap-3">
-          <Avatar className="size-8">
-            <AvatarFallback className="text-xs">
-              {initials(c.firstName, c.lastName)}
-            </AvatarFallback>
+          <Avatar size="sm">
+            <AvatarFallback>{initials(c.firstName, c.lastName)}</AvatarFallback>
           </Avatar>
-          <div className="space-y-0.5">
-            <p className="font-medium">
+          <div className="min-w-0 space-y-0.5">
+            <p className="truncate font-medium">
               {c.firstName} {c.lastName}
             </p>
-            <p className="text-xs text-muted-foreground">{c.title ?? "—"}</p>
+            <p className="truncate text-xs text-muted-foreground">{c.title ?? "—"}</p>
           </div>
         </div>
       ),
@@ -114,13 +137,17 @@ export function CrmPage() {
       key: "company",
       header: "Company",
       sortValue: (c) => companyName(c.companyId) ?? "",
+      className: "hidden md:table-cell",
+      headerClassName: "hidden md:table-cell",
       cell: (c) => companyName(c.companyId) ?? "Independent",
     },
     {
       key: "email",
       header: "Email",
       sortValue: (c) => c.email,
-      cell: (c) => <span className="text-muted-foreground">{c.email}</span>,
+      className: "hidden text-muted-foreground xl:table-cell",
+      headerClassName: "hidden xl:table-cell",
+      cell: (c) => c.email,
     },
     {
       key: "stage",
@@ -132,12 +159,16 @@ export function CrmPage() {
       key: "owner",
       header: "Owner",
       sortValue: (c) => ownerName(c.ownerId),
-      cell: (c) => <span className="text-muted-foreground">{ownerName(c.ownerId)}</span>,
+      className: "hidden text-muted-foreground lg:table-cell",
+      headerClassName: "hidden lg:table-cell",
+      cell: (c) => ownerName(c.ownerId),
     },
     {
       key: "activity",
       header: "Last activity",
       sortValue: (c) => c.lastActivityAt ?? "",
+      className: "hidden xl:table-cell",
+      headerClassName: "hidden xl:table-cell",
       cell: (c) => (
         <span className="text-muted-foreground">{formatRelative(c.lastActivityAt)}</span>
       ),
@@ -150,9 +181,9 @@ export function CrmPage() {
       header: "Company",
       sortValue: (c) => c.name,
       cell: (c) => (
-        <div className="space-y-0.5">
-          <p className="font-medium">{c.name}</p>
-          <p className="text-xs text-muted-foreground">{c.industry}</p>
+        <div className="min-w-0 space-y-0.5">
+          <p className="truncate font-medium">{c.name}</p>
+          <p className="truncate text-xs text-muted-foreground">{c.industry}</p>
         </div>
       ),
     },
@@ -160,6 +191,8 @@ export function CrmPage() {
       key: "location",
       header: "Location",
       sortValue: (c) => `${c.state} ${c.city}`,
+      className: "hidden md:table-cell",
+      headerClassName: "hidden md:table-cell",
       cell: (c) => (
         <span className="text-muted-foreground">
           {c.city}, {c.state}
@@ -177,7 +210,8 @@ export function CrmPage() {
       key: "contacts",
       header: "Contacts",
       sortValue: (c) => contacts.filter((ct) => ct.companyId === c.id).length,
-      className: "tabular-nums",
+      className: "hidden tabular-nums lg:table-cell",
+      headerClassName: "hidden lg:table-cell",
       cell: (c) => (
         <Badge variant="secondary">
           {contacts.filter((contact) => contact.companyId === c.id).length}
@@ -188,11 +222,15 @@ export function CrmPage() {
       key: "owner",
       header: "Owner",
       sortValue: (c) => ownerName(c.ownerId),
-      cell: (c) => <span className="text-muted-foreground">{ownerName(c.ownerId)}</span>,
+      className: "hidden text-muted-foreground xl:table-cell",
+      headerClassName: "hidden xl:table-cell",
+      cell: (c) => ownerName(c.ownerId),
     },
     {
       key: "website",
       header: "Website",
+      className: "hidden xl:table-cell",
+      headerClassName: "hidden xl:table-cell",
       cell: (c) =>
         c.website ? (
           <a
@@ -214,38 +252,73 @@ export function CrmPage() {
     <>
       <PageHeader
         title="CRM"
-        description="Every person and account Acme sells to, and what was said last."
+        description={
+          tab === "companies"
+            ? term
+              ? `${filteredCompanies.length} of ${companies.length} companies match`
+              : "Accounts and collections we sell into."
+            : term || stage !== "all"
+              ? `${filteredContacts.length} of ${contacts.length} contacts match`
+              : "Every person and account Acme sells to, and what was said last."
+        }
       />
 
-      <Tabs defaultValue="contacts" className="space-y-4">
+      <Tabs value={tab} onValueChange={setTab} className="gap-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <TabsList>
             <TabsTrigger value="contacts">
               <Contact2 /> Contacts
-              <Badge variant="secondary" className="ml-1.5">
+              <span className="tabular-nums text-muted-foreground">
                 {contacts.length}
-              </Badge>
+              </span>
             </TabsTrigger>
             <TabsTrigger value="companies">
               <Building2 /> Companies
-              <Badge variant="secondary" className="ml-1.5">
+              <span className="tabular-nums text-muted-foreground">
                 {companies.length}
-              </Badge>
+              </span>
             </TabsTrigger>
           </TabsList>
 
           <div className="relative sm:w-80">
-            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Search
+              className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden
+            />
             <Input
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Search contacts and companies"
+              name="crm-search"
+              autoComplete="off"
+              spellCheck={false}
+              aria-label="Search contacts and companies"
+              placeholder="Name, company, email…"
               className="pl-9"
             />
           </div>
         </div>
 
-        <TabsContent value="contacts">
+        <TabsContent value="contacts" className="space-y-3">
+          <fieldset className="min-w-0">
+            <legend className="sr-only">Filter contacts by stage</legend>
+            <div className="flex gap-2 overflow-x-auto overscroll-x-contain pb-0.5 [-webkit-overflow-scrolling:touch]">
+              <FilterChip
+                label="All"
+                count={stageCounts.all}
+                active={stage === "all"}
+                onClick={() => setStage("all")}
+              />
+              {CONTACT_STAGES.map((value) => (
+                <FilterChip
+                  key={value}
+                  label={CONTACT_STAGE_LABELS[value]}
+                  count={stageCounts[value]}
+                  active={stage === value}
+                  onClick={() => setStage(value)}
+                />
+              ))}
+            </div>
+          </fieldset>
           <DataTable
             columns={contactColumns}
             rows={filteredContacts}
@@ -310,20 +383,20 @@ function ContactSheet({
 
   return (
     <Sheet open onOpenChange={onOpenChange}>
-      <SheetContent className="w-full overflow-y-auto sm:max-w-lg">
-        <SheetHeader>
+      <SheetContent className="w-full gap-0 overflow-y-auto p-0 sm:max-w-lg">
+        <SheetHeader className="border-b pr-14">
           <div className="flex items-start justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <Avatar className="size-10">
+            <div className="flex min-w-0 items-center gap-3">
+              <Avatar size="lg">
                 <AvatarFallback>
                   {initials(contact.firstName, contact.lastName)}
                 </AvatarFallback>
               </Avatar>
-              <div className="space-y-0.5">
-                <SheetTitle>
+              <div className="min-w-0 space-y-0.5">
+                <SheetTitle className="text-pretty">
                   {contact.firstName} {contact.lastName}
                 </SheetTitle>
-                <SheetDescription>
+                <SheetDescription className="truncate">
                   {contact.title ?? "—"}
                   {company ? ` · ${company.name}` : ""}
                 </SheetDescription>
@@ -333,14 +406,18 @@ function ContactSheet({
           </div>
         </SheetHeader>
 
-        <div className="space-y-6 px-4">
-          <section className="grid grid-cols-2 gap-x-4 gap-y-4">
+        <div className="space-y-5 p-4">
+          <section className="grid grid-cols-2 gap-x-4 gap-y-3.5">
             <Detail label="Email">
-              <a href={`mailto:${contact.email}`} className="text-primary hover:underline">
+              <a href={`mailto:${contact.email}`} className="break-all text-primary hover:underline">
                 {contact.email}
               </a>
             </Detail>
-            <Detail label="Phone">{contact.phone}</Detail>
+            <Detail label="Phone">
+              <a href={`tel:${contact.phone}`} className="hover:underline">
+                {contact.phone}
+              </a>
+            </Detail>
             <Detail label="Owner">
               {owner ? `${owner.firstName} ${owner.lastName}` : "Unassigned"}
             </Detail>
@@ -364,14 +441,14 @@ function ContactSheet({
                 Nothing logged against this contact yet.
               </p>
             ) : (
-              <ol className="space-y-4">
+              <ol className="space-y-3">
                 {timeline.map((activity) => {
                   const Icon = ACTIVITY_ICONS[activity.kind]
                   const author = users.find((user) => user.id === activity.authorId)
                   return (
                     <li key={activity.id} className="flex gap-3">
-                      <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-muted">
-                        <Icon className="size-3.5 text-muted-foreground" />
+                      <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted">
+                        <Icon className="size-3.5 text-muted-foreground" aria-hidden />
                       </div>
                       <div className="min-w-0 flex-1 space-y-0.5">
                         <p className="text-sm font-medium">{activity.subject}</p>

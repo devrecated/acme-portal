@@ -9,6 +9,7 @@ import { z } from "zod"
 import { useAuth } from "@/auth/auth-context"
 import { DataTable, type Column } from "@/components/common/data-table"
 import { EmptyState } from "@/components/common/empty-state"
+import { FilterChip } from "@/components/common/filter-chip"
 import { PageHeader } from "@/components/common/page-header"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -58,20 +59,28 @@ export function UsersPage() {
   const deleteUser = useDeleteUser()
 
   const [search, setSearch] = useState("")
+  const [statusFilter, setStatusFilter] = useState<User["status"] | "all">("all")
   const [inviteOpen, setInviteOpen] = useState(false)
 
   const canEdit = can("users.edit")
 
+  const statusCounts = useMemo(() => {
+    const next = { all: users.length, active: 0, invited: 0, suspended: 0 }
+    for (const user of users) next[user.status] += 1
+    return next
+  }, [users])
+
   const filtered = useMemo(() => {
     const term = search.trim().toLowerCase()
-    if (!term) return users
-    return users.filter((user) =>
-      [user.firstName, user.lastName, user.email, user.title ?? "", ROLE_LABELS[user.role]]
+    return users.filter((user) => {
+      if (statusFilter !== "all" && user.status !== statusFilter) return false
+      if (!term) return true
+      return [user.firstName, user.lastName, user.email, user.title ?? "", ROLE_LABELS[user.role]]
         .join(" ")
         .toLowerCase()
-        .includes(term),
-    )
-  }, [users, search])
+        .includes(term)
+    })
+  }, [users, search, statusFilter])
 
   const columns: Column<User>[] = [
     {
@@ -80,13 +89,11 @@ export function UsersPage() {
       sortValue: (u) => `${u.lastName} ${u.firstName}`,
       cell: (u) => (
         <div className="flex items-center gap-3">
-          <Avatar className="size-8">
-            <AvatarFallback className="text-xs">
-              {initials(u.firstName, u.lastName)}
-            </AvatarFallback>
+          <Avatar size="sm">
+            <AvatarFallback>{initials(u.firstName, u.lastName)}</AvatarFallback>
           </Avatar>
-          <div className="space-y-0.5">
-            <p className="font-medium">
+          <div className="min-w-0 space-y-0.5">
+            <p className="truncate font-medium">
               {u.firstName} {u.lastName}
               {u.id === currentUser?.id ? (
                 <span className="ml-1.5 text-xs font-normal text-muted-foreground">
@@ -94,7 +101,7 @@ export function UsersPage() {
                 </span>
               ) : null}
             </p>
-            <p className="text-xs text-muted-foreground">{u.email}</p>
+            <p className="truncate text-xs text-muted-foreground">{u.email}</p>
           </div>
         </div>
       ),
@@ -103,7 +110,9 @@ export function UsersPage() {
       key: "title",
       header: "Title",
       sortValue: (u) => u.title ?? "",
-      cell: (u) => <span className="text-muted-foreground">{u.title ?? "—"}</span>,
+      className: "hidden text-muted-foreground md:table-cell",
+      headerClassName: "hidden md:table-cell",
+      cell: (u) => u.title ?? "—",
     },
     {
       key: "role",
@@ -125,6 +134,8 @@ export function UsersPage() {
       key: "lastActive",
       header: "Last active",
       sortValue: (u) => u.lastActiveAt ?? "",
+      className: "hidden lg:table-cell",
+      headerClassName: "hidden lg:table-cell",
       cell: (u) => (
         <span className="text-muted-foreground">{formatRelative(u.lastActiveAt)}</span>
       ),
@@ -139,9 +150,13 @@ export function UsersPage() {
       cell: (u) => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="size-8">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-8"
+              aria-label={`Actions for ${u.firstName} ${u.lastName}`}
+            >
               <MoreHorizontal className="size-4" />
-              <span className="sr-only">Actions for {u.firstName}</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-52">
@@ -194,7 +209,11 @@ export function UsersPage() {
     <>
       <PageHeader
         title="Users"
-        description={`${users.filter((u) => u.status === "active").length} active teammates on this instance.`}
+        description={
+          search || statusFilter !== "all"
+            ? `${filtered.length} of ${users.length} teammates match`
+            : `${statusCounts.active} active teammates on this instance.`
+        }
         actions={
           canEdit ? (
             <Button onClick={() => setInviteOpen(true)}>
@@ -204,14 +223,52 @@ export function UsersPage() {
         }
       />
 
-      <div className="relative max-w-md">
-        <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          placeholder="Search by name, email, or role"
-          className="pl-9"
-        />
+      <div className="flex flex-col gap-3">
+        <div className="relative max-w-md">
+          <Search
+            className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+            aria-hidden
+          />
+          <Input
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            name="users-search"
+            autoComplete="off"
+            spellCheck={false}
+            aria-label="Search users"
+            placeholder="Name, email, or role…"
+            className="pl-9"
+          />
+        </div>
+        <fieldset className="min-w-0">
+          <legend className="sr-only">Filter by status</legend>
+          <div className="flex gap-2 overflow-x-auto overscroll-x-contain pb-0.5 [-webkit-overflow-scrolling:touch]">
+            <FilterChip
+              label="All"
+              count={statusCounts.all}
+              active={statusFilter === "all"}
+              onClick={() => setStatusFilter("all")}
+            />
+            <FilterChip
+              label="Active"
+              count={statusCounts.active}
+              active={statusFilter === "active"}
+              onClick={() => setStatusFilter("active")}
+            />
+            <FilterChip
+              label="Invited"
+              count={statusCounts.invited}
+              active={statusFilter === "invited"}
+              onClick={() => setStatusFilter("invited")}
+            />
+            <FilterChip
+              label="Suspended"
+              count={statusCounts.suspended}
+              active={statusFilter === "suspended"}
+              onClick={() => setStatusFilter("suspended")}
+            />
+          </div>
+        </fieldset>
       </div>
 
       <DataTable
@@ -315,8 +372,16 @@ function InviteUserDialog({
           </div>
 
           <div className="space-y-2">
-            <Label className={cn(errors.email && "text-destructive")}>Email</Label>
-            <Input type="email" {...register("email")} placeholder="name@acmefleet.com" />
+            <Label htmlFor="invite-email" className={cn(errors.email && "text-destructive")}>
+              Email
+            </Label>
+            <Input
+              id="invite-email"
+              type="email"
+              autoComplete="email"
+              {...register("email")}
+              placeholder="name@acmefleet.com"
+            />
             {errors.email ? (
               <p className="text-xs text-destructive">{errors.email.message}</p>
             ) : null}

@@ -165,6 +165,8 @@ export interface Lead {
   lastContactedAt?: ISODate
   createdAt: ISODate
   notes?: string
+  /** Position within the stage column. Lower is higher on the board. */
+  sortOrder?: number
 }
 
 /* --------------------------------- financing ------------------------------ */

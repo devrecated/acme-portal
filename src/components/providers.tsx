@@ -2,11 +2,13 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ThemeProvider } from "next-themes"
-import { useState, type ReactNode } from "react"
+import { Suspense, useState, type ReactNode } from "react"
 
 import { AuthProvider } from "@/auth/auth-context"
+import { TryAutodevelopHost } from "@/components/sandbox/try-autodevelop-dialog"
 import { Toaster } from "@/components/ui/sonner"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import { SandboxProvider } from "@/sandbox/sandbox-context"
 
 export function Providers({ children }: { children: ReactNode }) {
   const [queryClient] = useState(
@@ -26,7 +28,12 @@ export function Providers({ children }: { children: ReactNode }) {
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <TooltipProvider delayDuration={300}>
-            {children}
+            <Suspense fallback={null}>
+              <SandboxProvider>
+                {children}
+                <TryAutodevelopHost />
+              </SandboxProvider>
+            </Suspense>
             <Toaster />
           </TooltipProvider>
         </AuthProvider>

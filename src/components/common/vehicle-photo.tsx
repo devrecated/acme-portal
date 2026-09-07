@@ -8,9 +8,17 @@ type PhotoVehicle = Pick<Vehicle, "imageUrl" | "year" | "make" | "model">
 export function VehiclePhoto({
   vehicle,
   className,
+  width = 48,
+  height = 48,
+  fetchPriority,
+  loading,
 }: {
   vehicle: PhotoVehicle
   className?: string
+  width?: number
+  height?: number
+  fetchPriority?: "high" | "low" | "auto"
+  loading?: "eager" | "lazy"
 }) {
   const alt = `${vehicle.year} ${vehicle.make} ${vehicle.model}`
 
@@ -34,6 +42,10 @@ export function VehiclePhoto({
     <img
       src={vehicle.imageUrl}
       alt={alt}
+      width={width}
+      height={height}
+      fetchPriority={fetchPriority}
+      loading={loading}
       className={cn("bg-muted object-cover", className)}
     />
   )

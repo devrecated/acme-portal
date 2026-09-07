@@ -45,28 +45,35 @@ export function VehicleDetailSheet({
 
   return (
     <Sheet open onOpenChange={onOpenChange}>
-      <SheetContent className="w-full overflow-y-auto sm:max-w-lg">
-        <SheetHeader>
-          <div className="flex items-start justify-between gap-3">
-            <div className="space-y-1">
-              <SheetTitle>
-                {vehicle.year} {vehicle.make} {vehicle.model}
-              </SheetTitle>
-              <SheetDescription className="font-mono">
-                {vehicle.stockNumber} · {vehicle.vin}
-              </SheetDescription>
-            </div>
-            <VehicleStatusBadge status={vehicle.status} />
-          </div>
-        </SheetHeader>
-
-        <div className="space-y-6 px-4">
+      <SheetContent className="w-full gap-0 overflow-y-auto p-0 sm:max-w-lg">
+        <div className="relative">
           <VehiclePhoto
             vehicle={vehicle}
-            className="aspect-[16/9] w-full rounded-lg"
+            width={800}
+            height={450}
+            fetchPriority="high"
+            className="aspect-[16/10] w-full"
           />
+          <div className="absolute inset-x-0 top-0 flex items-start justify-between gap-3 p-3 pr-14">
+            <span className="rounded-md bg-black/45 px-1.5 py-0.5 font-mono text-[10px] tracking-wide text-white/90 backdrop-blur-sm">
+              {vehicle.stockNumber}
+            </span>
+            <VehicleStatusBadge status={vehicle.status} />
+          </div>
+          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4 pt-16">
+            <SheetHeader className="p-0">
+              <SheetTitle className="text-pretty text-white">
+                {vehicle.year} {vehicle.make} {vehicle.model}
+              </SheetTitle>
+              <SheetDescription className="font-mono text-white/75">
+                {vehicle.vin}
+              </SheetDescription>
+            </SheetHeader>
+          </div>
+        </div>
 
-          <section className="grid grid-cols-2 gap-4">
+        <div className="space-y-5 p-4">
+          <section className="grid grid-cols-2 gap-3 rounded-xl bg-muted/50 p-3">
             <Detail label="Asking price">
               <span className="text-lg font-semibold tabular-nums">
                 {formatCurrency(vehicle.listPrice)}
@@ -84,9 +91,7 @@ export function VehicleDetailSheet({
             </Can>
           </section>
 
-          <Separator />
-
-          <section className="grid grid-cols-2 gap-x-4 gap-y-4">
+          <section className="grid grid-cols-2 gap-x-4 gap-y-3.5">
             <Detail label="Body type">{vehicle.bodyType}</Detail>
             <Detail label="Segment">{vehicle.gvwrClass}</Detail>
             <Detail label="Fuel">{vehicle.fuel}</Detail>

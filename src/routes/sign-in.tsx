@@ -20,6 +20,7 @@ import {
 import { seedUsers } from "@/data/seed"
 import { initials } from "@/lib/format"
 import { safeReturnTo } from "@/lib/return-to"
+import { useSandbox } from "@/sandbox/sandbox-context"
 import { ROLE_LABELS } from "@/types"
 
 gsap.registerPlugin(useGSAP)
@@ -34,6 +35,7 @@ export function SignInPage() {
   const searchParams = useSearchParams()
   const from = safeReturnTo(searchParams.get("from"))
   const root = useRef<HTMLDivElement>(null)
+  const sandbox = useSandbox()
 
   useGSAP(
     () => {
@@ -91,12 +93,39 @@ export function SignInPage() {
             <Car className="size-6" />
           </div>
           <div className="space-y-1">
-            <h1 className="text-2xl font-semibold tracking-tight">Acme Fleet</h1>
+            <h1
+              data-feature-demo-anchor="sandbox-brand"
+              className="font-heading text-pretty text-2xl font-semibold tracking-tight"
+            >
+              {sandbox.patch?.copy?.dealerName ?? "Acme Fleet"}
+            </h1>
             <p className="text-sm text-muted-foreground">
-              Exotic sports car sales portal
+              {sandbox.patch?.copy?.dealerTagline ?? "Exotic sports car sales portal"}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              A Devrecated Solutions demo — Autodevelop
             </p>
           </div>
         </div>
+
+        {sandbox.patch?.widgets?.topbarBanner?.text ? (
+          <p
+            data-feature-demo-anchor="sandbox-banner"
+            className="rounded-md bg-primary px-3 py-2 text-center text-sm text-primary-foreground"
+          >
+            {sandbox.patch.widgets.topbarBanner.text} This tab only. Sign in to
+            see the rest, or Reset to drop it.
+          </p>
+        ) : null}
+
+        <Button className="min-h-11 w-full" onClick={sandbox.openDialog}>
+          Try Autodevelop
+        </Button>
+        {sandbox.patch ? (
+          <Button className="min-h-11 w-full" variant="outline" onClick={() => void sandbox.reset()}>
+            Reset
+          </Button>
+        ) : null}
 
         <Card>
           <CardHeader>

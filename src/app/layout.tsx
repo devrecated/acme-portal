@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next"
-import { Geist } from "next/font/google"
+import { Geist, Instrument_Serif } from "next/font/google"
 import Script from "next/script"
 
 import { Providers } from "@/components/providers"
@@ -10,6 +10,12 @@ import "./globals.css"
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+})
+
+const instrumentSerif = Instrument_Serif({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-display",
 })
 
 export const metadata: Metadata = {
@@ -36,10 +42,16 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={geistSans.variable} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${instrumentSerif.variable}`}
+      suppressHydrationWarning
+    >
       <body>
         <Providers>{children}</Providers>
-        <Script src={ticketsEmbedSrc()} strategy="afterInteractive" />
+        {ticketsEmbedSrc() ? (
+          <Script src={ticketsEmbedSrc()} strategy="afterInteractive" />
+        ) : null}
       </body>
     </html>
   )
