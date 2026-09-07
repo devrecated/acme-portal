@@ -47,9 +47,9 @@ export function TryAutodevelopHost() {
             <div className="space-y-2 rounded-md border p-3 text-sm" aria-live="polite">
               <p className="font-medium">Autodevelop is working</p>
               <ol className="list-decimal space-y-1 pl-5 text-muted-foreground">
-                {(sandbox.job?.steps ?? [{ id: "received", label: "Sending the prompt to Autodevelop", status: "running" }]).map(
+                {(sandbox.job?.steps ?? [{ id: "received", label: "Sending the prompt to Autodevelop", status: "running" as const, at: "" }]).map(
                   (step) => (
-                    <li key={`${step.id}-${step.at ?? step.label}`}>
+                    <li key={`${step.id}-${step.at || step.label}`}>
                       {step.label}
                       {step.status === "running" ? "…" : ""}
                     </li>
