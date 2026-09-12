@@ -24,7 +24,7 @@ export function InventoryCard({
       type="button"
       onClick={() => onOpen(vehicle)}
       className={cn(
-        "group relative block w-full overflow-hidden rounded-xl bg-card text-left ring-1 ring-foreground/10",
+        "group relative block w-full cursor-pointer overflow-hidden rounded-xl bg-card text-left ring-1 ring-foreground/10",
         "outline-none transition-[box-shadow,transform] focus-visible:ring-2 focus-visible:ring-ring",
       )}
     >

@@ -16,6 +16,12 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { useVehicles } from "@/data/queries"
 import { formatCurrency, formatMiles } from "@/lib/format"
 import { InventoryCard } from "@/routes/inventory/inventory-card"
+import {
+  EMPTY_SPEC_FILTERS,
+  hasActiveSpecFilters,
+  InventoryFilters,
+  vehicleMatchesSpec,
+} from "@/routes/inventory/inventory-filters"
 import { VehicleDetailSheet } from "@/routes/inventory/vehicle-detail-sheet"
 import { VehicleFormDialog } from "@/routes/inventory/vehicle-form-dialog"
 import {
@@ -34,6 +40,7 @@ export function InventoryPage() {
 
   const [search, setSearch] = useState("")
   const [status, setStatus] = useState<StatusFilter>("all")
+  const [specFilters, setSpecFilters] = useState(EMPTY_SPEC_FILTERS)
   const [view, setView] = useState<InventoryView>("gallery")
   const [selected, setSelected] = useState<Vehicle | null>(null)
   const [editing, setEditing] = useState<Vehicle | undefined>()
@@ -58,6 +65,7 @@ export function InventoryPage() {
     const term = search.trim().toLowerCase()
     return vehicles.filter((vehicle) => {
       if (status !== "all" && vehicle.status !== status) return false
+      if (!vehicleMatchesSpec(vehicle, specFilters)) return false
       if (!term) return true
       return [
         vehicle.stockNumber,
@@ -73,7 +81,7 @@ export function InventoryPage() {
         .includes(term)
     })
       .toSorted((a, b) => b.stockNumber.localeCompare(a.stockNumber))
-  }, [vehicles, search, status])
+  }, [vehicles, search, status, specFilters])
 
   const columns = useMemo<Column<Vehicle>[]>(() => {
     const base: Column<Vehicle>[] = [
@@ -163,10 +171,12 @@ export function InventoryPage() {
     setFormOpen(true)
   }
 
-  const filteredLabel =
-    search || status !== "all"
-      ? `${filtered.length} of ${vehicles.length} cars match`
-      : `${vehicles.length} cars on the books across every showroom.`
+  const filtersActive =
+    Boolean(search) || status !== "all" || hasActiveSpecFilters(specFilters)
+
+  const filteredLabel = filtersActive
+    ? `${filtered.length} of ${vehicles.length} cars match`
+    : `${vehicles.length} cars on the books across every showroom.`
 
   return (
     <>
@@ -248,6 +258,13 @@ export function InventoryPage() {
             ))}
           </div>
         </fieldset>
+
+        <InventoryFilters
+          vehicles={vehicles}
+          filters={specFilters}
+          onChange={setSpecFilters}
+          onClear={() => setSpecFilters(EMPTY_SPEC_FILTERS)}
+        />
       </div>
 
       {isLoading ? (
@@ -261,7 +278,7 @@ export function InventoryPage() {
           <EmptyState
             icon={Car}
             title="No vehicles match those filters"
-            description="Try a different search term or clear the status filter."
+            description="Try a different search, status, or specification — or clear the filters."
           />
         </div>
       ) : view === "gallery" ? (
