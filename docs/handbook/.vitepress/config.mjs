@@ -19,7 +19,10 @@ const capturedSidebar = () => {
   }
 };
 
+const vpBase = String(process.env.DOCPUPPET_VP_BASE || "/").trim() || "/";
+
 export default defineConfig({
+  base: vpBase.endsWith("/") ? vpBase : `${vpBase}/`,
   title: "Acme Portal Docs",
   description: "Internal guides for Acme Fleet.",
   cleanUrls: true,
