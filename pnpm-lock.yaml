@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@devrecated/autodevelop':
-        specifier: file:/Users/adamsiwiec/home/freetech/foss/autodevelop/dist/npm/devrecated-autodevelop-0.1.0.tgz
-        version: file:../../freetech/foss/autodevelop/dist/npm/devrecated-autodevelop-0.1.0.tgz
       '@gsap/react':
         specifier: ^2.1.2
         version: 2.1.2(gsap@3.15.0)(react@19.2.8)
@@ -231,11 +228,6 @@ packages:
   '@babel/types@7.29.8':
     resolution: {integrity: sha512-Vj1jF3cPfxg7OAfoI7QnVKLoILlm2JF9pnVHrX8qx7AHMiYWT+NDAA7jChlNgRS4WTLc/fD1lXLmPixluj+3Gg==}
     engines: {node: '>=6.9.0'}
-
-  '@devrecated/autodevelop@file:../../freetech/foss/autodevelop/dist/npm/devrecated-autodevelop-0.1.0.tgz':
-    resolution: {integrity: sha512-tbimAFYlo4iI0BVqfxpmMnU7aVPSA/ODuj3DzuqoOeMIxMP7ynZo2YCO87SU2FzphsG8ce/11d/0mhTGk2Q4Jg==, tarball: file:../../freetech/foss/autodevelop/dist/npm/devrecated-autodevelop-0.1.0.tgz}
-    version: 0.1.0
-    hasBin: true
 
   '@dotenvx/dotenvx@1.75.1':
     resolution: {integrity: sha512-/BITOC9dmS/edY2zQwZNicQ059O6RKabtQfyEafV0nGtfYRNHYy1DIPiYVcov40+tob9hfmBnbR963dS+EQ1DQ==}
@@ -3221,8 +3213,6 @@ snapshots:
     dependencies:
       '@babel/helper-string-parser': 7.29.7
       '@babel/helper-validator-identifier': 7.29.7
-
-  '@devrecated/autodevelop@file:../../freetech/foss/autodevelop/dist/npm/devrecated-autodevelop-0.1.0.tgz': {}
 
   '@dotenvx/dotenvx@1.75.1':
     dependencies:

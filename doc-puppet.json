@@ -1,0 +1,11 @@
+{
+  "spec": "docs/doc-puppet-catalog.json",
+  "site": "docs/handbook",
+  "video": false,
+  "dev": {
+    "install": "corepack enable && corepack prepare pnpm@9.15.9 --activate && pnpm install --no-frozen-lockfile",
+    "command": "pnpm exec next dev --hostname 127.0.0.1 --port 3000",
+    "origin": "http://127.0.0.1:3000",
+    "readyPath": "/sign-in"
+  }
+}
