@@ -164,7 +164,7 @@
         },
         {
           "kind": "click",
-          "selector": "a[href=\"/inventory\"]"
+          "selector": "a[href=\"/inventory\"]:has-text(\"Lamborghini\")"
         },
         {
           "kind": "wait",
