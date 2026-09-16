@@ -1,7 +1,7 @@
 {
   "spec": "docs/doc-puppet-catalog.json",
   "site": "docs/handbook",
-  "video": false,
+  "video": true,
   "dev": {
     "install": "npx --yes pnpm@9.15.9 install --no-frozen-lockfile",
     "command": "npx next dev --hostname 127.0.0.1 --port 3000",

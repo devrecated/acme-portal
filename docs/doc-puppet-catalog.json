@@ -160,7 +160,20 @@
         },
         {
           "kind": "wait",
-          "timeoutMs": 1500
+          "timeoutMs": 800
+        },
+        {
+          "kind": "click",
+          "selector": "a[href=\"/inventory\"]"
+        },
+        {
+          "kind": "wait",
+          "text": "Add vehicle||Inventory",
+          "timeoutMs": 15000
+        },
+        {
+          "kind": "wait",
+          "timeoutMs": 1000
         }
       ]
     },
@@ -234,7 +247,8 @@
           "kind": "wait",
           "timeoutMs": 1200
         }
-      ]
+      ],
+      "video": false
     },
     {
       "id": "inventory-filter",
@@ -486,7 +500,8 @@
           "kind": "wait",
           "timeoutMs": 1200
         }
-      ]
+      ],
+      "video": false
     },
     {
       "id": "leads-new",
@@ -621,7 +636,8 @@
           "kind": "wait",
           "timeoutMs": 1200
         }
-      ]
+      ],
+      "video": false
     },
     {
       "id": "crm-companies",
