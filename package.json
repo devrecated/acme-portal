@@ -10,7 +10,6 @@
     "deploy": "sh scripts/deploy.sh"
   },
   "dependencies": {
-    "@devrecated/autodevelop": "file:/Users/adamsiwiec/home/freetech/foss/autodevelop/dist/npm/devrecated-autodevelop-0.1.0.tgz",
     "@gsap/react": "^2.1.2",
     "@hookform/resolvers": "^5.9.1",
     "@tanstack/react-query": "^5.102.8",

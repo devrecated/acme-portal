@@ -1,0 +1,841 @@
+{
+  "origin": "http://127.0.0.1:3000",
+  "colorScheme": "dark",
+  "handbook": {
+    "product": "Acme Portal Docs",
+    "tagline": "Internal guides for Acme Fleet",
+    "summary": "How-tos for the dealer portal: showroom, pipeline, CRM, financing, and users. Current capture 15 September 2026.",
+    "actions": [
+      {
+        "theme": "brand",
+        "text": "What’s new",
+        "link": "/changelog"
+      },
+      {
+        "theme": "alt",
+        "text": "How-tos",
+        "link": "/guides/dashboard"
+      },
+      {
+        "theme": "alt",
+        "text": "Roles & access",
+        "link": "/guides/roles"
+      }
+    ],
+    "features": [
+      {
+        "title": "15 September 2026",
+        "details": "Captured handbook for the live Acme Fleet demo: stills, clips, and what to look for on each screen.",
+        "link": "/changelog"
+      },
+      {
+        "title": "Showroom",
+        "details": "Dashboard, inventory, and the leads board — how the floor and the pipeline work day to day."
+      },
+      {
+        "title": "CRM & operations",
+        "details": "Contacts and companies, credit applications, and who can sign in as which teammate."
+      },
+      {
+        "title": "Example handbook",
+        "details": "This tree is a captured dealer portal, not the DocPuppet product site. The product home is linked in the nav."
+      }
+    ]
+  },
+  "auth": {
+    "path": "/sign-in",
+    "actions": [
+      {
+        "kind": "wait",
+        "text": "Dana Whitfield",
+        "timeoutMs": 20000
+      },
+      {
+        "kind": "click",
+        "selector": "button:has-text(\"Dana Whitfield\")"
+      },
+      {
+        "kind": "wait",
+        "text": "Lamborghini",
+        "timeoutMs": 20000
+      }
+    ]
+  },
+  "steps": [
+    {
+      "id": "sign-in",
+      "name": "Sign-in",
+      "path": "/sign-in",
+      "group": "Getting started",
+      "drawer": "Sign-in",
+      "pageTitle": "Choose an account",
+      "expect": "Dana Whitfield",
+      "purpose": "Acme Fleet has no password on the public demo. You pick a seeded teammate. That account’s role decides which nav items, cost columns, and edit controls you get.",
+      "lookOut": "The card lists active teammates. Dana Whitfield is Administrator. A sales rep will not see cost or margin. Finance will not see leads.",
+      "how": [
+        "Open `/sign-in`.",
+        "Wait until the Choose an account list shows **Dana Whitfield**.",
+        "Pick that row to enter the portal as Administrator."
+      ],
+      "roles": "Everyone who uses the demo. The teammate you pick is the role you work as.",
+      "audience": "Dealer staff",
+      "paths": [
+        "src/app/sign-in",
+        "src/routes/sign-in.tsx"
+      ],
+      "video": false,
+      "caption": "Account picker — seeded teammates, no password.",
+      "actions": [
+        {
+          "kind": "wait",
+          "text": "Dana Whitfield",
+          "timeoutMs": 20000
+        }
+      ]
+    },
+    {
+      "id": "dashboard",
+      "name": "Dashboard",
+      "path": "/",
+      "group": "Showroom",
+      "drawer": "Dashboard",
+      "pageTitle": "Dashboard",
+      "expect": "Lamborghini",
+      "purpose": "The dashboard is the morning screen: units in stock, inventory value, open pipeline, applications awaiting credit, a featured car, follow-ups, and recent applications.",
+      "lookOut": "After seed loads you should see **Units in stock** with a non-zero count, a featured Lamborghini, follow-ups, and recent applications. The header line about the showroom is not enough — that copy is on the page before the numbers arrive.",
+      "how": [
+        "Sign in as **Dana Whitfield** (Administrator).",
+        "Open **Dashboard** (`/`).",
+        "Wait until a seeded Lamborghini and the stock counts are on the page, not the loading skeletons.",
+        "Scan Units in stock, Inventory value, Open pipeline, and Awaiting credit.",
+        "Use **Next follow-ups** and **Recent applications** to jump into Leads or Financing."
+      ],
+      "roles": "Administrator, Sales manager, Sales rep, Finance, and Viewer.",
+      "audience": "Dealer staff",
+      "paths": [
+        "src/app/(app)/page.tsx",
+        "src/routes/dashboard.tsx"
+      ],
+      "caption": "Home dashboard — stock, pipeline, featured unit, and follow-ups.",
+      "tips": [
+        "If counts are zero, seed has not finished — wait; do not treat the empty chrome as the live desk.",
+        "The featured unit links through to Inventory."
+      ],
+      "controls": [
+        {
+          "action": "Featured unit",
+          "where": "Left hero card",
+          "notes": "Opens Inventory"
+        },
+        {
+          "action": "Next follow-ups",
+          "where": "Lower cards",
+          "notes": "Leads with the soonest scheduled touch"
+        },
+        {
+          "action": "Recent applications",
+          "where": "Lower cards",
+          "notes": "Jumps toward Financing"
+        }
+      ],
+      "seeAlso": [
+        {
+          "id": "inventory",
+          "note": "The lot behind the stock counts"
+        },
+        {
+          "id": "leads",
+          "note": "Follow-ups live on the board"
+        },
+        {
+          "id": "financing",
+          "note": "Credit applications"
+        }
+      ],
+      "actions": [
+        {
+          "kind": "wait",
+          "text": "Lamborghini",
+          "timeoutMs": 20000
+        },
+        {
+          "kind": "wait",
+          "timeoutMs": 1500
+        }
+      ]
+    },
+    {
+      "id": "inventory",
+      "name": "Inventory",
+      "path": "/inventory",
+      "group": "Showroom",
+      "drawer": "Inventory",
+      "pageTitle": "Inventory",
+      "expect": "Lamborghini",
+      "purpose": "Inventory is the showroom book. Use it to find units, switch gallery or list, filter by status, open a car, and add or edit when your role allows.",
+      "lookOut": "The page title is **Inventory**. As Administrator you should see **Add vehicle** and seeded stock — Lamborghini, Ferrari, Porsche, McLaren, and Bentley. **Add vehicle** alone is the header; it is on screen while the lot is still skeletons.",
+      "how": [
+        "Open **Inventory** from the nav (`/inventory`).",
+        "Confirm cars have loaded — a Lamborghini card, not skeletons.",
+        "Search or apply a status chip when you need a subset.",
+        "Toggle gallery vs list.",
+        "Open a card for the detail sheet, or **Add vehicle** when you have edit permission."
+      ],
+      "roles": "Everyone can view inventory. Administrator, Sales manager, and Sales rep can add or edit. Cost and margin stay hidden from Sales rep and Viewer.",
+      "audience": "Dealer staff",
+      "paths": [
+        "src/app/(app)/inventory",
+        "src/routes/inventory"
+      ],
+      "caption": "Gallery — search, status chips, and vehicle cards.",
+      "tips": [
+        "Most “missing car” moments are an active status chip or a leftover search.",
+        "Cost and margin only appear for roles with cost visibility."
+      ],
+      "controls": [
+        {
+          "action": "Add vehicle",
+          "where": "Header",
+          "notes": "Needs inventory.edit"
+        },
+        {
+          "action": "Search",
+          "where": "Toolbar",
+          "notes": "Stock, VIN, make, model"
+        },
+        {
+          "action": "Gallery / List",
+          "where": "Toolbar",
+          "notes": "Layout toggle"
+        },
+        {
+          "action": "Status chips",
+          "where": "Under search",
+          "notes": "All, Available, Reconditioning, In transit, Pending sale, Sold"
+        }
+      ],
+      "seeAlso": [
+        {
+          "id": "dashboard",
+          "note": "Stock counts on the home screen"
+        },
+        {
+          "id": "leads",
+          "note": "Pipeline after a unit is in play"
+        }
+      ],
+      "actions": [
+        {
+          "kind": "wait",
+          "text": "Lamborghini",
+          "timeoutMs": 20000
+        },
+        {
+          "kind": "wait",
+          "timeoutMs": 1200
+        }
+      ]
+    },
+    {
+      "id": "inventory-filter",
+      "name": "Navigate & filter",
+      "path": "/inventory",
+      "parent": "inventory",
+      "section": "Navigate & filter",
+      "expect": "Lamborghini",
+      "purpose": "Find the right cars quickly with search, status chips, and gallery vs list — before you open a unit or add one.",
+      "lookOut": "Typing a model name should shrink the grid. **Available** hides pending and sold. **List** shows stock number and asking price in a table. **All** returns every unit.",
+      "how": [
+        "Open **Inventory**.",
+        "Type a model fragment into search (for example `Huracán`).",
+        "Set a status chip — **Available** for cars you can sell from.",
+        "Toggle **List** then **Gallery**.",
+        "Click **All** when you need the full book."
+      ],
+      "roles": "Anyone with inventory view. Spec options follow what is on the lot.",
+      "caption": "Search, Available, and list vs gallery.",
+      "tips": [
+        "Most “missing car” moments are an active status chip or a leftover search.",
+        "List view is the faster scan when you care about stock number and asking price."
+      ],
+      "controls": [
+        {
+          "action": "Search",
+          "where": "Toolbar",
+          "notes": "Stock, VIN, make, model"
+        },
+        {
+          "action": "Status chips",
+          "where": "Under search",
+          "notes": "All / Available / Sold and the rest"
+        },
+        {
+          "action": "Gallery / List",
+          "where": "Toolbar",
+          "notes": "Does not change which cars match"
+        }
+      ],
+      "seeAlso": [
+        {
+          "id": "inventory",
+          "note": "Overview"
+        },
+        {
+          "id": "inventory-detail",
+          "note": "Open a card after you filter"
+        }
+      ],
+      "paths": [
+        "src/routes/inventory/inventory-filters.tsx",
+        "src/routes/inventory/inventory.tsx"
+      ],
+      "actions": [
+        {
+          "kind": "wait",
+          "text": "Lamborghini",
+          "timeoutMs": 20000
+        },
+        {
+          "kind": "wait",
+          "timeoutMs": 800
+        },
+        {
+          "kind": "fill",
+          "selector": "input[name=\"inventory-search\"]",
+          "value": "Huracán"
+        },
+        {
+          "kind": "wait",
+          "timeoutMs": 1200
+        },
+        {
+          "kind": "fill",
+          "selector": "input[name=\"inventory-search\"]",
+          "value": ""
+        },
+        {
+          "kind": "wait",
+          "timeoutMs": 600
+        },
+        {
+          "kind": "click",
+          "selector": "button[aria-pressed]:has-text(\"Available\")"
+        },
+        {
+          "kind": "wait",
+          "timeoutMs": 1000
+        },
+        {
+          "kind": "click",
+          "selector": "button[aria-label=\"List view\"]"
+        },
+        {
+          "kind": "wait",
+          "timeoutMs": 1200
+        },
+        {
+          "kind": "click",
+          "selector": "button[aria-label=\"Gallery view\"]"
+        },
+        {
+          "kind": "wait",
+          "timeoutMs": 800
+        },
+        {
+          "kind": "click",
+          "selector": "button[aria-pressed]:has-text(\"All\")"
+        },
+        {
+          "kind": "wait",
+          "timeoutMs": 800
+        }
+      ]
+    },
+    {
+      "id": "inventory-detail",
+      "name": "Vehicle detail",
+      "path": "/inventory",
+      "parent": "inventory",
+      "section": "Vehicle detail",
+      "expect": "ZHWUC1ZD8MLA10421",
+      "purpose": "The detail sheet is one car: photo, VIN, asking price, status, and — for roles with cost visibility — margin. Edit and delete sit on the sheet when you have inventory.edit.",
+      "lookOut": "Opening the Huracán EVO card should show VIN `ZHWUC1ZD8MLA10421` and asking price. Administrator sees cost and margin. Do not use Delete on the demo lot.",
+      "how": [
+        "Open **Inventory**.",
+        "Click a vehicle card (the 2023 Lamborghini Huracán EVO is the seeded first unit).",
+        "Read stock number, VIN, asking price, and status.",
+        "Close the sheet when you are done. Use **Edit** only when you mean to change the record."
+      ],
+      "roles": "Anyone who can view inventory. Edit and delete need inventory.edit. Cost and margin need inventory.viewCost.",
+      "caption": "Detail sheet — photo, VIN, asking price, and status.",
+      "tips": [
+        "The sheet is the safe read. **Edit** and **Delete** change the lot.",
+        "Reps and viewers will not see cost."
+      ],
+      "controls": [
+        {
+          "action": "Open card",
+          "where": "Gallery or list row",
+          "notes": "Opens the sheet"
+        },
+        {
+          "action": "Edit",
+          "where": "Sheet footer",
+          "notes": "Needs inventory.edit"
+        },
+        {
+          "action": "Delete",
+          "where": "Sheet footer",
+          "notes": "Mutates the lot — skip on the demo"
+        }
+      ],
+      "seeAlso": [
+        {
+          "id": "inventory",
+          "note": "Overview"
+        },
+        {
+          "id": "inventory-filter",
+          "note": "Find the unit first"
+        }
+      ],
+      "paths": [
+        "src/routes/inventory/vehicle-detail-sheet.tsx"
+      ],
+      "actions": [
+        {
+          "kind": "wait",
+          "text": "Lamborghini",
+          "timeoutMs": 20000
+        },
+        {
+          "kind": "wait",
+          "timeoutMs": 600
+        },
+        {
+          "kind": "click",
+          "selector": "button:has-text(\"Huracán EVO\")"
+        },
+        {
+          "kind": "wait",
+          "text": "ZHWUC1ZD8MLA10421",
+          "timeoutMs": 10000
+        },
+        {
+          "kind": "wait",
+          "timeoutMs": 1500
+        }
+      ]
+    },
+    {
+      "id": "leads",
+      "name": "Leads",
+      "path": "/leads",
+      "group": "Showroom",
+      "drawer": "Leads",
+      "pageTitle": "Leads",
+      "expect": "Gideon Volkov",
+      "purpose": "Leads is the sales pipeline as a kanban. Drag a card to change stage. **New lead** opens a form. Stage changes last for the session on this demo.",
+      "lookOut": "The page title is **Leads**. As Administrator you should see **New lead** and seeded cards such as Gideon Volkov. **New lead** alone is the header; it is on screen while the columns are still empty.",
+      "how": [
+        "Open **Leads** from the nav (`/leads`).",
+        "Wait until **Gideon Volkov** is on the board.",
+        "Read columns New through Lost.",
+        "Drag a card only when you mean to move the deal. Use **New lead** to capture an inquiry — Cancel if you are only touring."
+      ],
+      "roles": "Administrator, Sales manager, Sales rep, and Viewer. Finance does not see leads.",
+      "audience": "Dealer staff",
+      "paths": [
+        "src/app/(app)/leads",
+        "src/routes/leads"
+      ],
+      "caption": "Kanban — columns, seeded cards, New lead.",
+      "tips": [
+        "A drag is a stage change. Do not demo-drag production-like data if you care about the board staying put.",
+        "Viewer can see the board; edit is withheld."
+      ],
+      "controls": [
+        {
+          "action": "New lead",
+          "where": "Header",
+          "notes": "Needs leads.edit; Cancel to leave the lot unchanged"
+        },
+        {
+          "action": "Drag card",
+          "where": "Board",
+          "notes": "Moves stage for the session"
+        }
+      ],
+      "seeAlso": [
+        {
+          "id": "crm",
+          "note": "People and companies behind the cards"
+        },
+        {
+          "id": "dashboard",
+          "note": "Follow-ups on the home screen"
+        }
+      ],
+      "actions": [
+        {
+          "kind": "wait",
+          "text": "Gideon Volkov",
+          "timeoutMs": 20000
+        },
+        {
+          "kind": "wait",
+          "timeoutMs": 1200
+        }
+      ]
+    },
+    {
+      "id": "leads-new",
+      "name": "New lead",
+      "path": "/leads",
+      "parent": "leads",
+      "section": "New lead",
+      "expect": "Capture a new opportunity",
+      "purpose": "New lead captures an inquiry and puts it on the board. The demo form is real — Cancel unless you mean to add a card.",
+      "lookOut": "The dialog title is **New lead**. You should see Contact name, Company, Email, Phone, and Stage. **Cancel** closes without writing.",
+      "how": [
+        "Open **Leads**.",
+        "Click **New lead**.",
+        "Read the fields. Leave them empty on a tour.",
+        "Click **Cancel** (or close) so the board stays as seeded."
+      ],
+      "roles": "Administrator, Sales manager, and Sales rep. Viewer does not get New lead.",
+      "caption": "New lead dialog — fields, then Cancel so the demo lot is unchanged.",
+      "tips": [
+        "Saving creates a card. Tours should Cancel."
+      ],
+      "controls": [
+        {
+          "action": "New lead",
+          "where": "Header",
+          "notes": "Opens the dialog"
+        },
+        {
+          "action": "Cancel",
+          "where": "Dialog footer",
+          "notes": "Leaves the board alone"
+        }
+      ],
+      "seeAlso": [
+        {
+          "id": "leads",
+          "note": "Board overview"
+        }
+      ],
+      "paths": [
+        "src/routes/leads/lead-form-dialog.tsx"
+      ],
+      "actions": [
+        {
+          "kind": "wait",
+          "text": "Gideon Volkov",
+          "timeoutMs": 20000
+        },
+        {
+          "kind": "wait",
+          "timeoutMs": 500
+        },
+        {
+          "kind": "click",
+          "selector": "button:has-text(\"New lead\")"
+        },
+        {
+          "kind": "wait",
+          "text": "Capture a new opportunity",
+          "timeoutMs": 8000
+        },
+        {
+          "kind": "wait",
+          "timeoutMs": 1200
+        },
+        {
+          "kind": "click",
+          "selector": "button:has-text(\"Cancel\")"
+        },
+        {
+          "kind": "wait",
+          "timeoutMs": 800
+        }
+      ]
+    },
+    {
+      "id": "crm",
+      "name": "CRM",
+      "path": "/crm",
+      "group": "CRM",
+      "drawer": "CRM",
+      "pageTitle": "CRM",
+      "expect": "Alonzo Reyes",
+      "purpose": "CRM is the people book: contacts and companies, stage, owner, and a detail sheet. It is not the kanban — Leads is the deal board.",
+      "lookOut": "You should see **Contacts** and **Companies** tabs and a seeded contact such as Alonzo Reyes. Empty chrome means the list has not loaded.",
+      "how": [
+        "Open **CRM** (`/crm`).",
+        "Stay on **Contacts** and wait for names.",
+        "Search when the list is long.",
+        "Open a row for the contact sheet. Switch to **Companies** for the account list."
+      ],
+      "roles": "Administrator, Sales manager, Sales rep, and Viewer. Finance does not see CRM.",
+      "audience": "Dealer staff",
+      "paths": [
+        "src/app/(app)/crm",
+        "src/routes/crm.tsx"
+      ],
+      "caption": "Contacts table — search, stage chips, and rows.",
+      "tips": [
+        "Leads is the pipeline. CRM is who they are."
+      ],
+      "controls": [
+        {
+          "action": "Contacts / Companies",
+          "where": "Tabs",
+          "notes": "Two lists, one search box"
+        },
+        {
+          "action": "Search",
+          "where": "Toolbar",
+          "notes": "Name, email, company"
+        },
+        {
+          "action": "Stage chips",
+          "where": "Under search",
+          "notes": "Prospect through customer"
+        }
+      ],
+      "seeAlso": [
+        {
+          "id": "leads",
+          "note": "Deals for these people"
+        }
+      ],
+      "actions": [
+        {
+          "kind": "wait",
+          "text": "Alonzo Reyes",
+          "timeoutMs": 20000
+        },
+        {
+          "kind": "wait",
+          "timeoutMs": 1200
+        }
+      ]
+    },
+    {
+      "id": "crm-companies",
+      "name": "Companies",
+      "path": "/crm",
+      "parent": "crm",
+      "section": "Companies",
+      "expect": "Meridian Private Office",
+      "purpose": "Companies is the account list beside Contacts. Open it when you need the firm, not the person.",
+      "lookOut": "The **Companies** tab should list **Meridian Private Office** and the other seeded accounts.",
+      "how": [
+        "Open **CRM**.",
+        "Click **Companies**.",
+        "Search if needed.",
+        "Open a row when you want the account sheet."
+      ],
+      "roles": "Same as CRM view.",
+      "caption": "Companies tab — Meridian Private Office and the rest of the book.",
+      "seeAlso": [
+        {
+          "id": "crm",
+          "note": "Contacts"
+        }
+      ],
+      "paths": [
+        "src/routes/crm.tsx"
+      ],
+      "actions": [
+        {
+          "kind": "wait",
+          "text": "Alonzo Reyes",
+          "timeoutMs": 20000
+        },
+        {
+          "kind": "wait",
+          "timeoutMs": 500
+        },
+        {
+          "kind": "click",
+          "selector": "button:has-text(\"Companies\")"
+        },
+        {
+          "kind": "wait",
+          "text": "Meridian Private Office",
+          "timeoutMs": 8000
+        },
+        {
+          "kind": "wait",
+          "timeoutMs": 1500
+        }
+      ]
+    },
+    {
+      "id": "financing",
+      "name": "Financing",
+      "path": "/financing",
+      "group": "Operations",
+      "drawer": "Financing",
+      "pageTitle": "Financing",
+      "expect": "Azure Yacht",
+      "purpose": "Financing is the credit desk: applications, status, lender, and a detail sheet. Search and status chips narrow the queue.",
+      "lookOut": "You should see applications such as **Azure Yacht & Auto** and status chips including **In review**. Header stats load with the table.",
+      "how": [
+        "Open **Financing** (`/financing`).",
+        "Wait for application rows.",
+        "Filter by status when you are working a queue.",
+        "Open a row for the sheet. Edit only with financing.edit."
+      ],
+      "roles": "Administrator, Sales manager, and Finance. Sales rep and Viewer do not see Financing.",
+      "audience": "Dealer staff",
+      "paths": [
+        "src/app/(app)/financing",
+        "src/routes/financing.tsx"
+      ],
+      "caption": "Applications table — search, status chips, seeded rows.",
+      "tips": [
+        "In review is the live queue. Funded is history."
+      ],
+      "controls": [
+        {
+          "action": "Search",
+          "where": "Toolbar",
+          "notes": "Applicant, number, lender"
+        },
+        {
+          "action": "Status chips",
+          "where": "Under search",
+          "notes": "Draft through Funded"
+        }
+      ],
+      "seeAlso": [
+        {
+          "id": "dashboard",
+          "note": "Awaiting credit on the home screen"
+        }
+      ],
+      "actions": [
+        {
+          "kind": "wait",
+          "text": "Azure Yacht",
+          "timeoutMs": 20000
+        },
+        {
+          "kind": "wait",
+          "timeoutMs": 800
+        },
+        {
+          "kind": "click",
+          "selector": "button[aria-pressed]:has-text(\"In review\")"
+        },
+        {
+          "kind": "wait",
+          "timeoutMs": 1000
+        },
+        {
+          "kind": "click",
+          "selector": "button[aria-pressed]:has-text(\"All\")"
+        },
+        {
+          "kind": "wait",
+          "timeoutMs": 800
+        }
+      ]
+    },
+    {
+      "id": "users",
+      "name": "Users",
+      "path": "/users",
+      "group": "Operations",
+      "drawer": "Users",
+      "pageTitle": "Users",
+      "expect": "Dana Whitfield",
+      "purpose": "Users is the roster: teammates, roles, status, and invite. Role on each row is what the sign-in picker is simulating.",
+      "lookOut": "You should see **Dana Whitfield** as Administrator. **Invite** is Administrator-only.",
+      "how": [
+        "Open **Users** (`/users`).",
+        "Wait for the roster.",
+        "Search or filter by Active / Invited / Suspended.",
+        "Do not invite or delete on the public demo unless you mean to change the roster."
+      ],
+      "roles": "Administrator and Sales manager can view. Only Administrator can invite or edit.",
+      "audience": "Dealer staff",
+      "paths": [
+        "src/app/(app)/users",
+        "src/routes/users.tsx"
+      ],
+      "caption": "Roster — names, roles, Active filter.",
+      "tips": [
+        "The sign-in picker is this roster. Changing a role here changes what that teammate can see."
+      ],
+      "controls": [
+        {
+          "action": "Search",
+          "where": "Toolbar",
+          "notes": "Name, email, title, role"
+        },
+        {
+          "action": "Status chips",
+          "where": "Under search",
+          "notes": "All / Active / Invited / Suspended"
+        },
+        {
+          "action": "Invite",
+          "where": "Header",
+          "notes": "Administrator only"
+        }
+      ],
+      "seeAlso": [
+        {
+          "id": "sign-in",
+          "note": "The picker uses these people"
+        }
+      ],
+      "actions": [
+        {
+          "kind": "wait",
+          "text": "Dana Whitfield",
+          "timeoutMs": 20000
+        },
+        {
+          "kind": "wait",
+          "timeoutMs": 600
+        },
+        {
+          "kind": "fill",
+          "selector": "input[name=\"users-search\"]",
+          "value": "Dana"
+        },
+        {
+          "kind": "wait",
+          "timeoutMs": 800
+        },
+        {
+          "kind": "fill",
+          "selector": "input[name=\"users-search\"]",
+          "value": ""
+        },
+        {
+          "kind": "click",
+          "selector": "button[aria-pressed]:has-text(\"Active\")"
+        },
+        {
+          "kind": "wait",
+          "timeoutMs": 800
+        },
+        {
+          "kind": "click",
+          "selector": "button[aria-pressed]:has-text(\"All\")"
+        },
+        {
+          "kind": "wait",
+          "timeoutMs": 800
+        }
+      ]
+    }
+  ]
+}
