@@ -127,7 +127,7 @@ export function DashboardPage() {
   const title = sandbox.patch?.copy?.dashboardTitle ?? "Dashboard"
   const description =
     sandbox.patch?.copy?.dashboardDescription ??
-    "Where the showroom, the pipeline, and the finance desk stand today."
+    "Morning brief: stock on the lot, open deals, and credit still waiting."
 
   return (
     <div ref={root} className="space-y-4">
