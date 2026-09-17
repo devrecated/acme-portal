@@ -40,6 +40,23 @@
         "title": "Example handbook",
         "details": "This tree is a captured dealer portal, not the DocPuppet product site. The product home is linked in the nav."
       }
+    ],
+    "navGroups": [
+      "Selling",
+      "Operations",
+      "Support"
+    ],
+    "links": [
+      {
+        "group": "Support",
+        "text": "Request a change",
+        "link": "https://github.com/devrecated/acme-portal/issues/new"
+      },
+      {
+        "group": "Support",
+        "text": "Devrecated Solutions",
+        "link": "https://devrecated.com"
+      }
     ]
   },
   "auth": {
@@ -97,7 +114,7 @@
       "id": "dashboard",
       "name": "Dashboard",
       "path": "/",
-      "group": "Showroom",
+      "group": "Selling",
       "drawer": "Dashboard",
       "pageTitle": "Dashboard",
       "expect": "Lamborghini",
@@ -175,13 +192,14 @@
           "kind": "wait",
           "timeoutMs": 1000
         }
-      ]
+      ],
+      "navOrder": 1
     },
     {
       "id": "inventory",
       "name": "Inventory",
       "path": "/inventory",
-      "group": "Showroom",
+      "group": "Selling",
       "drawer": "Inventory",
       "pageTitle": "Inventory",
       "expect": "Lamborghini",
@@ -248,7 +266,8 @@
           "timeoutMs": 1200
         }
       ],
-      "video": false
+      "video": false,
+      "navOrder": 2
     },
     {
       "id": "inventory-filter",
@@ -363,7 +382,8 @@
           "kind": "wait",
           "timeoutMs": 800
         }
-      ]
+      ],
+      "group": "Selling"
     },
     {
       "id": "inventory-detail",
@@ -439,13 +459,14 @@
           "kind": "wait",
           "timeoutMs": 1500
         }
-      ]
+      ],
+      "group": "Selling"
     },
     {
       "id": "leads",
       "name": "Leads",
       "path": "/leads",
-      "group": "Showroom",
+      "group": "Selling",
       "drawer": "Leads",
       "pageTitle": "Leads",
       "expect": "Gideon Volkov",
@@ -501,7 +522,8 @@
           "timeoutMs": 1200
         }
       ],
-      "video": false
+      "video": false,
+      "navOrder": 3
     },
     {
       "id": "leads-new",
@@ -575,13 +597,14 @@
           "kind": "wait",
           "timeoutMs": 800
         }
-      ]
+      ],
+      "group": "Selling"
     },
     {
       "id": "crm",
       "name": "CRM",
       "path": "/crm",
-      "group": "CRM",
+      "group": "Selling",
       "drawer": "CRM",
       "pageTitle": "CRM",
       "expect": "Alonzo Reyes",
@@ -637,7 +660,8 @@
           "timeoutMs": 1200
         }
       ],
-      "video": false
+      "video": false,
+      "navOrder": 4
     },
     {
       "id": "crm-companies",
@@ -688,7 +712,8 @@
           "kind": "wait",
           "timeoutMs": 1500
         }
-      ]
+      ],
+      "group": "Selling"
     },
     {
       "id": "financing",
@@ -760,7 +785,8 @@
           "kind": "wait",
           "timeoutMs": 800
         }
-      ]
+      ],
+      "navOrder": 1
     },
     {
       "id": "users",
@@ -851,7 +877,8 @@
           "kind": "wait",
           "timeoutMs": 800
         }
-      ]
+      ],
+      "navOrder": 2
     }
   ]
 }
