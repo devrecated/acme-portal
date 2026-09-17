@@ -1,44 +1,34 @@
 {
-  "origin": "http://127.0.0.1:3000",
+  "origin": "https://acme-portal-five.vercel.app",
   "colorScheme": "dark",
   "handbook": {
     "product": "Acme Portal Docs",
     "tagline": "Internal guides for Acme Fleet",
-    "summary": "How-tos for the dealer portal: showroom, pipeline, CRM, financing, and users. Current capture 15 September 2026.",
+    "summary": "How-tos for the dealer portal. Sidebar matches Selling, Operations, and Support.",
     "actions": [
       {
         "theme": "brand",
-        "text": "What’s new",
+        "text": "What's new",
         "link": "/changelog"
       },
       {
         "theme": "alt",
-        "text": "How-tos",
-        "link": "/guides/dashboard"
-      },
-      {
-        "theme": "alt",
-        "text": "Roles & access",
-        "link": "/guides/roles"
+        "text": "Guides",
+        "link": "/guides/"
       }
     ],
     "features": [
       {
-        "title": "15 September 2026",
-        "details": "Captured handbook for the live Acme Fleet demo: stills, clips, and what to look for on each screen.",
-        "link": "/changelog"
+        "title": "Selling",
+        "details": "Dashboard, inventory, leads, and CRM."
       },
       {
-        "title": "Showroom",
-        "details": "Dashboard, inventory, and the leads board — how the floor and the pipeline work day to day."
+        "title": "Operations",
+        "details": "Financing and users."
       },
       {
-        "title": "CRM & operations",
-        "details": "Contacts and companies, credit applications, and who can sign in as which teammate."
-      },
-      {
-        "title": "Example handbook",
-        "details": "This tree is a captured dealer portal, not the DocPuppet product site. The product home is linked in the nav."
+        "title": "Support",
+        "details": "Request a change and Devrecated Solutions."
       }
     ],
     "navGroups": [
@@ -119,13 +109,12 @@
       "pageTitle": "Dashboard",
       "expect": "Lamborghini",
       "purpose": "The dashboard is the morning screen: units in stock, inventory value, open pipeline, applications awaiting credit, a featured car, follow-ups, and recent applications.",
-      "lookOut": "After seed loads you should see **Units in stock** with a non-zero count, a featured Lamborghini, follow-ups, and recent applications. The header line about the showroom is not enough — that copy is on the page before the numbers arrive.",
+      "lookOut": "You should see **Units in stock** with a live count, a featured vehicle, follow-ups, and recent applications — the morning desk for the showroom.",
       "how": [
         "Sign in as **Dana Whitfield** (Administrator).",
         "Open **Dashboard** (`/`).",
-        "Wait until a seeded Lamborghini and the stock counts are on the page, not the loading skeletons.",
-        "Scan Units in stock, Inventory value, Open pipeline, and Awaiting credit.",
-        "Use **Next follow-ups** and **Recent applications** to jump into Leads or Financing."
+        "Review Units in stock, Inventory value, Open pipeline, and Awaiting credit.",
+        "Use **Next follow-ups** and **Recent applications** when you need to jump into Leads or Financing."
       ],
       "roles": "Administrator, Sales manager, Sales rep, Finance, and Viewer.",
       "audience": "Dealer staff",
@@ -135,8 +124,8 @@
       ],
       "caption": "Home dashboard — stock, pipeline, featured unit, and follow-ups.",
       "tips": [
-        "If counts are zero, seed has not finished — wait; do not treat the empty chrome as the live desk.",
-        "The featured unit links through to Inventory."
+        "Tap the featured unit when you want to open that vehicle in Inventory.",
+        "Follow-ups and recent applications are shortcuts into Leads and Financing."
       ],
       "controls": [
         {
@@ -177,20 +166,16 @@
         },
         {
           "kind": "wait",
-          "timeoutMs": 800
-        },
-        {
-          "kind": "click",
-          "selector": "a[href=\"/inventory\"]:has-text(\"Lamborghini\")"
+          "timeoutMs": 1200
         },
         {
           "kind": "wait",
-          "text": "Add vehicle||Inventory",
+          "text": "Units in stock||Inventory value||Open pipeline",
           "timeoutMs": 15000
         },
         {
           "kind": "wait",
-          "timeoutMs": 1000
+          "timeoutMs": 1800
         }
       ],
       "navOrder": 1
@@ -218,6 +203,7 @@
         "src/app/(app)/inventory",
         "src/routes/inventory"
       ],
+      "video": false,
       "caption": "Gallery — search, status chips, and vehicle cards.",
       "tips": [
         "Most “missing car” moments are an active status chip or a leftover search.",
@@ -266,7 +252,6 @@
           "timeoutMs": 1200
         }
       ],
-      "video": false,
       "navOrder": 2
     },
     {
@@ -511,6 +496,7 @@
           "note": "Follow-ups on the home screen"
         }
       ],
+      "video": false,
       "actions": [
         {
           "kind": "wait",
@@ -522,7 +508,6 @@
           "timeoutMs": 1200
         }
       ],
-      "video": false,
       "navOrder": 3
     },
     {
@@ -649,6 +634,7 @@
           "note": "Deals for these people"
         }
       ],
+      "video": false,
       "actions": [
         {
           "kind": "wait",
@@ -660,7 +646,6 @@
           "timeoutMs": 1200
         }
       ],
-      "video": false,
       "navOrder": 4
     },
     {
