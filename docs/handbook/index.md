@@ -1,3 +1,4 @@
-# Acme Portal Docs
+# Guides
 
-Captured how-tos for the Acme Fleet dealer portal. Start with [Guides](/guides/).
+How-tos from the latest capture.
+

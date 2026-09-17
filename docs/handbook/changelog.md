@@ -1,3 +1,4 @@
-# What’s new
+# What's new
 
-Deployments refresh this page when capture runs.
+See the latest improvements, features, and changes to Acme Portal.
+
