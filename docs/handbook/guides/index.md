@@ -1,3 +1,4 @@
 # Guides
 
-Handbook pages are written by DocPuppet capture on each staging deploy.
+How-tos from the latest capture.
+
