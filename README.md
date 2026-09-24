@@ -131,7 +131,7 @@ Next.js App Router on React 19. Styling is Tailwind CSS v4 with shadcn/ui. Serve
 
 ## Try Autodevelop
 
-A visitor can type a change from **Try Autodevelop** (sign-in and the top bar, or `?try=1`). Autodevelop builds a session preview. The published UI updates in that tab only. Close the tab or Reset to drop the overlay. Visitor prompts do not write this repository. Operator notes: [docs/TRY-AUTODEVELOP.md](docs/TRY-AUTODEVELOP.md).
+A visitor can type a change from **Try Autodevelop** (sign-in and the top bar, or `?try=1`). Autodevelop builds a session preview. The published UI updates in that tab only. Close the tab or Reset to drop the overlay. Visitor prompts mint Autodevelop tickets only. They do not write github.com/devrecated/acme-portal. Operator notes: [docs/TRY-AUTODEVELOP.md](docs/TRY-AUTODEVELOP.md).
 
 This portal is a Devrecated Solutions demo of Autodevelop.
 

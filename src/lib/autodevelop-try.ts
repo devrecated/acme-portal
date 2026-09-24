@@ -6,6 +6,7 @@
  */
 import { tryOrigin } from "@/lib/autodevelop"
 import { overlayHasSurface, type SandboxPatch } from "@/sandbox/schema"
+import { sanitizeVisitorTryJob } from "@/sandbox/visitor-job"
 
 export type TryStep = {
   id: string
@@ -36,7 +37,6 @@ export type TryJob = {
   steps?: TryStep[]
   tickets?: TryTicket[]
   overlay?: SandboxPatch
-  files?: { path: string; language: string; content: string }[]
   summary?: string
   error?: string
 }
@@ -46,7 +46,7 @@ const parseJob = async (response: Response): Promise<TryJob> => {
   if (!response.ok) {
     throw new Error(body.error || "Autodevelop could not start that change.")
   }
-  return body
+  return sanitizeVisitorTryJob(body)
 }
 
 const postApply = async (url: string, prompt: string) => {

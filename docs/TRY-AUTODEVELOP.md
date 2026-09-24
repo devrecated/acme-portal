@@ -4,7 +4,7 @@ Copyright (c) 2026 Devrecated.
 
 Public sandbox on this demo. A visitor types a prompt. Autodevelop envelopes the intake and builds a session preview. This app then applies a typed overlay so the live pages update in that tab only.
 
-Closing the tab drops the overlay. A Show Me tour walks the change. Production git is not written. Visitor prompts do not create GitHub issues.
+Closing the tab drops the overlay. A Show Me tour walks the change. Production git is not written. Visitor prompts mint Autodevelop tickets only. They never push or open issues on github.com/devrecated/acme-portal. File patches on a Try job are dropped.
 
 ## Origins
 
@@ -27,6 +27,7 @@ Do not set `NEXT_PUBLIC_AUTODEVELOP_TICKETS_ORIGIN`, `NEXT_PUBLIC_AUTODEVELOP_TR
 - Prompt 8–400 characters
 - Eight applies per IP per minute
 - Schema keys only: theme, copy, data, widgets, navigateTo, featureDemo
+- Apply and job responses drop `files` and rewrite any ticket whose kanban names `devrecated/acme-portal`
 
 Turnstile is not wired until a site key exists. Do not commit secret values.
 

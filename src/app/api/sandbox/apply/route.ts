@@ -11,6 +11,7 @@ import { isLoopbackOrigin } from "@/lib/autodevelop"
 import { allowSandboxApply } from "@/sandbox/apply-rate-limit"
 import { applyRequestSchema, parseSandboxOverlay } from "@/sandbox/schema"
 import { generateHostTryPreview } from "@/sandbox/try-preview"
+import { sanitizeVisitorTryJob } from "@/sandbox/visitor-job"
 
 const autodevelopApiOrigin = () =>
   (process.env.AUTODEVELOP_API_ORIGIN || "http://127.0.0.1:8789").replace(/\/$/, "")
@@ -88,7 +89,7 @@ export async function POST(request: Request) {
       try {
         if (body) {
           parseSandboxOverlay(body.overlay)
-          return NextResponse.json(body, { status: response.status })
+          return NextResponse.json(sanitizeVisitorTryJob(body), { status: response.status })
         }
       } catch {
         // Autodevelop answered without a usable overlay. Use the host preview.
@@ -96,5 +97,5 @@ export async function POST(request: Request) {
     }
   }
 
-  return NextResponse.json(hostJob(parsed.data.prompt))
+  return NextResponse.json(sanitizeVisitorTryJob(hostJob(parsed.data.prompt)))
 }
