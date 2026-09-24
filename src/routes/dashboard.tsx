@@ -4,9 +4,7 @@ import { useGSAP } from "@gsap/react"
 import gsap from "gsap"
 import {
   Banknote,
-  CircleDollarSign,
   Target,
-  Car,
   type LucideIcon,
 } from "lucide-react"
 import Link from "next/link"
@@ -14,15 +12,12 @@ import { useRef } from "react"
 import {
   Area,
   AreaChart,
-  Bar,
-  BarChart,
   CartesianGrid,
   XAxis,
   YAxis,
 } from "recharts"
 
 import { PageHeader } from "@/components/common/page-header"
-import { StatCard } from "@/components/common/stat-card"
 import { VehiclePhoto } from "@/components/common/vehicle-photo"
 import {
   ApplicationStatusBadge,
@@ -57,16 +52,11 @@ import {
   formatRelative,
 } from "@/lib/format"
 import { useSandbox } from "@/sandbox/sandbox-context"
-import { VEHICLE_STATUS_LABELS } from "@/types"
 
 gsap.registerPlugin(useGSAP)
 
 const revenueConfig = {
   revenue: { label: "Revenue", color: "var(--chart-1)" },
-} satisfies ChartConfig
-
-const inventoryConfig = {
-  count: { label: "Units", color: "var(--chart-1)" },
 } satisfies ChartConfig
 
 export function DashboardPage() {
@@ -82,19 +72,36 @@ export function DashboardPage() {
       const mm = gsap.matchMedia()
       mm.add("(prefers-reduced-motion: no-preference)", () => {
         gsap.fromTo(
-          ".motion-stat",
-          { autoAlpha: 0, y: 14 },
-          { autoAlpha: 1, y: 0, duration: 0.4, stagger: 0.06, ease: "power2.out" },
+          ".motion-hero",
+          { autoAlpha: 0, scale: 1.02 },
+          { autoAlpha: 1, scale: 1, duration: 0.65, ease: "power2.out" },
         )
         gsap.fromTo(
-          ".motion-panel",
+          ".motion-hero-copy",
           { autoAlpha: 0, y: 18 },
+          { autoAlpha: 1, y: 0, duration: 0.5, delay: 0.18, ease: "power2.out" },
+        )
+        gsap.fromTo(
+          ".motion-stat",
+          { autoAlpha: 0, y: 10 },
           {
             autoAlpha: 1,
             y: 0,
-            duration: 0.45,
-            stagger: 0.08,
-            delay: 0.12,
+            duration: 0.35,
+            stagger: 0.05,
+            delay: 0.28,
+            ease: "power2.out",
+          },
+        )
+        gsap.fromTo(
+          ".motion-panel",
+          { autoAlpha: 0, y: 16 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.4,
+            stagger: 0.07,
+            delay: 0.36,
             ease: "power2.out",
           },
         )
@@ -113,209 +120,186 @@ export function DashboardPage() {
     .toSorted((a, b) => b.createdAt.localeCompare(a.createdAt))
     .slice(0, 4)
 
-  const inventoryChartData =
-    summary?.inventoryByStatus.map((row) => ({
-      status: VEHICLE_STATUS_LABELS[row.status],
-      count: row.count,
-    })) ?? []
-
   const featured =
     vehicles.find((vehicle) => vehicle.status === "available" && vehicle.imageUrl) ??
     vehicles.find((vehicle) => vehicle.imageUrl)
   const sandbox = useSandbox()
   const highlight = sandbox.patch?.widgets?.dashboardHighlightStat
-  const title = sandbox.patch?.copy?.dashboardTitle ?? "Dashboard"
+  const title = sandbox.patch?.copy?.dashboardTitle ?? "On the floor"
   const description =
     sandbox.patch?.copy?.dashboardDescription ??
-    "Morning brief: stock on the lot, open deals, and credit still waiting."
+    "Featured stock, the pipeline, and the finance desk — one glance."
 
   return (
-    <div ref={root} className="space-y-4">
-      <PageHeader
-        title={title}
-        description={description}
-      />
+    <div ref={root} className="space-y-5">
+      <PageHeader title={title} description={description} />
 
-      <div className={`grid grid-cols-2 gap-3 ${highlight ? "xl:grid-cols-5" : "xl:grid-cols-4"}`}>
+      <section className="motion-hero relative overflow-hidden rounded-xl bg-foreground/5">
+        {featured ? (
+          <Link
+            href="/inventory"
+            className="group relative block min-h-[280px] outline-none focus-visible:ring-2 focus-visible:ring-ring md:min-h-[360px]"
+          >
+            <VehiclePhoto
+              vehicle={featured}
+              width={1600}
+              height={900}
+              fetchPriority="high"
+              className="absolute inset-0 h-full w-full transition-transform duration-700 ease-out group-hover:scale-[1.02]"
+            />
+            <div
+              aria-hidden
+              className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-black/10"
+            />
+            <div className="motion-hero-copy absolute inset-x-0 bottom-0 flex flex-col gap-3 p-5 sm:p-7 md:flex-row md:items-end md:justify-between">
+              <div className="max-w-xl space-y-2 text-white">
+                <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-white/70">
+                  Featured · {featured.stockNumber}
+                </p>
+                <h2 className="font-heading text-pretty text-3xl leading-tight tracking-tight sm:text-4xl md:text-5xl">
+                  {featured.year} {featured.make} {featured.model}
+                </h2>
+                <p className="text-sm text-white/80 sm:text-base">
+                  {featured.location} · {formatNumber(featured.mileage)} mi ·{" "}
+                  {featured.condition}
+                </p>
+              </div>
+              <div className="shrink-0 space-y-1 md:text-right">
+                <p className="font-heading text-3xl tracking-tight text-white tabular-nums sm:text-4xl">
+                  {formatCurrency(featured.listPrice)}
+                </p>
+                <p className="text-xs text-white/65">Asking · open inventory</p>
+              </div>
+            </div>
+          </Link>
+        ) : (
+          <div className="flex min-h-52 items-center justify-center p-8 text-center">
+            <div className="space-y-1">
+              <p className="font-heading text-2xl">Showroom</p>
+              <p className="text-sm text-muted-foreground">
+                No vehicle photos on the books yet.
+              </p>
+            </div>
+          </div>
+        )}
+      </section>
+
+      <div
+        className={`motion-panel grid gap-px overflow-hidden rounded-xl border bg-border ${
+          highlight ? "grid-cols-2 sm:grid-cols-3 xl:grid-cols-5" : "grid-cols-2 xl:grid-cols-4"
+        }`}
+      >
         {isLoading || !summary ? (
-          Array.from({ length: highlight ? 5 : 4 }, (_, i) => <Skeleton key={i} className="h-[72px]" />)
+          Array.from({ length: highlight ? 5 : 4 }, (_, i) => (
+            <Skeleton key={i} className="h-[76px] rounded-none" />
+          ))
         ) : (
           <>
             {highlight ? (
-              <div data-feature-demo-anchor="sandbox-stat">
-                <StatCard
-                  compact
+              <div
+                data-feature-demo-anchor="sandbox-stat"
+                className="motion-stat bg-card px-3 py-3 sm:px-4"
+              >
+                <StatCell
                   label={highlight.label}
                   value={highlight.value}
                   hint={highlight.hint}
-                  icon={Target}
                   accent
-                  className="motion-stat"
                 />
               </div>
             ) : null}
-            <StatCard
-              compact
-              label="Units in stock"
-              value={formatNumber(summary.inventoryCount)}
-              hint={`${summary.availableCount} available to sell`}
-              icon={Car}
-              accent
-              className="motion-stat"
-            />
-            <StatCard
-              compact
-              label="Inventory value"
-              value={formatCompactCurrency(summary.inventoryValue)}
-              hint="Combined asking price"
-              icon={CircleDollarSign}
-              className="motion-stat"
-            />
-            <StatCard
-              compact
-              label="Open pipeline"
-              value={formatCompactCurrency(summary.pipelineValue)}
-              hint={`${summary.openLeads} active leads`}
-              icon={Target}
-              className="motion-stat"
-            />
-            <StatCard
-              compact
-              label="Awaiting credit"
-              value={formatNumber(summary.applicationsInReview)}
-              hint={`${summary.fundedThisMonth} funded this month`}
-              icon={Banknote}
-              className="motion-stat"
-            />
+            <div className="motion-stat bg-card px-3 py-3 sm:px-4">
+              <StatCell
+                label="Units in stock"
+                value={formatNumber(summary.inventoryCount)}
+                hint={`${summary.availableCount} available`}
+              />
+            </div>
+            <div className="motion-stat bg-card px-3 py-3 sm:px-4">
+              <StatCell
+                label="Inventory value"
+                value={formatCompactCurrency(summary.inventoryValue)}
+                hint="Combined asking"
+              />
+            </div>
+            <div className="motion-stat bg-card px-3 py-3 sm:px-4">
+              <StatCell
+                label="Open pipeline"
+                value={formatCompactCurrency(summary.pipelineValue)}
+                hint={`${summary.openLeads} active leads`}
+              />
+            </div>
+            <div className="motion-stat bg-card px-3 py-3 sm:px-4">
+              <StatCell
+                label="Awaiting credit"
+                value={formatNumber(summary.applicationsInReview)}
+                hint={`${summary.fundedThisMonth} funded this month`}
+              />
+            </div>
           </>
         )}
       </div>
 
-      <div className="grid gap-3 lg:grid-cols-5 lg:items-stretch">
-        <Card className="motion-panel overflow-hidden py-0 lg:col-span-2">
-          {featured ? (
-            <Link
-              href="/inventory"
-              className="relative block h-40 outline-none lg:h-full lg:min-h-52 focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <VehiclePhoto
-                vehicle={featured}
-                width={800}
-                height={450}
-                fetchPriority="high"
-                className="h-full w-full"
-              />
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent p-3 pt-10 text-white">
-                <p className="text-pretty text-sm font-medium">
-                  {featured.year} {featured.make} {featured.model}
-                </p>
-                <p className="text-xs text-white/80">
-                  {featured.stockNumber} · {formatCurrency(featured.listPrice)} · On
-                  the floor
-                </p>
-              </div>
-            </Link>
+      <Card size="sm" className="motion-panel">
+        <CardHeader>
+          <CardTitle>Revenue</CardTitle>
+          <CardDescription>Closed business over the last twelve months</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {summary ? (
+            <ChartContainer config={revenueConfig} className="h-40 w-full md:h-48">
+              <AreaChart data={summary.monthlySales} margin={{ left: 4, right: 4 }}>
+                <defs>
+                  <linearGradient id="revenueFill" x1="0" y1="0" x2="0" y2="1">
+                    <stop
+                      offset="5%"
+                      stopColor="var(--color-revenue)"
+                      stopOpacity={0.3}
+                    />
+                    <stop
+                      offset="95%"
+                      stopColor="var(--color-revenue)"
+                      stopOpacity={0.02}
+                    />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="month"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  width={52}
+                  tickFormatter={(value: number) => formatCompactCurrency(value)}
+                />
+                <ChartTooltip
+                  content={
+                    <ChartTooltipContent
+                      formatter={(value) => formatCurrency(Number(value))}
+                    />
+                  }
+                />
+                <Area
+                  dataKey="revenue"
+                  type="monotone"
+                  stroke="var(--color-revenue)"
+                  strokeWidth={2}
+                  fill="url(#revenueFill)"
+                />
+              </AreaChart>
+            </ChartContainer>
           ) : (
-            <CardHeader className="py-6">
-              <CardTitle>Showroom</CardTitle>
-              <CardDescription>No vehicle photos on the books yet.</CardDescription>
-            </CardHeader>
+            <Skeleton className="h-40 w-full md:h-48" />
           )}
-        </Card>
+        </CardContent>
+      </Card>
 
-        <Card size="sm" className="motion-panel lg:col-span-3">
-          <CardHeader>
-            <CardTitle>Revenue</CardTitle>
-            <CardDescription>Closed business over the last twelve months</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {summary ? (
-              <ChartContainer config={revenueConfig} className="h-36 w-full lg:h-40">
-                <AreaChart data={summary.monthlySales} margin={{ left: 4, right: 4 }}>
-                  <defs>
-                    <linearGradient id="revenueFill" x1="0" y1="0" x2="0" y2="1">
-                      <stop
-                        offset="5%"
-                        stopColor="var(--color-revenue)"
-                        stopOpacity={0.3}
-                      />
-                      <stop
-                        offset="95%"
-                        stopColor="var(--color-revenue)"
-                        stopOpacity={0.02}
-                      />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                  <XAxis
-                    dataKey="month"
-                    tickLine={false}
-                    axisLine={false}
-                    tickMargin={8}
-                  />
-                  <YAxis
-                    tickLine={false}
-                    axisLine={false}
-                    tickMargin={8}
-                    width={52}
-                    tickFormatter={(value: number) => formatCompactCurrency(value)}
-                  />
-                  <ChartTooltip
-                    content={
-                      <ChartTooltipContent
-                        formatter={(value) => formatCurrency(Number(value))}
-                      />
-                    }
-                  />
-                  <Area
-                    dataKey="revenue"
-                    type="monotone"
-                    stroke="var(--color-revenue)"
-                    strokeWidth={2}
-                    fill="url(#revenueFill)"
-                  />
-                </AreaChart>
-              </ChartContainer>
-            ) : (
-              <Skeleton className="h-36 w-full lg:h-40" />
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-        <Card size="sm" className="motion-panel">
-          <CardHeader>
-            <CardTitle>Inventory by status</CardTitle>
-            <CardDescription>Every unit currently on the books</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {summary ? (
-              <ChartContainer config={inventoryConfig} className="h-36 w-full">
-                <BarChart
-                  data={inventoryChartData}
-                  layout="vertical"
-                  margin={{ left: 8, right: 8 }}
-                >
-                  <CartesianGrid horizontal={false} strokeDasharray="3 3" />
-                  <XAxis type="number" tickLine={false} axisLine={false} />
-                  <YAxis
-                    type="category"
-                    dataKey="status"
-                    tickLine={false}
-                    axisLine={false}
-                    width={88}
-                  />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  <Bar dataKey="count" fill="var(--color-count)" radius={4} />
-                </BarChart>
-              </ChartContainer>
-            ) : (
-              <Skeleton className="h-36 w-full" />
-            )}
-          </CardContent>
-        </Card>
-
+      <div className="grid gap-3 md:grid-cols-2">
         <ListCard
           title="Next follow-ups"
           description="Leads with the soonest scheduled touch"
@@ -372,6 +356,36 @@ export function DashboardPage() {
           ))}
         </ListCard>
       </div>
+    </div>
+  )
+}
+
+function StatCell({
+  label,
+  value,
+  hint,
+  accent = false,
+}: {
+  label: string
+  value: string
+  hint?: string
+  accent?: boolean
+}) {
+  return (
+    <div className="space-y-0.5">
+      <p
+        className={`text-[11px] font-medium uppercase tracking-wide ${
+          accent ? "text-primary" : "text-muted-foreground"
+        }`}
+      >
+        {label}
+      </p>
+      <p className="text-lg font-semibold tracking-tight tabular-nums sm:text-xl">
+        {value}
+      </p>
+      {hint ? (
+        <p className="hidden truncate text-xs text-muted-foreground sm:block">{hint}</p>
+      ) : null}
     </div>
   )
 }
