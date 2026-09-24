@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 Devrecated
+ */
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { lstatSync } from "node:fs";

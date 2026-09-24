@@ -5,6 +5,8 @@ alwaysApply: true
 
 # Chat stays in chat
 
+Copyright (c) 2026 Devrecated.
+
 Never copy a chat instruction, aside, or “keep this quiet” note into a repo file.
 
 That includes LICENSE, NOTICE, README, legal/IP docs, employee guides, Project readmes, mail HTML, commits, and comments.

@@ -11,6 +11,10 @@ import { boardUrl, digestRecipients } from "./people.mjs";
 import {
   assertMailConfirm,
   buildMailDoc,
+  mailTransportOf,
+  postHostedMail,
+  readLoginToken,
+  resolveMailHost,
 } from "./send-stakeholder-mail.mjs";
 
 const loadAdmin = async () => {
@@ -22,8 +26,9 @@ if (process.argv[1]?.endsWith("email-process-change.mjs")) {
   const args = parseArgs();
   try {
     const { config } = loadConfig({ requireInstance: true });
-    const projectId = config.mail.firestoreProject;
-    assertSafeProject(projectId, config);
+    const transport = mailTransportOf(config);
+    const projectId = config.mail?.firestoreProject;
+    if (transport === "firestore" || projectId) assertSafeProject(projectId, config);
     const to = digestRecipients(config);
     const board = boardUrl(config);
     const subject = "Update: how ticket emails and the GitHub board work";
@@ -34,10 +39,27 @@ if (process.argv[1]?.endsWith("email-process-change.mjs")) {
       "<p>Reply on the GitHub ticket when we ask a question. You do not move board columns.</p>",
     ].join("\n");
     if (args.dryRun) {
-      printJson({ ok: true, dryRun: true, projectId, to, subject });
+      printJson({ ok: true, dryRun: true, transport, projectId, to, subject });
       process.exit(0);
     }
     assertMailConfirm({ dryRun: false, ci: args.flags.has("ci"), token: args.values.confirm });
+    if (transport === "hosted") {
+      const result = await postHostedMail({
+        origin: resolveMailHost(process.env),
+        token: readLoginToken(process.env),
+        to,
+        subject,
+        html,
+        confirm: args.values.confirm,
+      });
+      printJson({
+        ok: true,
+        transport: result.transport || "hosted",
+        id: result.id,
+        toCount: result.toCount || to.length,
+      });
+      process.exit(0);
+    }
     const admin = await loadAdmin();
     if (!admin.apps.length) {
       admin.initializeApp({ projectId, storageBucket: `${projectId}.appspot.com` });

@@ -3,7 +3,7 @@
  */
 import test from "node:test";
 import assert from "node:assert/strict";
-import { classifySessionOutcome } from "../../../skills/autodevelop/scripts/outcomes-client.mjs";
+import { classifySessionOutcome } from "../../../skills/autodevelop-internal/scripts/outcomes-client.mjs";
 
 test("session-end success requires a claimed ticket and no hard-fail flags", () => {
   const row = classifySessionOutcome({

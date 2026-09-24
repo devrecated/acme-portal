@@ -1,19 +1,19 @@
 #!/usr/bin/env node
 /**
  * Copyright (c) 2026 Devrecated
- * Silent unless product files changed with no session ticket. Then one chat ask.
- * Fail open. Never create issues.
+ * Silent unless product files changed with no session ticket. Then one chat ask
+ * to bind or call issues_ensure. Fail open. Never create issues from this hook.
  */
 import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { asString, readHookInput, writeHookOutput } from "../lib.mjs";
-import { kitScriptPath, workspaceRootFromHook } from "../../../skills/autodevelop/scripts/config-load.mjs";
+import { kitScriptPath, workspaceRootFromHook } from "../../../skills/autodevelop-internal/scripts/config-load.mjs";
 import {
   readSession,
   sessionDir,
-} from "../../../skills/autodevelop/scripts/session.mjs";
+} from "../../../skills/autodevelop-internal/scripts/session.mjs";
 
 export const normalizePath = (filePath) => String(filePath || "").replace(/\\/g, "/");
 
@@ -21,7 +21,7 @@ export const isDevrecatedExemptPath = (filePath) => {
   const p = normalizePath(filePath);
   if (!p) return true;
   if (/\.cursor\/local\//.test(p)) return true;
-  if (/\.cursor\/(skills|hooks|rules)\/autodevelop(\/|$)/.test(p)) return true;
+  if (/\.cursor\/(skills|hooks|rules)\/autodevelop(-internal)?(\/|$)/.test(p)) return true;
   if (/\.cursor\/(skills|hooks|rules)\/third-party(\/|$)/.test(p)) return true;
   if (/\.cursor\/(agents|plans|commands)(\/|$)/.test(p)) return true;
   if (/\.cursor\/rules\/(frontend|design|testing|documents|cybersecurity)(\/|$)/.test(p)) return true;
@@ -67,8 +67,9 @@ export const buildAskMessage = (ticketLines) => {
       ? `If this work is already on the board, reply with the issue number from this list:\n${ticketLines.map((line) => `- ${line}`).join("\n")}`
       : "If this work is already on the board, reply with the existing issue number (e.g. #812).";
   return [
-    "Product work is not on the board. Stop implementing.",
-    "If none of the open tickets match, say create and we will file one (stakeholder, assignee, CCs, start, estimate).",
+    "Product work is not bound to a board ticket.",
+    "Bind an existing open ticket if this chat already named one (same effort as last turn). If none match, call issues_ensure to file one GitHub Project issue, write session.json, then continue.",
+    "Do not invent a number. Do not open a second issue. Do not open child issues.",
     list,
   ].join(" ");
 };

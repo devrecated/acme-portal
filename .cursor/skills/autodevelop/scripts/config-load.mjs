@@ -220,7 +220,10 @@ export const validateConfig = (config) => {
   if (!config.github?.projectNumber) errors.push("github.projectNumber is required");
   if (!config.github?.projectId) errors.push("github.projectId is required");
   if (!config.fields?.status?.id) errors.push("fields.status.id is required");
-  if (!config.mail?.firestoreProject) errors.push("mail.firestoreProject is required");
+  const mailTransport = String(config.mail?.transport || "hosted");
+  if (mailTransport === "firestore" && !config.mail?.firestoreProject) {
+    errors.push("mail.firestoreProject is required");
+  }
   if (!Array.isArray(config.mail?.allowlist)) errors.push("mail.allowlist must be an array");
   if (!Array.isArray(config.forbiddenProjects)) errors.push("forbiddenProjects must be an array");
   if (!config.preview?.firebaseProject) errors.push("preview.firebaseProject is required");

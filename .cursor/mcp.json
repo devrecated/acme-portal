@@ -7,11 +7,7 @@
       ]
     },
     "autodevelop-host": {
-      "command": "node",
-      "args": [
-        "${workspaceFolder}/node_modules/@devrecated/autodevelop/packages/cli/bin.mjs",
-        "mcp"
-      ]
+      "url": "https://brain.devrecated.com/mcp"
     }
   }
 }

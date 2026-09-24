@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 /**
+ * Copyright (c) 2026 Devrecated
+ */
+/**
  * Confirm complex heuristic findings (CodeAstra) and score feature hunks
  * (CodeReviewer). Writes llm_reviews. Temperature 0 + JSON grammar.
  */

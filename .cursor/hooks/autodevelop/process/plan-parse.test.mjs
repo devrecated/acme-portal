@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 Devrecated
+ */
 import test from "node:test";
 import assert from "node:assert/strict";
 import { extractInventoryPaths, parsePlanTodos, pathExistsInRepo } from "./plan-parse.mjs";
@@ -27,21 +30,21 @@ todos:
 
 test("extractInventoryPaths keeps repo paths", () => {
   const paths = extractInventoryPaths(
-    "See [x](.cursor/skills/autodevelop/foo/SKILL.md) and `scripts/deploy-hosting-dev.sh`",
+    "See [x](.cursor/skills/autodevelop-internal/foo/SKILL.md) and `scripts/deploy-hosting-dev.sh`",
   );
-  assert.ok(paths.includes(".cursor/skills/autodevelop/foo/SKILL.md"));
+  assert.ok(paths.includes(".cursor/skills/autodevelop-internal/foo/SKILL.md"));
   assert.ok(paths.includes("scripts/deploy-hosting-dev.sh"));
 });
 
 test("pathExistsInRepo treats origin-folder moves as present", () => {
   assert.equal(pathExistsInRepo(repoRoot, ".cursor/local/gh-projects/session.json"), true);
   assert.equal(
-    pathExistsInRepo(repoRoot, ".cursor/skills/autodevelop/ingest-notes-to-project/SKILL.md"),
+    pathExistsInRepo(repoRoot, ".cursor/skills/autodevelop-internal/ingest-notes-to-project/SKILL.md"),
     true,
   );
   assert.equal(pathExistsInRepo(repoRoot, ".cursor/hooks/lib.mjs"), true);
   assert.equal(
-    pathExistsInRepo(repoRoot, ".cursor/skills/autodevelop/config.json"),
+    pathExistsInRepo(repoRoot, ".cursor/skills/autodevelop-internal/config.json"),
     true,
   );
   assert.equal(pathExistsInRepo(repoRoot, ".cursor/skills/does-not-exist/SKILL.md"), false);

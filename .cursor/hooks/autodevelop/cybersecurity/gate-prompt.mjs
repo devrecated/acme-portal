@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+/**
+ * Copyright (c) 2026 Devrecated
+ */
 import { asString, collectStrings, readHookInput, writeHookOutput } from '../lib.mjs'
 
 const RISK =
@@ -21,7 +24,7 @@ try {
     writeHookOutput({
       continue: true,
       user_message:
-        'High-risk intent noted. Production deploy, force-push, skipped hooks, committed secrets, and prod portal videos are gated: the shell hook will ask or deny. Prefer pnpm env:stg / deploy:stg; production needs an explicit confirm.',
+        'High-risk intent noted. Production deploy, force-push, skipped hooks, committed secrets, and prod portal videos are gated: the shell hook will ask or deny. Prefer pnpm env:sandbox / deploy:stg; production needs an explicit confirm.',
     })
   }
 } catch {

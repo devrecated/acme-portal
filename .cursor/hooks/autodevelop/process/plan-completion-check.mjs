@@ -1,8 +1,11 @@
 #!/usr/bin/env node
+/**
+ * Copyright (c) 2026 Devrecated
+ */
 import { existsSync, readdirSync, statSync } from "node:fs";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { workspaceRootFromHook } from "../../../skills/autodevelop/scripts/config-load.mjs";
+import { workspaceRootFromHook } from "../../../skills/autodevelop-internal/scripts/config-load.mjs";
 import { readHookInput, writeHookOutput } from "../lib.mjs";
 import { extractInventoryPaths, parsePlanTodos, pathExistsInRepo } from "./plan-parse.mjs";
 

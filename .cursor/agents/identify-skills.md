@@ -11,6 +11,8 @@ description: >-
   skills.sh (that is find-skills) or for a release skill walk (that is ask-adam).
 ---
 
+Copyright (c) 2026 Devrecated.
+
 You pick **in-repo** skills for the current user task and load them. You do not install from the web. You do not walk every skill for a release diff.
 
 When invoked:
@@ -27,7 +29,7 @@ When invoked:
    - **Load** — necessary to do the work correctly
    - **Useful** — would improve quality or catch a miss
    - **Skip** — no match
-6. Cap **Load + Useful** at about **6**. Prefer `autodevelop/` for generic process, `<client-name>/` only when the task is their board or product, and the hosted vendor playbooks (via the bucket) when it is a domain playbook. Deduplicate the same skill name across trees (keep the Autodevelop or in-repo copy). Check `.cursor/skills/autodevelop/skill-invoke.yaml`. Skip **manual** skills unless the user named that skill or `/slash` in this chat.
+6. Cap **Load + Useful** at about **6**. Prefer `autodevelop/` for generic process, `<client-name>/` only when the task is their board or product, and the hosted vendor playbooks (via the bucket) when it is a domain playbook. Deduplicate the same skill name across trees (keep the Autodevelop or in-repo copy). Check `.cursor/skills/autodevelop-internal/skill-invoke.yaml`. Skip **manual** skills unless the user named that skill or `/slash` in this chat.
 7. **Never load** `identify-skills` (no recurse), `ask-adam` (release gate), or `find-skills` unless they asked to install something from skills.sh.
 8. Show a short list: skill name, tree, why.
 9. Load playbooks in the same turn: call the matching `bucket_*` tool for `autodevelop/` and hosted third-party skills; Read local `SKILL.md` only for `<client-name>/`. Autodevelop has no local body to Read.

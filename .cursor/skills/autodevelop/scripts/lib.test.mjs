@@ -8,7 +8,12 @@ import { allowlistCheck, parseArgs, ticketTemplate } from "./lib.mjs";
 import { findDuplicates } from "./dedup-issues.mjs";
 import { verifyAcceptance } from "./verify-ac.mjs";
 import { assertPreviewSafe } from "./deploy-preview-channel.mjs";
-import { buildMailDoc } from "./send-stakeholder-mail.mjs";
+import {
+  buildMailDoc,
+  mailTransportOf,
+  postHostedMail,
+  resolveMailHost,
+} from "./send-stakeholder-mail.mjs";
 import { ensureIssueLink } from "./link-pr.mjs";
 import { extractImageUrls } from "./ingest-ticket-media.mjs";
 import { parseDocId } from "./fetch-gdoc.mjs";
@@ -89,6 +94,46 @@ test("buildMailDoc matches Trigger Email shape", () => {
     to: "a@b.com",
     message: { subject: "Hi", html: "<p>x</p>" },
   });
+});
+
+test("mailTransportOf defaults to hosted", () => {
+  assert.equal(mailTransportOf({}), "hosted");
+  assert.equal(mailTransportOf({ mail: { transport: "hosted" } }), "hosted");
+  assert.equal(mailTransportOf({ mail: { transport: "firestore" } }), "firestore");
+});
+
+test("resolveMailHost prefers AUTODEVELOP_HOST", () => {
+  assert.equal(resolveMailHost({ AUTODEVELOP_HOST: "https://host.example/" }), "https://host.example");
+  assert.equal(
+    resolveMailHost({ AUTODEVELOP_ENTITLEMENT_URL: "https://host.example/entitlement" }),
+    "https://host.example",
+  );
+  assert.equal(resolveMailHost({}), "http://127.0.0.1:8787");
+});
+
+test("postHostedMail posts to /cli/mail and omits html from the result", async () => {
+  let captured;
+  const result = await postHostedMail({
+    origin: "http://127.0.0.1:8787",
+    token: "login-token",
+    to: ["pat@example.com"],
+    subject: "Update",
+    html: "<p>body-must-not-appear-in-result</p>",
+    confirm: "tok",
+    fetchImpl: async (url, init) => {
+      captured = { url, auth: init.headers.Authorization, body: JSON.parse(init.body) };
+      return {
+        ok: true,
+        json: async () => ({ ok: true, id: "out-1", transport: "outbox", toCount: 1 }),
+      };
+    },
+  });
+  assert.equal(captured.url, "http://127.0.0.1:8787/cli/mail");
+  assert.equal(captured.auth, "Bearer login-token");
+  assert.equal(captured.body.confirm, "tok");
+  assert.equal(captured.body.subject, "Update");
+  assert.equal(result.id, "out-1");
+  assert.equal(JSON.stringify(result).includes("body-must-not-appear-in-result"), false);
 });
 
 test("ensureIssueLink appends Closes", () => {

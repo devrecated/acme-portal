@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+/**
+ * Copyright (c) 2026 Devrecated
+ */
 import fs from "node:fs";
 import path from "node:path";
 import { createRequire } from "node:module";

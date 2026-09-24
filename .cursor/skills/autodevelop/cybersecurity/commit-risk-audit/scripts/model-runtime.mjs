@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2026 Devrecated
+ *
  * Local JS inference for commit review.
  * CodeReviewer: ONNX via @huggingface/transformers
  * CodeAstra: Mistral-7B-Instruct GGUF via node-llama-cpp (Metal on Apple Silicon)

@@ -5,15 +5,15 @@
  * Session-end outcome log. Fail-open. Never sends mail or chat.
  */
 import { exitIfHookDisabled, readHookInput, writeHookOutput } from "../lib.mjs";
-import { workspaceRootFromHook } from "../../../skills/autodevelop/scripts/config-load.mjs";
-import { readSession } from "../../../skills/autodevelop/scripts/session.mjs";
+import { workspaceRootFromHook } from "../../../skills/autodevelop-internal/scripts/config-load.mjs";
+import { readSession } from "../../../skills/autodevelop-internal/scripts/session.mjs";
 import {
   classifySessionOutcome,
   consumeOutcomeDecision,
   detectWorkspaceKind,
   postOutcome,
   readOutcomeState,
-} from "../../../skills/autodevelop/scripts/outcomes-client.mjs";
+} from "../../../skills/autodevelop-internal/scripts/outcomes-client.mjs";
 
 if (exitIfHookDisabled("log-session-outcome")) process.exit(0);
 

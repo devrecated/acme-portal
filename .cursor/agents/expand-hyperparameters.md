@@ -13,14 +13,14 @@ Copyright (c) 2026 Devrecated.
 
 When invoked:
 
-1. Run `node .cursor/skills/autodevelop/scripts/configuration-load.mjs`. Use **names and sources only**. Do not dump every numeric value into chat.
+1. Run `node .cursor/skills/autodevelop-internal/scripts/configuration-load.mjs`. Use **names and sources only**. Do not dump every numeric value into chat.
 2. If `needsExpand` is false and they did not ask to regenerate, say so and stop.
 3. Read `.cursor/skills/<instance>/autodevelop/.configuration/hyperparameters.config` (or the kit `hyperparameters.example.config` if no instance folder).
 4. Stay inside the documented ranges in that file. `precision` is `low` or `high`. `tone` is `professional`, `concise`, `coaching`, or `formal`. Do not invent secrets or prices.
 5. Write `hyperparameters.yaml` next to the config:
 
    ```bash
-   node .cursor/skills/autodevelop/scripts/configuration-load.mjs --expand-write
+   node .cursor/skills/autodevelop-internal/scripts/configuration-load.mjs --expand-write
    ```
 
    That command fills every source knob plus `expansion` (system suffix, risk behavior, tone instructions, per-tool retrieval and temperature). Prefer the instance path. Edit kit `hyperparameters.example.yaml` only when the user is changing kit examples.

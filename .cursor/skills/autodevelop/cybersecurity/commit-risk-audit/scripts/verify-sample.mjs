@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 /**
+ * Copyright (c) 2026 Devrecated
+ */
+/**
  * Sample-and-verify gate: re-check 10 high findings (including ≥3 api_auth)
  * with parent/sibling context before any team PDF is written.
  */

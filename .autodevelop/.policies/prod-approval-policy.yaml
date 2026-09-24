@@ -1,0 +1,10 @@
+# Copyright (c) 2026 Devrecated
+# Default prod-approval-policy. Instance copies live under .autodevelop/.policies/prod-approval-policy.yaml.
+# Git: YES PUSH TO RELEASE when branch-policy.askProduction is true.
+# Local deploy: DEPLOYED TO PRODUCTION.
+
+approvalRequired: true
+gitConfirmFollowsBranchAsk: true
+deployConfirmRequired: true
+requireHeadOnProduction: true
+sequentialDeploys: true

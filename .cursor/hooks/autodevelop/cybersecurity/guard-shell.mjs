@@ -1,6 +1,9 @@
 #!/usr/bin/env node
+/**
+ * Copyright (c) 2026 Devrecated
+ */
 import { asString, collectStrings, readHookInput, writeHookOutput } from '../lib.mjs'
-import { loadConfig, workspaceRootFromHook } from '../../../skills/autodevelop/scripts/config-load.mjs'
+import { loadConfig, workspaceRootFromHook } from '../../../skills/autodevelop-internal/scripts/config-load.mjs'
 
 const SECRET_PATH =
   /(?:^|[\s'"=/])(?:\.env(?:\.[A-Za-z0-9._-]*)?|tests\/\.env|tests\/portal\/\.auth(?:\/\S*)?|serviceAccount\.json|firebase-admin[^/\s]*\.json|service\.json|\S*\.pem)(?:\s|$|["'])/i
@@ -13,7 +16,7 @@ const FORCE_PUSH =
 const NO_VERIFY = /\bgit\s+(?:commit|push)\b[\s\S]*--no-verify\b/i
 
 const PROD_SCRIPT =
-  /\b(?:env:prod|deploy:prod|release:prod|release-prod|deploy:api:prod|deploy:docs:prod|docs-release-prod|docs-deploy-prod)\b/i
+  /\b(?:env:prod|deploy:prod|release:prod|release-prod|deploy:docs:prod|docs-release-prod|docs-deploy-prod)\b/i
 const PROD_API = /\bgcloud\s+run\s+deploy\s+\S+-prod\b/i
 
 const forbiddenIds = (root) => {
@@ -110,7 +113,7 @@ const decide = (command, root) => {
   if (GIT_STAGE.test(command)) {
     if (SECRET_PATH.test(command)) {
       return deny(
-        'Blocked: do not stage secrets. Use pnpm env:stg / pnpm env:prod and Secret Manager.',
+        'Blocked: do not stage secrets. Use pnpm env:sandbox / pnpm env:prod and Secret Manager.',
         'A project hook denied git add/commit of .env, service accounts, or auth state.',
       )
     }
@@ -130,22 +133,22 @@ const decide = (command, root) => {
 
   if (PORTAL_VIDEOS.test(command) && (mentionsForbidden(command, root) || PROD_SCRIPT.test(command))) {
     return deny(
-      'Blocked: portal demo videos cannot run with a production env or deploy command. Use pnpm env:stg, then record-docs-media.',
+      'Blocked: portal demo videos cannot run with a production env or deploy command. Use pnpm env:sandbox, then record-docs-media.',
       'A project hook denied portal videos combined with a production command.',
     )
   }
 
   if (mentionsForbidden(command, root) || PROD_SCRIPT.test(command) || PROD_API.test(command)) {
     return ask(
-      'Confirm production action. Prefer pnpm env:stg / pnpm deploy:stg unless this is an intentional prod release via pnpm env:prod and pnpm deploy:*.',
-      'A project hook asks before production env, deploy, or Cloud Run commands.',
+      'Confirm production action. Prefer pnpm env:sandbox / pnpm deploy:stg unless this is an intentional prod release via pnpm env:prod and pnpm deploy:*.',
+      'A project hook asks before production env or deploy commands.',
     )
   }
 
   if (isBareDeploy(command)) {
     return ask(
-      'Confirm raw deploy. Use root pnpm deploy:stg / deploy:api:stg / deploy:docs:stg (or make release-stg) instead of bare firebase deploy or gcloud run deploy.',
-      'A project hook asks before undeclared firebase/gcloud deploy commands.',
+      'Confirm raw deploy. Use this repository’s documented deploy scripts instead of a bare firebase or gcloud deploy.',
+      'A project hook asks before undeclared firebase or gcloud deploy commands.',
     )
   }
 

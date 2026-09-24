@@ -1,11 +1,14 @@
 #!/usr/bin/env node
+/**
+ * Copyright (c) 2026 Devrecated
+ */
 import { asString, readHookInput, writeHookOutput } from "../lib.mjs";
 import {
   isTicketProgressPath,
   readSession,
   shouldAskProgress,
   touchSessionFile,
-} from "../../../skills/autodevelop/scripts/session.mjs";
+} from "../../../skills/autodevelop-internal/scripts/session.mjs";
 
 const pathFromInput = (input) => {
   const toolInput = input.tool_input || input.toolInput || input.arguments || {};

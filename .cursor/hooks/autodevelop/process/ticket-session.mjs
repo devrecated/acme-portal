@@ -1,6 +1,9 @@
 #!/usr/bin/env node
+/**
+ * Copyright (c) 2026 Devrecated
+ */
 import { readHookInput, writeHookOutput } from "../lib.mjs";
-import { readSession } from "../../../skills/autodevelop/scripts/session.mjs";
+import { readSession } from "../../../skills/autodevelop-internal/scripts/session.mjs";
 
 try {
   await readHookInput();

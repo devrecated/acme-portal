@@ -4,12 +4,13 @@
  */
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { parseSimpleYaml } from "../../../hooks/autodevelop/lib.mjs";
 import { findKitRoot } from "./config-load.mjs";
 import { loadBranches } from "./branches-load.mjs";
+import { POLICY_DEFAULTS, POLICY_NAMES, policyDefaultYaml } from "./policy-defaults.mjs";
 import {
   deepMerge,
   kitPoliciesDir,
@@ -57,7 +58,14 @@ test("parseSimpleYaml still reads nested maps", () => {
   assert.equal(doc.hooks["ticket-required"], true);
 });
 
-test("loadPolicies uses kit example defaults when the instance folder is missing", () => {
+test("policyDefaultYaml round-trips through parseSimpleYaml", () => {
+  for (const name of POLICY_NAMES) {
+    const parsed = parseSimpleYaml(policyDefaultYaml(name));
+    assert.deepEqual(parsed, POLICY_DEFAULTS[name]);
+  }
+});
+
+test("loadPolicies uses POLICY_DEFAULTS when the instance folder is missing", () => {
   const root = mkdtempSync(join(tmpdir(), "ad-policies-miss-"));
   mkdirSync(join(root, ".cursor/skills"), { recursive: true });
   const loaded = loadPolicies({ root, kitRoot: findKitRoot() });
@@ -77,6 +85,12 @@ test("loadPolicies uses kit example defaults when the instance folder is missing
   assert.equal(loaded.policies["ticket-policy"].requiredForProductWork, true);
   assert.equal(loaded.policies["commit-policy"].allowForcePush, false);
   assert.equal(loaded.policies["mcp-policy"].lapseString, "Your billing has expired");
+  assert.deepEqual(loaded.policies["environments-policy"].promote, ["local", "staging", "production"]);
+  assert.equal(loaded.policies["environments-policy"].environments.local.role, "sandbox");
+  assert.equal(loaded.policies["environments-policy"].environments.staging.host, "vercel");
+  assert.equal(loaded.policies["environments-policy"].environments.local.origins.api, "");
+  assert.equal(loaded.policies["environments-policy"].environments.production.origins.tickets, "");
+
   const summary = summarizePolicies(loaded);
   assert.deepEqual(summary.policies, loaded.names);
   assert.equal(summary.path, null);
@@ -187,7 +201,28 @@ test("loadPolicies reads .autodevelop/.policies over a missing skills instance f
   assert.equal(loaded.policies["branch-policy"].singleBranch, true);
 });
 
-test("kitPoliciesDir points at shipped examples", () => {
+test("loadPolicies still uses POLICY_DEFAULTS when the kit .policies dir is empty", () => {
+  const root = mkdtempSync(join(tmpdir(), "ad-policies-empty-kit-"));
+  const kitRoot = mkdtempSync(join(tmpdir(), "ad-kit-empty-"));
+  mkdirSync(join(root, ".cursor/skills"), { recursive: true });
+  const loaded = loadPolicies({ root, kitRoot });
+  assert.deepEqual(
+    loaded.names.filter((name) => name !== "branch-policy").sort(),
+    POLICY_NAMES.filter((name) => name !== "branch-policy").sort(),
+  );
+  assert.equal(loaded.sources["email-policy"], "default");
+  assert.equal(loaded.policies["email-policy"].confirmRequired, true);
+});
+
+test("kitPoliciesDir points at the kit .policies directory", () => {
   const dir = kitPoliciesDir(findKitRoot());
   assert.ok(dir.endsWith(".cursor/skills/autodevelop/.policies"));
+});
+
+test("kits/autodevelop policies match POLICY_DEFAULTS", () => {
+  const dir = join(findKitRoot(), "kits", "autodevelop", ".policies");
+  for (const name of POLICY_NAMES) {
+    const body = readFileSync(join(dir, `${name}.yaml`), "utf8");
+    assert.equal(body, policyDefaultYaml(name));
+  }
 });

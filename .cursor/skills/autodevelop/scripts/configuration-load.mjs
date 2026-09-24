@@ -115,6 +115,19 @@ export const HYPERPARAMETER_SCHEMA = {
     default: 2,
     description: "How firmly the hook restates tone and risk in the system prompt.",
   },
+  ticket_mode: {
+    kind: "enum",
+    values: ["consolidate", "split"],
+    default: "consolidate",
+    description: "Whether a request opens one generalized Autodevelop ticket or may split up to the cap.",
+  },
+  ticket_max_per_request: {
+    kind: "integer",
+    min: 1,
+    max: 8,
+    default: 1,
+    description: "Maximum Autodevelop tickets one request may open. Default 1. Titles stay generalized.",
+  },
 };
 
 export const SOURCE_KEYS = Object.keys(HYPERPARAMETER_SCHEMA);

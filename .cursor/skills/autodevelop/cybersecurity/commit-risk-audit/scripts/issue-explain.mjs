@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2026 Devrecated
+ *
  * Stakeholder copy for findings. Business-first, then the fix.
  * Deterministic — no names. Used by PDF/CSV/markdown.
  */
@@ -50,7 +52,7 @@ const BY_RULE = {
     should: "Fix the type. If a suppression is unavoidable, scope it to one line and explain why.",
   },
   "no-console": {
-    why: "console.log left on a production path can leak tokens, PII, or just noise in Cloud Run logs.",
+    why: "console.log left on a production path can leak tokens, PII, or just noise in hosted logs.",
     should: "Use the structured logger. Never log ID tokens, passwords, or raw PII.",
   },
   "security/detect-eval": {

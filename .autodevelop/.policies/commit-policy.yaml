@@ -1,0 +1,9 @@
+# Copyright (c) 2026 Devrecated
+# Default commit-policy. Instance copies live under .autodevelop/.policies/commit-policy.yaml.
+# Conventional subjects are preferred. --no-verify and force-push stay forbidden.
+
+conventionalCommits: optional
+subjectStyle: imperative
+clientsMayChangeConvention: true
+allowNoVerify: false
+allowForcePush: false

@@ -1,8 +1,11 @@
 #!/usr/bin/env node
+/**
+ * Copyright (c) 2026 Devrecated
+ */
 /** Parse plan frontmatter todos and inventory-looking paths. */
 import { existsSync, readdirSync } from "node:fs";
 import { basename, dirname, join } from "node:path";
-import { findInstanceFile, findKitRoot } from "../../../skills/autodevelop/scripts/config-load.mjs";
+import { findInstanceFile, findKitRoot } from "../../../skills/autodevelop-internal/scripts/config-load.mjs";
 
 export const parsePlanTodos = (markdown) => {
   const todos = [];
@@ -97,8 +100,8 @@ export const pathExistsInRepo = (root, path, kitRoot = findKitRoot()) => {
       findInstanceFile(root, "autodevelop", "config.json") ||
         searchRoots.some(
           (base) =>
-            existsSync(join(base, ".cursor/skills/autodevelop/config.json")) ||
-            existsSync(join(base, ".cursor/skills/autodevelop/config.example.json")),
+            existsSync(join(base, ".cursor/skills/autodevelop-internal/config.json")) ||
+            existsSync(join(base, ".cursor/skills/autodevelop-internal/config.example.json")),
         ),
     );
   }
@@ -108,7 +111,7 @@ export const pathExistsInRepo = (root, path, kitRoot = findKitRoot()) => {
     );
   }
   if (name === "lib.mjs" && path.startsWith(".cursor/hooks/")) {
-    return searchRoots.some((base) => existsSync(join(base, ".cursor/hooks/autodevelop/lib.mjs")));
+    return searchRoots.some((base) => existsSync(join(base, ".cursor/hooks/autodevelop-internal/lib.mjs")));
   }
   return false;
 };

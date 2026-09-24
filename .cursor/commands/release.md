@@ -16,7 +16,7 @@ If playbooks do not load, say only: Autodevelop is not connected. Run `npx autod
 Load branch names and ask flags before touching a shared branch:
 
 ```bash
-node .cursor/skills/autodevelop/scripts/branches-load.mjs
+node .cursor/skills/autodevelop-internal/scripts/branches-load.mjs
 ```
 
 On a single-branch instance, promote and hotfix-to-release refuse.

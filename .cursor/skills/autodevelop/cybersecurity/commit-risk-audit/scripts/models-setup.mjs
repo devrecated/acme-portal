@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 /**
+ * Copyright (c) 2026 Devrecated
+ */
+/**
  * Download local review weights into .cursor/local/commit-risk-audit/models/
  * (gitignored). Scoring stays JavaScript; this is one-time weight prep.
  */

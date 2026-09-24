@@ -1,6 +1,9 @@
 #!/usr/bin/env node
+/**
+ * Copyright (c) 2026 Devrecated
+ */
 import { asString, collectStrings, readHookInput, writeHookOutput } from "../lib.mjs";
-import { readSession, writeSession } from "../../../skills/autodevelop/scripts/session.mjs";
+import { readSession, writeSession } from "../../../skills/autodevelop-internal/scripts/session.mjs";
 
 const READY = /\b(done|ready for review|ship|feature complete|in review)\b/i;
 const RATE_MS = 30 * 60 * 1000;

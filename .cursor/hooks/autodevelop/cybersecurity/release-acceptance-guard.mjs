@@ -1,10 +1,13 @@
 #!/usr/bin/env node
+/**
+ * Copyright (c) 2026 Devrecated
+ */
 import { asString, collectStrings, readHookInput, writeHookOutput } from "../lib.mjs";
-import { readSession } from "../../../skills/autodevelop/scripts/session.mjs";
-import { hasVerbalAcceptance } from "../../../skills/autodevelop/scripts/people.mjs";
+import { readSession } from "../../../skills/autodevelop-internal/scripts/session.mjs";
+import { hasVerbalAcceptance } from "../../../skills/autodevelop-internal/scripts/people.mjs";
 
 const PROD_RELEASE =
-  /\b(?:env:prod|deploy:prod|release:prod|release-prod|deploy:api:prod|deploy:docs:prod)\b/i;
+  /\b(?:env:prod|deploy:prod|release:prod|release-prod|deploy:docs:prod)\b/i;
 
 const ALLOWED = new Set(["Accepted by owner", "Ready for deploy", "Done"]);
 

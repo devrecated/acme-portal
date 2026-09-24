@@ -62,6 +62,7 @@ loops:
       - weekly-delivery-value
       - stakeholder-scheduled-email
       - mail-voice-dontbeweird
+      - send-autodevelop-mail
     optional:
       - weekly-delivery-value
   ship:
@@ -354,6 +355,7 @@ mcp_buckets:
       - report
       - summary
     may_invoke:
+      - send-autodevelop-mail
       - stakeholder-scheduled-email
       - share-stakeholder-update
       - ask-stakeholder
@@ -549,6 +551,12 @@ wrappers:
     loop: ship
     command: .cursor/commands/release.md
     hint: commit, preview, staging, promote, production
+  devops:
+    slash: /devops
+    bucket: ship
+    loop: ship
+    command: .cursor/commands/devops.md
+    hint: this org’s environments, promote, domains
 
 categories:
   - { id: bootstrap, title: First-day bind }
@@ -641,8 +649,12 @@ skills:
       related: [bootstrap, onboard-client] }
   - { name: email-release-digest, tree: autodevelop, category: mail, status: in-kit, invoke: manual,
       related: [stakeholder-scheduled-email, weekly-status-update, mail-voice-dontbeweird] }
-  - { name: stakeholder-scheduled-email, tree: autodevelop, category: mail, status: in-kit, invoke: manual,
+  - { name: send-autodevelop-mail, tree: autodevelop, category: mail, status: in-kit, invoke: automatic,
       depends_on: [mail-voice-dontbeweird],
+      related: [stakeholder-scheduled-email, start-work-update, share-stakeholder-update, email-release-digest],
+      when: Confirmed send through Autodevelop POST /cli/mail. Not Firestore mail. }
+  - { name: stakeholder-scheduled-email, tree: autodevelop, category: mail, status: in-kit, invoke: manual,
+      depends_on: [mail-voice-dontbeweird, send-autodevelop-mail],
       related: [weekly-status-update, email-release-digest, share-stakeholder-update],
       when: Meeting recap, weekly PDF, or digest after approval,
       affordability: required }

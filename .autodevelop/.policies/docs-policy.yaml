@@ -1,0 +1,12 @@
+# Copyright (c) 2026 Devrecated
+# Default docs-policy. Instance copies live under .autodevelop/.policies/docs-policy.yaml.
+# Public handbook states what the product does. Operator runbooks stay private.
+
+publicHandbook: autodevelop-docs/
+internalHandbook: docs/internal/
+internalOperatorDocs: services/host/docs/
+publishedPricingAllowed: false
+noMarginOrUnitEconomicsInRepo: true
+noProductivityMultipleClaims: true
+professionalVoice: true
+noChatAsidesInFiles: true

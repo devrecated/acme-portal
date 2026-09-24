@@ -12,10 +12,10 @@ import {
 } from "./ticket-required.mjs";
 
 test("Devrecated .cursor trees are exempt", () => {
-  assert.equal(isDevrecatedExemptPath(".cursor/skills/autodevelop/process/create-branch/SKILL.md"), true);
-  assert.equal(isDevrecatedExemptPath(".cursor/hooks/autodevelop/process/ticket-required.mjs"), true);
+  assert.equal(isDevrecatedExemptPath(".cursor/skills/autodevelop-internal/process/create-branch/SKILL.md"), true);
+  assert.equal(isDevrecatedExemptPath(".cursor/hooks/autodevelop-internal/process/ticket-required.mjs"), true);
   assert.equal(isDevrecatedExemptPath(".cursor/rules/autodevelop/process/ticket-required.mdc"), true);
-  assert.equal(isDevrecatedExemptPath(".cursor/skills/autodevelop/cybersecurity/commit-risk-audit/SKILL.md"), true);
+  assert.equal(isDevrecatedExemptPath(".cursor/skills/autodevelop-internal/cybersecurity/commit-risk-audit/SKILL.md"), true);
   assert.equal(isDevrecatedExemptPath(".cursor/rules/autodevelop/frontend/ui-bucket.mdc"), true);
   assert.equal(isDevrecatedExemptPath(".cursor/rules/frontend/ui-bucket.mdc"), true);
   assert.equal(isDevrecatedExemptPath(".cursor/agents/identify-skills.md"), true);
@@ -44,7 +44,7 @@ test("junk and transcripts are not recordable", () => {
     ),
     false,
   );
-  assert.equal(isRecordableProductPath(".cursor/hooks/autodevelop/process/ticket-required.mjs"), false);
+  assert.equal(isRecordableProductPath(".cursor/hooks/autodevelop-internal/process/ticket-required.mjs"), false);
   assert.equal(isRecordableProductPath("web/app/src/views/foo.tsx"), true);
 });
 
@@ -60,6 +60,6 @@ test("ask message lists open tickets and skips Done", () => {
   ]);
   assert.deepEqual(lines, ["#10 Open one"]);
   const message = buildAskMessage(lines);
-  assert.match(message, /say create/);
+  assert.match(message, /issues_ensure/);
   assert.match(message, /#10 Open one/);
 });

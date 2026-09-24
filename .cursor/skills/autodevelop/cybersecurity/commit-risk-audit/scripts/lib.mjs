@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 Devrecated
+ */
 import { createRequire } from "node:module";
 import { execFileSync, execSync, spawnSync } from "node:child_process";
 import crypto from "node:crypto";

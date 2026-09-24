@@ -1,5 +1,5 @@
 ---
-description: Product work must be on the GitHub Project board before it proceeds
+description: Product work needs one board ticket. Bind or ensure it; never invent a number.
 alwaysApply: true
 ---
 
@@ -7,12 +7,9 @@ alwaysApply: true
 
 Copyright (c) 2026 Devrecated.
 
-No product work without a board ticket. Clients need a visible audit log of tasks in the repo.
+Product work needs **one** bound board ticket. Kit trees under `.cursor/` and `docs/internal` are exempt.
 
-- **Exempt:** Devrecated `.cursor` kit trees (`skills|hooks|rules/autodevelop`, `third-party`, `agents`, `plans`, `commands`), the Autodevelop handbook (`docs/**` except a client hostname folder), and other Devrecated-only IP. Those may proceed without a ticket.
-- **Not exempt:** app, API, functions, models, client docs, instance bindings (any folder under `.cursor/skills` that is not a kit folder), anything the client can see or run.
-- If this session has no claimed/created issue (`session.json`) and the work is not exempt: **stop implementing**. Follow `/create-ticket` only after they say **create**, or bind `#N` if they pick an existing issue from the list.
-- Hooks must not use `followup_message` (that injects a new chat turn). Use `additional_context` so the agent asks in the **same** reply. Devrecated `.cursor/autodevelop` kit work stays silent.
-- Do not create issues in the same turn as the preview. Hooks never create issues.
-
-If they already named `#N`, bind that session and continue. Do not invent a ticket number.
+1. If this chat already named a ticket, or last turn was the same effort, search and **bind that issue**. Do not open a second issue. Do not open child issues. Do not invent a number.
+2. If none exists, call hosted MCP **`issues_ensure`**. It files one GitHub issue on the org project board (default `board.provider: github`). Jira, Asana, Linear, and Trello are later adapters — do not pretend they are connected.
+3. Write `.cursor/local/gh-projects/session.json` with the returned issue number, then **continue implementing**.
+4. Do not stop with “there is no ticket bound” after `issues_ensure` has returned a number.

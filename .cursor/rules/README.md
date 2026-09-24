@@ -1,7 +1,13 @@
-# Kit rules
+# Kit rules (customer install)
 
-Same layout as skills and hooks. Cursor loads `.mdc` files under `.cursor/rules/` (frontmatter still controls `alwaysApply` / `globs`).
+Copyright (c) 2026 Devrecated.
 
-Do **not** reuse a rule filename in more than one tree.
+Shipped rules stay **code- and security-specific** only. Autodevelop process (tickets, mail, deploy gates, skill routing) lives in hosted skills, hooks, and MCP — not in a pile of Cursor `.mdc` process rules.
 
-Instance-specific globs (docs tree, Firebase project folders) belong in the consumer or in `repo-conventions.json` / instance `config.json`, not hardcoded in `autodevelop/` or `third-party/`. Authored rules live under `autodevelop/<category>/` — do not add a fourth top-level category folder.
+Keep:
+- `autodevelop/cybersecurity/*` — secrets and appsec baseline
+- `autodevelop/frontend/ui-bucket.mdc` — UI work boundaries
+- `autodevelop/testing/testing-bucket.mdc` — test expectations
+- `autodevelop/process/prefer-typescript.mdc`, `anti-overengineering.mdc`, `no-chat-leak.mdc`
+
+Do not reintroduce ticket/stakeholder/deploy/marketplace process rules into this tree for customer packs.

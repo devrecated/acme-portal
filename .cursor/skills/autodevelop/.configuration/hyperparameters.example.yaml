@@ -47,6 +47,12 @@ retry_count: 1
 # How firmly tone and risk are restated. Range: 0–3
 instruction_strength: 2
 
+# Whether a request opens one generalized ticket or may split. Enum: consolidate | split
+ticket_mode: consolidate
+
+# Maximum Autodevelop tickets one request may open. Range: 1–8
+ticket_max_per_request: 1
+
 expansion:
   generated: true
   system_suffix: |

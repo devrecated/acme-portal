@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 Devrecated
+ */
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";

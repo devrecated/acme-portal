@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+/**
+ * Copyright (c) 2026 Devrecated
+ */
 import { converterExistsForModel, loadConventions, scanCommit } from "./lint-scan.mjs";
 import {
   domainsForPaths,

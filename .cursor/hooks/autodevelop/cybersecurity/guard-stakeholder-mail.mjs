@@ -1,6 +1,9 @@
 #!/usr/bin/env node
+/**
+ * Copyright (c) 2026 Devrecated
+ */
 import { asString, collectStrings, readHookInput, writeHookOutput } from "../lib.mjs";
-import { hasValidConfirmToken } from "../../../skills/autodevelop/scripts/confirm-token.mjs";
+import { hasValidConfirmToken } from "../../../skills/autodevelop-internal/scripts/confirm-token.mjs";
 
 const MAIL_WRITE =
   /send-stakeholder-mail\.mjs|\.collection\(\s*['"]mail['"]\s*\)|collection\(\s*['"]mail['"]\s*\)/;
