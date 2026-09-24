@@ -40,6 +40,10 @@ test("coerceKnob parses floats and rejects out-of-range values", () => {
   assert.throws(() => coerceKnob("risk_level", 9), /0–3/);
   assert.throws(() => coerceKnob("tone", "casual"), /professional/);
   assert.throws(() => coerceKnob("retrieval_limit", 0.5), /integer/);
+  assert.equal(coerceKnob("ticket_mode", "split"), "split");
+  assert.equal(coerceKnob("ticket_max_per_request", 3), 3);
+  assert.throws(() => coerceKnob("ticket_mode", "swarm"), /consolidate/);
+  assert.throws(() => coerceKnob("ticket_max_per_request", 0), /1–8/);
 });
 
 test("needsExpansion is true when precision is low or fields are missing", () => {
@@ -99,6 +103,8 @@ test("loadConfiguration uses kit examples when the instance folder is missing", 
   assert.equal(loaded.knobs.tone, "professional");
   assert.equal(loaded.knobs.retrieval_limit, 8);
   assert.equal(loaded.knobs.context_budget, 12000);
+  assert.equal(loaded.knobs.ticket_mode, "consolidate");
+  assert.equal(loaded.knobs.ticket_max_per_request, 1);
   const summary = summarizeConfiguration(loaded);
   assert.deepEqual(summary.files.sort(), ["hyperparameters.config", "hyperparameters.yaml"]);
   assert.equal(summary.precision, "high");
@@ -122,6 +128,8 @@ test("loadConfiguration merges an instance override over kit defaults", () => {
       "timeout_ms: 20000",
       "retry_count: 0",
       "instruction_strength: 1",
+      "ticket_mode: consolidate",
+      "ticket_max_per_request: 1",
       "",
     ].join("\n"),
   });
@@ -155,6 +163,8 @@ test("loadConfiguration flags needsExpand for a sparse instance config", () => {
       "timeout_ms: 15000",
       "retry_count: 2",
       "instruction_strength: 3",
+      "ticket_mode: consolidate",
+      "ticket_max_per_request: 1",
       "",
     ].join("\n"),
   });

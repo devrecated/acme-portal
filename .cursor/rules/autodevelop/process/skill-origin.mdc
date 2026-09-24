@@ -23,19 +23,22 @@ Same split for skills, hooks, and rules. Do not reuse a skill folder name or rul
 - Product app code (CORS, `package.json`, GHA) stays in the app, not under `.cursor/skills`.
 - Rules, skills, and hooks **created in chat** that belong to the Autodevelop workflow go under `.cursor/{rules,skills,hooks}/autodevelop/…`.
 - New Devrecated `SKILL.md` and `.mdc` files include `Copyright (c) 2026 Devrecated.`
+- Every file that ships to a customer (`kits/`, plugin payload, customer CLI) includes `Copyright (c) 2026 Devrecated.` JSON that a host schema owns gets a `copyright` field; markdown and scripts get the usual header.
 
-Instance bindings (board ids, preview project, mail allowlist, `.policies/`, `.configuration/`) live under the consumer’s `<client-name>/` folder (typically `<client-name>/autodevelop/config.json`, `.policies/`, and `.configuration/`), not inside `autodevelop/` and not inside the user-scope plugin.
+Instance bindings (board ids, preview project, mail allowlist, `.policies/`, `.configuration/`) live in the consumer `.autodevelop/` folder (legacy: `<client-name>/autodevelop/`). The starter copy is `kits/autodevelop/`. Do not put live ids in the user-scope plugin.
 
-This repository keeps two Cursor trees:
+This repository keeps a dogfood workspace and two shippable kits:
 
 | Tree | Role |
 |---|---|
 | `.cursor/` | What this Autodevelop checkout uses to operate on itself. Cursor loads it as the workspace kit. |
-| `.cursor-template/` | The shippable product. `plugin.json` and `pnpm autodevelop:import` point here. Customer machines get this tree. |
+| `kits/cursor/` | The shippable Cursor shim. `plugin.json` and `pnpm autodevelop:import` point here. |
+| `kits/autodevelop/` | The shippable starter bind. Install copies missing files into consumer `.autodevelop/`. |
+| `.autodevelop/` | Live bind for **this** checkout. Not packed. |
 
-Product rules, hooks, commands, and agents that customers should receive go in **both** places until you change them: edit `.cursor/`, then copy the file into `.cursor-template/`. Do not put instance bindings or `services/` in `.cursor-template/`.
+Product rules, hooks, commands, and agents that customers should receive go in **both** places until you change them: edit `.cursor/`, then copy the file into `kits/cursor/`. Starter config and default policies live in `kits/autodevelop/`, not this checkout’s live `.autodevelop/`. Do not put a live board id, allowlist, hostname, or `services/` in `kits/`. A later agent gets `kits/<name>/`. `.cursor-plugin/` stays at the repository root.
 
-The kit loads via **user-scope plugin install** (`/import-autodevelop` or `pnpm autodevelop:import`). The client repo commits only `<client-name>/` trees + instance `config.json` / `people.json` / `.policies/` / `.configuration/`. A fork or submodule is optional (pinning or heavy customization), not the load path.
+The kit loads via **user-scope plugin install** (`/import-autodevelop` or `pnpm autodevelop:import`). The consumer repo commits `.autodevelop/` plus any `<client-name>/` trees. A fork or submodule is optional (pinning or heavy customization), not the load path.
 
 Do not add a skill unless this chat asked. See [no-unsolicited-skills.mdc](no-unsolicited-skills.mdc).
 

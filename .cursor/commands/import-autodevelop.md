@@ -5,6 +5,8 @@ description: Install Autodevelop as a user-scope Cursor plugin and remove collid
 
 # Import Autodevelop (user scope)
 
+Copyright (c) 2026 Devrecated.
+
 Install this kit once for every local workspace. Do not copy `.cursor/skills|hooks|rules/autodevelop` into each product repo.
 
 Instance bindings (`config.json`, `people.json`) stay in the consumer repo. See `docs/configure.md`.

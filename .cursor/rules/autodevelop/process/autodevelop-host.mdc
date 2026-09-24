@@ -1,0 +1,19 @@
+---
+description: Autodevelop public sites and API origins are Vercel — never invent Cloud Run or GCP as this product’s host
+alwaysApply: true
+---
+
+# Autodevelop host
+
+Copyright (c) 2026 Devrecated.
+
+Public Autodevelop marketing, the company site, and the ACME demo ship on **Vercel**.
+
+Autodevelop’s HTTP API and Try origin come from the environment and instance `environments-policy` (`AUTODEVELOP_API_ORIGIN`, tickets origin). Env wins. Leave hosted origins empty until a real URL exists.
+
+- **Never** bake localhost or `127.0.0.1` into a hosted app.
+- **Never** stand up or recommend **Cloud Run / GCP** as Autodevelop’s host unless the user explicitly asks for GCP in that chat.
+- Do **not** default a new Autodevelop instance to `host: firebase` or `host: cloud-run` in **kit examples**. Example host for this product: `vercel`.
+- Consumer apps that actually use Firebase (mail, preview, Hosting) keep those skills and may set `host: firebase`. That is their app, not Autodevelop’s runtime.
+
+`/devops` follows the consumer’s `environments-policy`. It does not make Autodevelop a Firebase or Cloud Run service.

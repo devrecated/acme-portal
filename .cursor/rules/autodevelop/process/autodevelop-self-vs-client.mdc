@@ -1,0 +1,26 @@
+---
+description: Decide client-product DevOps vs Autodevelop-self before deploy or env work
+alwaysApply: true
+---
+
+# Autodevelop-self vs client product
+
+Copyright (c) 2026 Devrecated.
+
+Before DevOps, deploy, env sync, or promote work in **this checkout**, pick one mode. Do not mix them.
+
+## Client product work
+
+You are authoring the kit that clients run: `kits/cursor/`, `kits/autodevelop/`, commands, rules, skills, or handbook copy about **their** environments.
+
+Follow `/devops`. That command reads **their** instance bindings (`environments-policy`, `branch-policy`, `config.json`, `.configuration/`). Kit examples are defaults only. Do not assume every client is Firebase or two-branch `master` / `release`. Confirm phrases stay the four published gates when those flags apply.
+
+See [branch-policy](branch-policy.mdc), [policies](policies.mdc), [yes-push-to-master](yes-push-to-master.mdc), [yes-push-to-release](yes-push-to-release.mdc), [yes-deploy-to-staging](yes-deploy-to-staging.mdc), [yes-deploy-to-production](yes-deploy-to-production.mdc), [configuration](configuration.mdc), [skill-origin](skill-origin.mdc), [marketplace-plugin](marketplace-plugin.mdc), and [autodevelop-host](autodevelop-host.mdc).
+
+## Autodevelop-self work
+
+You are changing this repository’s own host: `services/`, `web/admin/`, `web/mfe/`, `pnpm sandbox`, entitlement Supabase, or `docs/internal/`.
+
+Do **not** apply a client Firebase promote. This instance is `singleBranch: true` (`master` only). Do not fetch `origin/release`. Do not run `/promote-master-to-release`. The hosted backend here is Supabase, not Firebase. Public Autodevelop sites ship on Vercel. Do not stand up Cloud Run or GCP for this product unless the user asks for GCP in that chat. `pnpm env:stg` / `env:prod` are not Autodevelop-host scripts.
+
+Kit trees and this handbook stay ticket-exempt per [ticket-required](ticket-required.mdc).

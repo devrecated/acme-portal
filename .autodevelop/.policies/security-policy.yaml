@@ -1,0 +1,13 @@
+# Copyright (c) 2026 Devrecated
+# Default security-policy. Instance copies live under .autodevelop/.policies/security-policy.yaml.
+# Forbidden project ids live in instance config.json — this file does not list them.
+
+neverCommit:
+  - .env*
+  - serviceAccount.json
+  - **/firebase-admin*.json
+noSecretValuesInChat: true
+forbiddenProjectsSource: config.json
+forbiddenProjectsPath: forbiddenProjects
+msmUploadOneService: true
+msmPeekForbidden: true

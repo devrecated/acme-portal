@@ -11,7 +11,11 @@
       "args": [
         "${workspaceFolder}/node_modules/@devrecated/autodevelop/packages/cli/bin.mjs",
         "mcp"
-      ]
+      ],
+      "env": {
+        "AUTODEVELOP_HOST": "http://127.0.0.1:8797",
+        "AUTODEVELOP_CREDENTIALS": "/Users/adamsiwiec/home/freetech/foss/autodevelop/.cursor/local/sandbox/acme-developer-credentials.json"
+      }
     }
   }
 }

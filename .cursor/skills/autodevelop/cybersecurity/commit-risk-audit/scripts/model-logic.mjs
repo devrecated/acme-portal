@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 Devrecated
+ */
 import path from "node:path";
 import { git, isConverterPath, isModelsPath } from "./lib.mjs";
 

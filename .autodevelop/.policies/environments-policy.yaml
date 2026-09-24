@@ -1,0 +1,56 @@
+# Copyright (c) 2026 Devrecated
+# Default environments-policy. Instance copies live under .autodevelop/.policies/environments-policy.yaml.
+# Example host for Autodevelop is vercel. A Firebase consumer app sets host: firebase.
+# Cloud project ids stay in config.json. /devops reads the merged policy.
+
+ids:
+  - local
+  - staging
+  - production
+  - preview
+defaultStagingName: staging
+defaultProductionName: production
+promote:
+  - local
+  - staging
+  - production
+environments:
+  local:
+    role: sandbox
+    host: none
+    hostname: ""
+    whoMayDeploy: developers
+    origins:
+      host: ""
+      api: ""
+      tickets: ""
+  staging:
+    role: qa
+    host: vercel
+    hostname: ""
+    configKey: firebase.staging
+    whoMayDeploy: operators
+    origins:
+      host: ""
+      api: ""
+      tickets: ""
+  production:
+    role: production
+    host: vercel
+    hostname: ""
+    configKey: firebase.production
+    whoMayDeploy: operators
+    origins:
+      host: ""
+      api: ""
+      tickets: ""
+  preview:
+    role: preview
+    host: vercel
+    hostname: ""
+    configKey: preview.firebaseProject
+    whoMayDeploy: operators
+    origins:
+      host: ""
+      api: ""
+      tickets: ""

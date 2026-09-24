@@ -1,0 +1,11 @@
+# Copyright (c) 2026 Devrecated
+# Default ticket-policy. Instance copies live under .autodevelop/.policies/ticket-policy.yaml.
+# Kit trees may change without a board ticket. Product and instance bindings may not.
+
+requiredForProductWork: true
+kitTreesExempt: true
+wayfinderMaxTickets: 1
+previewBeforeCreate: true
+autoCreateIfMissing: true
+childIssues: false
+bindVia: "#N"

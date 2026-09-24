@@ -7,7 +7,7 @@ alwaysApply: true
 
 Copyright (c) 2026 Devrecated.
 
-Eight slash commands are the everyday entry point. Each one loads the matching Autodevelop playbooks. The user does not name a skill, and neither do you.
+Slash commands are the everyday entry point. Each one loads the matching Autodevelop playbooks. The user does not name a skill, and neither do you.
 
 | Slash | Playbooks | Loop |
 |---|---|---|
@@ -19,6 +19,7 @@ Eight slash commands are the everyday entry point. Each one loads the matching A
 | `/new-feature` | Tickets | `ticket_lifecycle` |
 | `/communication` | Mail and recap | `weekly_reporting` |
 | `/release` | Ship | `ship` |
+| `/devops` | Ship (this org’s environments) | `ship` |
 
 Load those playbooks immediately. Use what comes back. Do not pick a skill by name.
 
@@ -38,7 +39,7 @@ Do not paste a playbook into a command file. Skill bodies belong behind the subs
 
 A slash command is not approval.
 
-- `YES PUSH TO MASTER`, `YES PUSH TO RELEASE`, `DEPLOYED TO STAGING`, and `DEPLOYED TO PRODUCTION` are unchanged by `/release`.
+- `YES PUSH TO MASTER`, `YES PUSH TO RELEASE`, `DEPLOYED TO STAGING`, and `DEPLOYED TO PRODUCTION` are unchanged by `/release` or `/devops`. `/devops` reads this org’s `environments-policy`; it does not invent a fifth phrase.
 - Mail still needs the confirm token and an allowlisted recipient. `/communication` does not grant either.
 - `/new-feature` does not create an issue. The human still types **create** or names `#N`.
 

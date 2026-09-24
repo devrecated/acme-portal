@@ -233,7 +233,7 @@ packages:
     engines: {node: '>=6.9.0'}
 
   '@devrecated/autodevelop@file:../../freetech/foss/autodevelop/dist/npm/devrecated-autodevelop-0.1.0.tgz':
-    resolution: {integrity: sha512-tbimAFYlo4iI0BVqfxpmMnU7aVPSA/ODuj3DzuqoOeMIxMP7ynZo2YCO87SU2FzphsG8ce/11d/0mhTGk2Q4Jg==, tarball: file:../../freetech/foss/autodevelop/dist/npm/devrecated-autodevelop-0.1.0.tgz}
+    resolution: {integrity: sha512-rxjdPRBSEeB3GxlFRo/pE7mNhADAVk0tCWyWcjJrW0u639Fc1jVIH1swcvXfqSWklFYayzAWT3Y5yYZH9ARA+A==, tarball: file:../../freetech/foss/autodevelop/dist/npm/devrecated-autodevelop-0.1.0.tgz}
     version: 0.1.0
     hasBin: true
 

@@ -44,6 +44,17 @@ test("validateConfig flags missing allowlist", () => {
   assert.ok(validateConfig(bad).some((e) => e.includes("allowlist")));
 });
 
+test("validateConfig requires firestoreProject only for Firestore transport", () => {
+  const hosted = structuredClone(valid);
+  delete hosted.mail.firestoreProject;
+  hosted.mail.transport = "hosted";
+  assert.deepEqual(validateConfig(hosted), []);
+  const firestore = structuredClone(valid);
+  delete firestore.mail.firestoreProject;
+  firestore.mail.transport = "firestore";
+  assert.ok(validateConfig(firestore).some((e) => e.includes("firestoreProject")));
+});
+
 test("normalizeConfig defaults board.provider to github", () => {
   const next = normalizeConfig(valid);
   assert.equal(next.board.provider, "github");

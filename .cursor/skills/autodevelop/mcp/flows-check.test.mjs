@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 Devrecated
+ */
 import assert from "node:assert/strict";
 import test from "node:test";
 import { findRepoRoot } from "../scripts/config-load.mjs";
@@ -45,7 +48,7 @@ test("the repository as committed passes every flow check", () => {
   assert.deepEqual(problems, []);
   assert.equal(buckets, 8);
   assert.equal(loops, 7);
-  assert.equal(wrappers, 8);
+  assert.equal(wrappers, 9);
 });
 
 test("every catalog loop is named on the loops page and every tool on the buckets page", () => {

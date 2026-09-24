@@ -5,6 +5,8 @@ alwaysApply: true
 
 # Staging ship gate
 
+Copyright (c) 2026 Devrecated.
+
 The target branch is **`branches.staging`** (default `master`). See [branch-policy.mdc](branch-policy.mdc).
 
 When `askStaging` is true, do **not** commit, push, or merge onto that branch unless this conversation contains the exact phrase `YES PUSH TO MASTER` (all caps). The branch is read-only for the agent until then. Approving risks, “yes”, “ship it”, or a plan checkbox is not enough. The phrase stays `YES PUSH TO MASTER` even if YAML renamed the staging branch.

@@ -4,11 +4,11 @@
  */
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { parseSimpleYaml } from "../../../hooks/autodevelop/lib.mjs";
 import { findKitRoot } from "./config-load.mjs";
+import { POLICY_DEFAULTS } from "./policy-defaults.mjs";
 import {
   DEFAULT_BRANCHES,
   PRODUCTION_CONFIRM_PHRASE,
@@ -292,13 +292,8 @@ test("this product instance is master-only in config and policy", () => {
   assert.match(loaded.configPath, /\.autodevelop\/config\.json/);
 });
 
-test("example file normalizes to the product defaults", () => {
-  const kit = findKitRoot();
-  const raw = readFileSync(
-    join(kit, ".cursor/skills/autodevelop/.policies/branch-policy.example.yaml"),
-    "utf8",
-  );
-  const branches = normalizeBranches(parseSimpleYaml(raw));
+test("POLICY_DEFAULTS branch-policy normalizes to the product defaults", () => {
+  const branches = normalizeBranches(POLICY_DEFAULTS["branch-policy"]);
   assert.deepEqual(validateBranches(branches), []);
   assert.equal(branches.staging, "master");
   assert.equal(branches.production, "release");

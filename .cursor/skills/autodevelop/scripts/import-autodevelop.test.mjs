@@ -49,11 +49,13 @@ test("listCollidingSkillDirs only matches allowlisted SKILL.md folders", () => {
 const writeKit = () => {
   const kit = mkdtempSync(join(tmpdir(), "ad-import-kit-"));
   mkdirSync(join(kit, ".cursor-plugin"), { recursive: true });
-  mkdirSync(join(kit, ".cursor-template", "commands"), { recursive: true });
-  mkdirSync(join(kit, ".cursor-template", "skills", "autodevelop", "mcp"), { recursive: true });
+  mkdirSync(join(kit, "kits", "cursor", "commands"), { recursive: true });
+  mkdirSync(join(kit, "kits", "cursor", "skills", "autodevelop", "mcp"), { recursive: true });
+  mkdirSync(join(kit, "kits", "autodevelop"), { recursive: true });
+  writeFileSync(join(kit, "kits", "autodevelop", "config.json"), '{"slug":"workspace"}\n');
   writeFileSync(join(kit, ".cursor-plugin", "plugin.json"), JSON.stringify({ name: "autodevelop" }));
-  writeFileSync(join(kit, ".cursor-template", "commands", "import-autodevelop.md"), "# import\n");
-  writeFileSync(join(kit, ".cursor-template", "skills", "autodevelop", "mcp", "server.mjs"), "export {}\n");
+  writeFileSync(join(kit, "kits", "cursor", "commands", "import-autodevelop.md"), "# import\n");
+  writeFileSync(join(kit, "kits", "cursor", "skills", "autodevelop", "mcp", "server.mjs"), "export {}\n");
   writeFileSync(
     join(kit, "mcp.json"),
     JSON.stringify({
@@ -74,14 +76,15 @@ test("applyImport copies a real plugin directory and removes collisions", () => 
   writeFileSync(join(skills, "gsap", "unique-wave", "SKILL.md"), "# gsap\n");
   const kitRoot = writeKit();
   const plan = planImport({ kitRoot, home });
-  assert.match(plan.commandSource, /\.cursor-template\/commands\/import-autodevelop\.md$/);
+  assert.match(plan.commandSource, /kits\/cursor\/commands\/import-autodevelop\.md$/);
   applyImport(plan);
   assert.equal(lstatSync(plan.pluginLink).isSymbolicLink(), false);
   assert.equal(lstatSync(plan.pluginLink).isDirectory(), true);
   assert.equal(existsSync(join(plan.pluginLink, ".cursor-plugin", "plugin.json")), true);
+  assert.equal(existsSync(join(plan.pluginLink, "kits", "autodevelop", "config.json")), true);
   assert.match(
     readFileSync(join(plan.pluginLink, "mcp.json"), "utf8"),
-    /\.cursor-template\/skills\/autodevelop\/mcp\/server\.mjs/,
+    /kits\/cursor\/skills\/autodevelop\/mcp\/server\.mjs/,
   );
   assert.equal(existsSync(join(skills, "tickets", "ask-adam")), false);
   assert.equal(existsSync(join(skills, "gsap", "unique-wave", "SKILL.md")), true);

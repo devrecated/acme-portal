@@ -5,6 +5,8 @@ alwaysApply: true
 
 # Repo scripts conventions
 
+Copyright (c) 2026 Devrecated.
+
 ## Canonical commands live in root `package.json`
 
 When you add a deploy, release, env sync, docker build, or other **important** runnable command:
@@ -20,8 +22,8 @@ GitHub Actions and local docs must invoke the **same** `pnpm` script (or the sam
 - Use [`Makefile`](Makefile) for **commented orchestration** (flags, pipelines) that wrap `pnpm run …` or `./scripts/…`.
 - Do **not** reimplement logic in Make.
 - Do **not** mirror every trivial script (`dev:app`, `lint`, etc.) into Make.
-- Docs pipelines: prefer `make docs ARGS='--stg'` → `./scripts/docs.sh` → `pnpm deploy:docs:stg` (Cloud Run).
+- Docs pipelines: prefer `make docs ARGS='--stg'` → `./scripts/docs.sh` → the instance docs deploy script.
 
 ## Docs hosting note
 
-If the consumer serves docs from Cloud Run, use the service names from the instance VitePress binding. Do not publish docs as Firebase Hosting `public/dist` unless that is the configured path.
+Public Autodevelop sites ship on Vercel. Consumer docs follow that instance `environments-policy` `host` and VitePress binding. Do not publish docs as Firebase Hosting `public/dist` unless that is the configured path. Do not add Cloud Run as Autodevelop’s host.

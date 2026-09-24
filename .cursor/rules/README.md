@@ -1,5 +1,7 @@
 # Kit rules
 
+Copyright (c) 2026 Devrecated.
+
 Same layout as skills and hooks. Cursor loads `.mdc` files under `.cursor/rules/` (frontmatter still controls `alwaysApply` / `globs`).
 
 Do **not** reuse a rule filename in more than one tree.

@@ -1,0 +1,14 @@
+{
+  "slug": "acme",
+  "productName": "acme",
+  "board": {
+    "provider": "github"
+  },
+  "mail": {
+    "allowlist": []
+  },
+  "singleBranch": true,
+  "branches": {
+    "staging": "master"
+  }
+}

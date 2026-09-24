@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+/**
+ * Copyright (c) 2026 Devrecated
+ */
 import { asString, collectStrings, readHookInput, writeHookOutput } from "../lib.mjs";
 import { readSession, writeSession } from "../../../skills/autodevelop/scripts/session.mjs";
 

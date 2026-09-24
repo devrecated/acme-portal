@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+/**
+ * Copyright (c) 2026 Devrecated
+ */
 /** Parse plan frontmatter todos and inventory-looking paths. */
 import { existsSync, readdirSync } from "node:fs";
 import { basename, dirname, join } from "node:path";

@@ -1,0 +1,10 @@
+# Copyright (c) 2026 Devrecated
+# Default mcp-policy. Instance copies live under .autodevelop/.policies/mcp-policy.yaml.
+# Stdio tools stay on-machine. Remote tools need the subscription token.
+
+stdioReadOnly: true
+remoteRequiresToken: true
+lapseString: Your billing has expired
+remoteMustNotWriteMail: true
+remoteMustNotCreateIssues: true
+remoteMustNotDeploy: true

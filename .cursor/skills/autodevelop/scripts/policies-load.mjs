@@ -3,8 +3,8 @@
  * Copyright (c) 2026 Devrecated
  * SPDX-License-Identifier: MIT
  *
- * Load instance .policies/*.yaml (not *.example.yaml), merged over kit
- * examples. branch-policy uses resolveInstanceBranches (config.json
+ * Load instance .policies/*.yaml (not leftover *.example.yaml), merged over
+ * POLICY_DEFAULTS. branch-policy uses resolveInstanceBranches (config.json
  * authoritative; must agree with the yaml). CLI prints policy names and
  * sources only — no allowlists, tokens, or message bodies.
  */
@@ -14,6 +14,7 @@ import { fileURLToPath } from "node:url";
 import { parseSimpleYaml } from "../../../hooks/autodevelop/lib.mjs";
 import { resolveInstanceBranches } from "./branches-load.mjs";
 import { findInstanceFile, findKitRoot, findRepoRoot } from "./config-load.mjs";
+import { clonePolicyDefault, POLICY_DEFAULTS } from "./policy-defaults.mjs";
 
 export const KIT_POLICIES_REL = [".cursor", "skills", "autodevelop", ".policies"];
 export const INSTANCE_POLICIES_REL = [".policies"];
@@ -53,15 +54,14 @@ const readYamlIfPresent = (path) => {
   return parseSimpleYaml(readFileSync(path, "utf8")) || {};
 };
 
-const listYamlNames = (dir, { examples = false } = {}) => {
+const listYamlNames = (dir) => {
   if (!dir || !existsSync(dir)) return [];
   return readdirSync(dir)
-    .filter((name) => isYaml(name) && (examples ? isExample(name) : !isExample(name)))
+    .filter((name) => isYaml(name) && !isExample(name))
     .map(policyNameFromFile)
     .filter(Boolean);
 };
 
-const kitExamplePath = (kitDir, name) => join(kitDir, `${name}.example.yaml`);
 const instancePolicyPath = (instanceDir, name) => join(instanceDir, `${name}.yaml`);
 
 export const loadPolicies = (options = {}) => {
@@ -69,7 +69,7 @@ export const loadPolicies = (options = {}) => {
   const kitDir = options.kitPoliciesDir || kitPoliciesDir(options.kitRoot || findKitRoot());
   const foundDir = findInstancePoliciesDir(root);
   const instanceDir = foundDir?.path || null;
-  const names = [...new Set([...listYamlNames(kitDir, { examples: true }), ...listYamlNames(instanceDir)])].sort();
+  const names = [...new Set([...Object.keys(POLICY_DEFAULTS), ...listYamlNames(instanceDir)])].sort();
   const policies = {};
   const sources = {};
 
@@ -80,7 +80,7 @@ export const loadPolicies = (options = {}) => {
       sources[name] = resolved.source;
       continue;
     }
-    const defaultDoc = readYamlIfPresent(kitExamplePath(kitDir, name)) || {};
+    const defaultDoc = clonePolicyDefault(name);
     let overrideDoc = null;
     let source = "default";
     if (instanceDir) {

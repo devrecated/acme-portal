@@ -86,6 +86,8 @@ skills:
     invoke: manual
   send-feedback:
     invoke: manual
+  send-autodevelop-mail:
+    invoke: automatic
   share-stakeholder-update:
     invoke: manual
   mail-voice-dontbeweird:

@@ -1,4 +1,5 @@
 {
+  "copyright": "Copyright (c) 2026 Devrecated.",
   "description": "Optional overlay. Industry rules always run. Repo .mdc rules tighten names, skips, and public paths — they do not invent extra detectors.",
   "ruleSources": [
     ".cursor/rules/autodevelop/cybersecurity/appsec-baseline.mdc",

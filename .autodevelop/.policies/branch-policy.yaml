@@ -1,0 +1,11 @@
+# Copyright (c) 2026 Devrecated
+# Default branch-policy. Instance copies live under .autodevelop/.policies/branch-policy.yaml.
+# Two-branch default for consumer repos (staging + production).
+# For one shared branch, set singleBranch: true.
+# Confirm phrases stay YES PUSH TO MASTER / YES PUSH TO RELEASE even if you rename the branches.
+
+staging: master
+production: release
+askStaging: false
+askProduction: false
+singleBranch: false

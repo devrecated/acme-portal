@@ -5,6 +5,8 @@ alwaysApply: true
 
 # Production ship gate
 
+Copyright (c) 2026 Devrecated.
+
 The target branch is **`branches.production`** (kit default `release`) on a **two-branch** instance. See [branch-policy.mdc](branch-policy.mdc).
 
 When the instance is single-branch (`singleBranch` or staging === production), `/promote-master-to-release` and `/commit-push-release` **refuse**. Use `/commit-push-master`. Do not fetch `origin/release`. `YES PUSH TO RELEASE` does not apply.

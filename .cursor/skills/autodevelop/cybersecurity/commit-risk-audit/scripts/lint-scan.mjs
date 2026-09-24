@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 /**
+ * Copyright (c) 2026 Devrecated
+ */
+/**
  * Line-aware scanners aligned with public ESLint / OWASP / AI-slop tools.
  * Sources: SOURCES.md. Deterministic — no LLM. Same diff in, same findings out.
  *

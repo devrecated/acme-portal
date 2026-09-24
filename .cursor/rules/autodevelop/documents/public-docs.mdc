@@ -1,0 +1,39 @@
+---
+description: Public Autodevelop handbook never publishes proprietary product IP
+globs:
+  - docs/**
+  - autodevelop-docs/**
+alwaysApply: false
+---
+
+# Public handbook — no proprietary IP
+
+Copyright (c) 2026 Devrecated.
+
+Applies when editing the public handbook (`docs/**`, `autodevelop-docs/**`). **`docs/internal/**` is out of scope** — that tree may hold IP. Never write proprietary material into the public tree. VitePress builds `autodevelop-docs/` only. Do not set `DOCS_HOSTED=1` to include internal. See [docs-access-before-publish](../process/docs-access-before-publish.mdc) and [autodevelop-docs](../process/autodevelop-docs.mdc).
+
+Handbook ≠ marketing site. Public docs use **$10,000 / 25–40 hours** ([professional-voice](professional-voice.mdc)). Offering-sheet packages ($20k / $40k / $60k) belong on `autodevelop-www`, not GitHub Pages.
+
+## Keep out
+
+- Hosted playbook / skill **bodies**. Wrappers stay thin. Do not paste playbooks into docs. Do not link `services/host/skills/**/SKILL.md`.
+- Routing internals, `bucket_*` / `kit_*` tool names, how playbooks are selected.
+- How to mint or confirm stakeholder mail (`confirm-token.mjs`, `--confirm`) and live allowlist values. High-level “review the draft, then confirm” is already published — stop there.
+- More process IP than the published client guide. The four ship phrases (`YES PUSH TO MASTER`, `YES PUSH TO RELEASE`, `DEPLOYED TO STAGING`, `DEPLOYED TO PRODUCTION`) are already on that guide — do not add routing, token minting, or playbook bodies around them, and do not invent a policy that removes those published phrases.
+- Operator runbooks (`services/host/docs/`), margin, model spend, absorbed inference, profitability.
+- Live instance bindings: board ids, client names, allowlists, Firebase project ids, `.policies/` values, tokens.
+- How to reconstruct remote MCP / hosted skill IP.
+- Chat asides (“don’t tell the client”). See [no-chat-leak](../process/no-chat-leak.mdc).
+
+## Allowed
+
+What the product is; `npx @devrecated/autodevelop login`; hosted app roles (ticket / business / operator — do not collapse invite models); the published $10k / 25–40 hour line; customer-facing CLI; high-level gates without extra process IP.
+
+```md
+<!-- BAD -->
+Run confirm-token.mjs then send-stakeholder-mail.mjs --confirm <token>.
+See services/host/skills/…/SKILL.md. bucket_message selects the playbooks.
+
+<!-- GOOD -->
+Review to, subject, body-as-text, and ticket link. Confirm the draft. Hooks never send mail.
+```

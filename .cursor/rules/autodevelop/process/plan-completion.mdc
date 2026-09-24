@@ -5,6 +5,8 @@ alwaysApply: true
 
 # Plan completion
 
+Copyright (c) 2026 Devrecated.
+
 Applies **only** while executing a plan the user **Built** (or named for implement) in this session. Injected leftover todos from another chat are not that. See [plan-requires-build.mdc](plan-requires-build.mdc).
 
 When executing a Built plan (`.cursor/plans/*.plan.md`):

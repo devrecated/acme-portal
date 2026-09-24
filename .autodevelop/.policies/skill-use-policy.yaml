@@ -1,0 +1,9 @@
+# Copyright (c) 2026 Devrecated
+# Default skill-use-policy. Instance copies live under .autodevelop/.policies/skill-use-policy.yaml.
+# Invoke flags live in skill-invoke.yaml. Do not list every skill here.
+
+strictness: normal
+invokeSource: .cursor/skills/autodevelop-internal/skill-invoke.yaml
+excludeNames: []
+excludeGlobs: []
+allowNames: []

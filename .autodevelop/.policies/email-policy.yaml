@@ -1,0 +1,14 @@
+# Copyright (c) 2026 Devrecated
+# Default email-policy. Instance copies live under .autodevelop/.policies/email-policy.yaml.
+# Recipients live in instance config.json — this file does not list addresses.
+
+confirmRequired: true
+transport: hosted
+allowlistSource: config.json
+allowlistPath: mail.allowlist
+overridePhraseSource: config.json
+overridePhrasePath: mail.allowOverridePhrase
+overridePhraseName: send anyway
+hooksNeverSend: true
+neverInventConfirmToken: true
+logBodies: false

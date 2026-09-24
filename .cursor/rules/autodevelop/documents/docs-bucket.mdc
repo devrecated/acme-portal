@@ -16,7 +16,7 @@ Never say bucket, MCP, or tool names in chat.
 
 If playbooks do not load, say only: Autodevelop is not connected. Run `npx autodevelop login` and reload this window. Then stop.
 
-Must never: instance bindings or secrets in the handbook, GitHub Actions in this plugin repo.
+Must never: instance bindings or secrets in the handbook, GitHub Actions in this plugin repo. Public pages must not publish proprietary IP — see [public-docs](public-docs.mdc).
 
 Do not publish a public docs host without a confirmed Access challenge. See [docs-access-before-publish](../process/docs-access-before-publish.mdc).
 

@@ -7,6 +7,7 @@
 import { NextResponse } from "next/server"
 
 import { isLoopbackOrigin } from "@/lib/autodevelop"
+import { sanitizeVisitorTryJob } from "@/sandbox/visitor-job"
 
 const autodevelopApiOrigin = () =>
   (process.env.AUTODEVELOP_API_ORIGIN || "http://127.0.0.1:8789").replace(/\/$/, "")
@@ -27,5 +28,5 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     return NextResponse.json({ error: "Autodevelop is not reachable." }, { status: 502 })
   }
   const body = await response.json().catch(() => ({ error: "Autodevelop returned an unreadable response." }))
-  return NextResponse.json(body, { status: response.status })
+  return NextResponse.json(sanitizeVisitorTryJob(body), { status: response.status })
 }

@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2026 Devrecated
+ *
  * Deterministic statistical scoring. No I/O. Same events → same numbers.
  * Intensity is an exponential kernel over finding times; hygiene is a
  * survival map of the closed-form hazard integral.

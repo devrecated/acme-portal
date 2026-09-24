@@ -1,3 +1,4 @@
+# Copyright (c) 2026 Devrecated
 # Copy to hookignore.yaml (gitignored) to turn hooks off.
 # Missing keys stay on. Names match the script basename without .mjs.
 #

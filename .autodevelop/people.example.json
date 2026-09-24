@@ -1,0 +1,10 @@
+{
+  "copyright": "Copyright (c) 2026 Devrecated.",
+  "developers": [
+    { "name": "Alex Developer", "github": "alex", "email": "alex@example.com" }
+  ],
+  "stakeholders": [
+    { "name": "Pat Reviewer", "github": "pat", "email": "pat@example.com", "alwaysNotify": true }
+  ],
+  "alwaysNotifyEmails": ["pat@example.com"]
+}

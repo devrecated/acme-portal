@@ -12,6 +12,10 @@ import { SIGNED_URL_MAX_MS } from "./upload-stakeholder-artifact.mjs";
 import {
   assertMailConfirm,
   buildMailDoc,
+  mailTransportOf,
+  postHostedMail,
+  readLoginToken,
+  resolveMailHost,
 } from "./send-stakeholder-mail.mjs";
 
 const docsHomeOf = (config) => config.docs?.home || "";
@@ -96,8 +100,9 @@ if (process.argv[1]?.endsWith("email-release-digest.mjs")) {
   const args = parseArgs();
   try {
     const { config } = loadConfig({ requireInstance: true });
-    const projectId = argValue(args, "project", config.mail.firestoreProject);
-    assertSafeProject(projectId, config);
+    const transport = mailTransportOf(config);
+    const projectId = argValue(args, "project", config.mail?.firestoreProject);
+    if (transport === "firestore" || projectId) assertSafeProject(projectId, config);
     const to = digestRecipients(config);
     if (!to.length) fail("No stakeholder recipients in people.json.");
     const list = runCommand(
@@ -125,7 +130,7 @@ if (process.argv[1]?.endsWith("email-release-digest.mjs")) {
       });
     }
     let artifacts = [];
-    if (!args.dryRun) {
+    if (!args.dryRun && projectId) {
       const admin = await initAdmin(projectId);
       artifacts = await refreshShareUrls(admin);
     }
@@ -141,6 +146,7 @@ if (process.argv[1]?.endsWith("email-release-digest.mjs")) {
       printJson({
         ok: true,
         dryRun: true,
+        transport,
         projectId,
         to,
         subject,
@@ -154,6 +160,25 @@ if (process.argv[1]?.endsWith("email-release-digest.mjs")) {
       ci: args.flags.has("ci"),
       token: argValue(args, "confirm"),
     });
+    if (transport === "hosted") {
+      const result = await postHostedMail({
+        origin: resolveMailHost(process.env),
+        token: readLoginToken(process.env),
+        to,
+        subject,
+        html,
+        confirm: argValue(args, "confirm"),
+      });
+      printJson({
+        ok: true,
+        transport: result.transport || "hosted",
+        id: result.id,
+        toCount: result.toCount || to.length,
+        ticketCount: tickets.length,
+        artifactCount: artifacts.length,
+      });
+      process.exit(0);
+    }
     const admin = await initAdmin(projectId);
     const doc = buildMailDoc({ to, subject, html });
     const ref = await admin.firestore().collection("mail").add(doc);

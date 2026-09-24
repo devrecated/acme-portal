@@ -17,11 +17,11 @@ Cursor Plugin (`.cursor-plugin/plugin.json`) may contain only:
 
 | Component | Where in this repo |
 |---|---|
-| Skills | `.cursor-template/skills/**/SKILL.md` plus that skill’s scripts/docs (workspace `.cursor/skills` is this repo’s own copy) |
-| Rules | `.cursor-template/rules/**/*.mdc` |
-| Hooks | `.cursor-template/hooks.json` and `.cursor-template/hooks/**` |
-| Commands | `.cursor-template/commands/**` |
-| Agents | `.cursor-template/agents/**` and skill `agents/` YAML |
+| Skills | `kits/cursor/skills/**/SKILL.md` plus that skill’s scripts/docs (workspace `.cursor/skills` is this repo’s own copy) |
+| Rules | `kits/cursor/rules/**/*.mdc` |
+| Hooks | `kits/cursor/hooks.json` and `kits/cursor/hooks/**` |
+| Commands | `kits/cursor/commands/**` |
+| Agents | `kits/cursor/agents/**` and skill `agents/` YAML |
 | MCP | root `mcp.json` (stdio today; authenticated remote MCP is the IP boundary) |
 | Variables | `plugin.json` `variables` for user-supplied MCP env (including a subscription token) |
 
@@ -36,7 +36,7 @@ Supporting kit files that are **not** plugin payloads but are allowed: handbook 
 ## Forbidden in this repo
 
 - GitHub Actions or `.github/workflows` **as if the plugin installs CI**. Consumer apps own CI.
-- Instance bindings (`config.json`, `people.json`, `.policies/`, `.configuration/`, board ids, allowlists, client names) in the plugin payload. Kit `.policies/*.example.yaml` and `.configuration/*.example.*` files may ship.
+- Live instance bindings (board ids, allowlists, client names, this checkout’s `.autodevelop/`) in the plugin payload. `kits/autodevelop/` may ship a starter `config.json`, example files, and policy YAML generated from `POLICY_DEFAULTS`.
 - Secrets, tokens, service-account JSON, baked API keys.
 - Product app code (CORS, Hosting, Next, Firestore rules for a client app).
 - VS Code / Open VSX extensions, `.vsix`, editor themes.

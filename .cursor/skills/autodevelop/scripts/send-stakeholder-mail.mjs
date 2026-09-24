@@ -3,8 +3,10 @@
  * Copyright (c) 2026 Devrecated
  * SPDX-License-Identifier: MIT
  */
-import { existsSync } from "node:fs";
-import { assertSafeProject, loadConfig } from "./config-load.mjs";
+import { existsSync, readFileSync } from "node:fs";
+import { homedir } from "node:os";
+import { join } from "node:path";
+import { assertSafeProject, findRepoRoot, loadConfig } from "./config-load.mjs";
 import { consumeConfirmToken } from "./confirm-token.mjs";
 import {
   allowlistCheck,
@@ -58,25 +60,129 @@ export const plannedArtifactUploads = (paths, now = new Date()) =>
     storagePath: buildStakeholderStoragePath(filePath, now),
   }));
 
+export const mailTransportOf = (config) =>
+  String(config?.mail?.transport || "hosted") === "firestore" ? "firestore" : "hosted";
+
+export const readBindConfig = (root) => {
+  const path = join(root, ".autodevelop", "config.json");
+  if (!existsSync(path)) return {};
+  try {
+    return JSON.parse(readFileSync(path, "utf8"));
+  } catch {
+    return {};
+  }
+};
+
+export const loadMailConfig = (root = findRepoRoot()) => {
+  try {
+    return loadConfig({ requireInstance: true, root }).config;
+  } catch {
+    return readBindConfig(root);
+  }
+};
+
+export const postHostedMail = async ({
+  origin,
+  token,
+  to,
+  subject,
+  html,
+  confirm,
+  override = "",
+  fetchImpl = fetch,
+}) => {
+  if (!token) {
+    throw new Error("Missing Autodevelop login token. Run npx autodevelop login.");
+  }
+  const response = await fetchImpl(joinHostSafe(origin, "/cli/mail"), {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ to, subject, html, confirm, override }),
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(data.error || `Host mail failed (${response.status})`);
+  }
+  return data;
+};
+
+const DEFAULT_HOST = "http://127.0.0.1:8787";
+
+const joinHostSafe = (origin, path) => `${String(origin || "").replace(/\/$/, "")}${path}`;
+
+const credentialsPath = (env = process.env) => {
+  const override = String(env.AUTODEVELOP_CREDENTIALS || "").trim();
+  if (override) return override;
+  const xdg = String(env.XDG_CONFIG_HOME || "").trim();
+  const home = env.HOME || homedir();
+  const base = xdg || join(home, ".config");
+  return join(base, "autodevelop", "credentials.json");
+};
+
+export const readStoredCredentials = (env = process.env) => {
+  const path = credentialsPath(env);
+  if (!existsSync(path)) return null;
+  try {
+    const data = JSON.parse(readFileSync(path, "utf8"));
+    if (data?.profiles && typeof data.profiles === "object") {
+      const name = String(env.AUTODEVELOP_PROFILE || data.active || "default").trim() || "default";
+      const entry = data.profiles[name] || data.profiles.default;
+      const token = String(entry?.token || "").trim();
+      return token ? { token, host: entry.host || "" } : null;
+    }
+    const token = String(data?.token || "").trim();
+    return token ? { token, host: data.host || "" } : null;
+  } catch {
+    return null;
+  }
+};
+
+export const resolveMailHost = (env = process.env, storedHost = "") => {
+  const named = String(env.AUTODEVELOP_HOST || "").trim();
+  if (named) return named.replace(/\/$/, "");
+  const entitlement = String(env.AUTODEVELOP_ENTITLEMENT_URL || "").trim();
+  if (entitlement) return entitlement.replace(/\/entitlement\/?$/i, "").replace(/\/$/, "");
+  const stored = String(storedHost || "").trim();
+  if (stored) return stored.replace(/\/$/, "");
+  return DEFAULT_HOST;
+};
+
+export const readLoginToken = (env = process.env) => {
+  const fromEnv = String(env.AUTODEVELOP_TOKEN || "").trim();
+  if (fromEnv) return fromEnv;
+  const stored = readStoredCredentials(env);
+  if (stored?.token) return stored.token;
+  return String(env.TOKEN || "").trim();
+};
+
 if (process.argv[1]?.endsWith("send-stakeholder-mail.mjs")) {
   const args = parseArgs();
   try {
-    const { config } = loadConfig({ requireInstance: true });
-    const projectId = argValue(args, "project", config.mail.firestoreProject);
-    assertSafeProject(projectId, config);
+    const root = findRepoRoot();
+    const config = loadMailConfig(root);
+    const transport = argValue(args, "transport") || mailTransportOf(config);
     const to = parseRecipientList(argValue(args, "to"));
     if (!to.length) fail("Missing --to.");
     const subject = argValue(args, "subject");
     const html = argValue(args, "html");
     if (!subject || !html) fail("Missing --subject or --html.");
-    const check = allowlistCheck(
-      to,
-      config.mail.allowlist,
-      config.mail.allowOverridePhrase,
-      argValue(args, "override"),
-    );
-    if (!check.ok) {
-      fail(`Recipients not on allowlist: ${check.blocked.join(", ")}. Retype --override "${config.mail.allowOverridePhrase}".`);
+    const localAllowlist = config.mail?.allowlist;
+    if (Array.isArray(localAllowlist) && localAllowlist.length) {
+      const check = allowlistCheck(
+        to,
+        localAllowlist,
+        config.mail?.allowOverridePhrase,
+        argValue(args, "override"),
+      );
+      if (!check.ok) {
+        fail(
+          `Recipients not on allowlist: ${check.blocked.join(", ")}. Retype --override "${config.mail?.allowOverridePhrase || "send anyway"}".`,
+        );
+      }
     }
     const token = argValue(args, "confirm");
     if (!args.dryRun) {
@@ -91,7 +197,7 @@ if (process.argv[1]?.endsWith("send-stakeholder-mail.mjs")) {
       printJson({
         ok: true,
         dryRun: true,
-        projectId,
+        transport,
         to: to.length === 1 ? to[0] : to,
         subject,
         artifactCount: planned.length,
@@ -99,6 +205,27 @@ if (process.argv[1]?.endsWith("send-stakeholder-mail.mjs")) {
       });
       process.exit(0);
     }
+    if (transport === "hosted") {
+      const stored = readStoredCredentials(process.env);
+      const result = await postHostedMail({
+        origin: resolveMailHost(process.env, stored?.host),
+        token: readLoginToken(process.env),
+        to,
+        subject,
+        html,
+        confirm: token,
+        override: argValue(args, "override"),
+      });
+      printJson({
+        ok: true,
+        transport: result.transport || "hosted",
+        id: result.id,
+        toCount: result.toCount || to.length,
+      });
+      process.exit(0);
+    }
+    const projectId = argValue(args, "project", config.mail?.firestoreProject);
+    assertSafeProject(projectId, config);
     const admin = await initAdmin(projectId);
     const artifacts = [];
     if (attachmentPaths.length) {

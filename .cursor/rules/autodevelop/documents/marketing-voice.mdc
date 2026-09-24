@@ -1,0 +1,47 @@
+---
+description: Buyer language on Autodevelop and Devrecated marketing sites — outcomes, not plumbing
+globs:
+  - autodevelop-www/**
+  - deprecated-www/**
+alwaysApply: false
+---
+
+# Marketing voice
+
+Copyright (c) 2026 Devrecated.
+
+Extra layer on [professional-voice](professional-voice.mdc) for public sites only (`docs/**` is out of scope). Finished sentences. No chat asides. No invented APIs, prices, or 10× claims beyond observed lift already on the page. Professional, not slogan salad.
+
+Address the buyer as **you**. Do not use “they/their” for the customer unless a named third party is in the sentence.
+
+Write what a buyer needs to decide and do. Do not narrate internals: script tags as a security story, tokens, origins, popups, Firestore, MCP, request-type machinery, sign-in origin, “the page does not receive tokens,” or hosted-side vs editor rebuild recipes.
+
+When a next step helps, show it. Do not explain the model around it. Widget point: same day, in the product you already run.
+
+```md
+<!-- BAD — widget plumbing -->
+A script tag drops the ticket widget into the customer’s own product. Members click Request a change. Autodevelop opens in a popup on that origin. Sign-in stays on Autodevelop. The page does not receive tokens. Members pick a request type and answer the questions that belong on that type.
+
+<!-- GOOD -->
+Integrate the ticket widget into your product in minutes. Your team can start using Autodevelop the same day.
+
+<script src="https://tickets.example/embed.js" defer></script>
+```
+
+```md
+<!-- BAD — they / their for the buyer -->
+They can integrate into their existing product. The team can start using Autodevelop the same day.
+
+<!-- GOOD -->
+Integrate the ticket widget into your product in minutes. Your team can start using Autodevelop the same day.
+```
+
+```md
+<!-- BAD — rebuild recipe -->
+A generic editor plugin, a skill pack, or a stack of connectors is not. Autodevelop replaces that stack with one deployment and one retrieval path. Devrecated writes the operating rules into the hosted side. Heavy work stays there. Developers stay in the editor.
+
+<!-- GOOD -->
+Excuse our Brain’s ego, but it knows everything.
+
+The Brain is the service that powers Autodevelop’s information search. It uses a highly efficient algorithm to feed Autodevelop’s AI tools, and it learns on its own every day. Devrecated engineers review and approve what it finds. You stay current on industry best practice — including the documentation and technical solutions your product needs to be as strong as it can be.
+```

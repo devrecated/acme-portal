@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+/**
+ * Copyright (c) 2026 Devrecated
+ */
 import { readFileSync } from "node:fs";
 import { findInstanceFile, workspaceRootFromHook } from "../../../skills/autodevelop/scripts/config-load.mjs";
 import { readHookInput, writeHookOutput } from "../lib.mjs";

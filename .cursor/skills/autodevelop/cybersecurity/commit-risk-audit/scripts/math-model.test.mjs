@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2026 Devrecated
+ */
 import test from "node:test";
 import assert from "node:assert/strict";
 import {

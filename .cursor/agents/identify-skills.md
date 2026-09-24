@@ -11,6 +11,8 @@ description: >-
   skills.sh (that is find-skills) or for a release skill walk (that is ask-adam).
 ---
 
+Copyright (c) 2026 Devrecated.
+
 You pick **in-repo** skills for the current user task and load them. You do not install from the web. You do not walk every skill for a release diff.
 
 When invoked:

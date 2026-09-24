@@ -186,8 +186,13 @@ export const renderCategoriesMarkdown = (groups) => {
 };
 
 /** Cursor rejects local plugins whose symlink target is outside ~/.cursor/plugins/local. */
+export const CURSOR_KIT_REL = "kits/cursor";
+export const AUTODEVELOP_KIT_REL = "kits/autodevelop";
+
 export const pluginMcpJson = (raw) =>
-  String(raw || "").replaceAll("/.cursor/skills/autodevelop/", "/.cursor-template/skills/autodevelop/");
+  String(raw || "")
+    .replaceAll("/.cursor-template/skills/autodevelop/", `/${CURSOR_KIT_REL}/skills/autodevelop/`)
+    .replaceAll("/.cursor/skills/autodevelop/", `/${CURSOR_KIT_REL}/skills/autodevelop/`);
 
 export const removeInstallPath = (path) => {
   if (!existsSync(path)) return;
@@ -200,13 +205,17 @@ export const removeInstallPath = (path) => {
 
 export const installUserLocalPlugin = (kitRoot, dest) => {
   const pluginDir = join(kitRoot, ".cursor-plugin");
-  const templateDir = join(kitRoot, ".cursor-template");
+  const cursorKitDir = join(kitRoot, CURSOR_KIT_REL);
+  const autodevelopKitDir = join(kitRoot, AUTODEVELOP_KIT_REL);
   const mcpSrc = join(kitRoot, "mcp.json");
   if (!existsSync(join(pluginDir, "plugin.json"))) {
     throw new Error("Missing .cursor-plugin/plugin.json");
   }
-  if (!existsSync(templateDir)) {
-    throw new Error("Missing .cursor-template/");
+  if (!existsSync(cursorKitDir)) {
+    throw new Error(`Missing ${CURSOR_KIT_REL}/`);
+  }
+  if (!existsSync(autodevelopKitDir)) {
+    throw new Error(`Missing ${AUTODEVELOP_KIT_REL}/`);
   }
   if (!existsSync(mcpSrc)) {
     throw new Error("Missing mcp.json");
@@ -216,7 +225,8 @@ export const installUserLocalPlugin = (kitRoot, dest) => {
   removeInstallPath(dest);
   mkdirSync(dest, { recursive: true });
   cpSync(pluginDir, join(dest, ".cursor-plugin"), { recursive: true });
-  cpSync(templateDir, join(dest, ".cursor-template"), { recursive: true });
+  cpSync(cursorKitDir, join(dest, CURSOR_KIT_REL), { recursive: true });
+  cpSync(autodevelopKitDir, join(dest, AUTODEVELOP_KIT_REL), { recursive: true });
   writeFileSync(join(dest, "mcp.json"), pluginMcpJson(readFileSync(mcpSrc, "utf8")));
   return dest;
 };
@@ -228,8 +238,8 @@ export const planImport = ({ kitRoot = findKitRoot(), home = homedir() } = {}) =
     kitRoot,
     pluginLink: join(cursor, "plugins", "local", "autodevelop"),
     commandLink: join(cursor, "commands", "import-autodevelop.md"),
-    commandSource: existsSync(join(kitRoot, ".cursor-template", "commands", "import-autodevelop.md"))
-      ? join(kitRoot, ".cursor-template", "commands", "import-autodevelop.md")
+    commandSource: existsSync(join(kitRoot, CURSOR_KIT_REL, "commands", "import-autodevelop.md"))
+      ? join(kitRoot, CURSOR_KIT_REL, "commands", "import-autodevelop.md")
       : join(kitRoot, ".cursor", "commands", "import-autodevelop.md"),
     colliding: listCollidingSkillDirs(skillsRoot),
     categoriesPath: join(skillsRoot, "CATEGORIES.md"),
