@@ -78,6 +78,10 @@ for (const [label, kanban] of [
   ["owner and repo with whitespace", { owner: " Devrecated ", repo: "acme-portal\n", url: null }],
   ["owner/repo in the repo field", { owner: null, repo: "devrecated/acme-portal", url: null }],
   ["repo name without owner", { owner: "", repo: "acme-portal", url: null }],
+  ["repo with trailing slash", { owner: "devrecated", repo: "acme-portal/", url: null }],
+  ["repo with .git and trailing slash", { owner: "devrecated", repo: "acme-portal.git/", url: null }],
+  ["percent-encoded URL", { owner: null, repo: null, url: "https://github.com/devrecated/acme%2Dportal/issues/7" }],
+  ["malformed percent escape beside a real URL", { owner: null, repo: null, url: "https://github.com/devrecated/acme-portal/issues/7?q=%E0%A4%A" }],
 ] as const) {
   test(`rewrites tickets that name the consumer repo via ${label}`, () => {
     const ticket = consumerTicket(kanban)

@@ -41,10 +41,21 @@ const HOST_KANBAN: Kanban = {
   url: null,
 }
 
+/** Percent-decode once so `acme%2Dportal` compares like `acme-portal`. */
+const decode = (value: string): string => {
+  try {
+    return decodeURIComponent(value)
+  } catch {
+    return value
+  }
+}
+
+/** Trim, lowercase, decode, and drop trailing `/` and `.git` (`acme-portal.git/`). */
 const normalize = (value: unknown): string =>
-  String(value ?? "")
+  decode(String(value ?? ""))
     .trim()
     .toLowerCase()
+    .replace(/\/+$/, "")
     .replace(/\.git$/, "")
 
 /**
@@ -61,7 +72,7 @@ export const pointsAtConsumerRepo = (ticket: VisitorTicket | undefined): boolean
   if (!ticket?.kanban) return false
   const owner = normalize(ticket.kanban.owner)
   const repo = normalize(ticket.kanban.repo)
-  const url = String(ticket.kanban.url ?? "").trim().toLowerCase()
+  const url = decode(String(ticket.kanban.url ?? "")).trim().toLowerCase()
   if (repo === CONSUMER_GITHUB_REPO && (owner === CONSUMER_GITHUB_OWNER || owner === "")) return true
   // Some providers put "owner/repo" in the repo field and leave owner empty.
   if (repo === `${CONSUMER_GITHUB_OWNER}/${CONSUMER_GITHUB_REPO}`) return true
