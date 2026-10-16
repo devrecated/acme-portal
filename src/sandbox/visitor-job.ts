@@ -41,13 +41,62 @@ const HOST_KANBAN: Kanban = {
   url: null,
 }
 
+/** Percent-decode once so `acme%2Dportal` compares like `acme-portal`. */
+const decode = (value: string): string => {
+  try {
+    return decodeURIComponent(value)
+  } catch {
+    return value
+  }
+}
+
+/** Trim, lowercase, decode, and drop trailing `/` and `.git` (`acme-portal.git/`). */
+const normalize = (value: unknown): string =>
+  decode(String(value ?? ""))
+    .trim()
+    .toLowerCase()
+    .replace(/\/+$/, "")
+    .replace(/\.git$/, "")
+
+const escapeRegExp = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+
+/**
+ * GitHub URL forms that name the consumer repo but do not contain
+ * CONSUMER_GITHUB_URL verbatim: REST API (`api.github.com/repos/...`) and
+ * SSH remotes (`git@github.com:...`), with or without `.git`.
+ */
+const CONSUMER_URL_PATTERN = new RegExp(
+  String.raw`(?:^|[^a-z0-9.-])(?:www\.)?(?:api\.github\.com/repos/|github\.com[/:])` +
+    `${escapeRegExp(CONSUMER_GITHUB_OWNER)}/${escapeRegExp(CONSUMER_GITHUB_REPO)}` +
+    String.raw`(?:\.git)?(?:$|[/?#])`,
+)
+
 export const pointsAtConsumerRepo = (ticket: VisitorTicket | undefined): boolean => {
   if (!ticket?.kanban) return false
-  const owner = String(ticket.kanban.owner || "").toLowerCase()
-  const repo = String(ticket.kanban.repo || "").toLowerCase()
-  const url = String(ticket.kanban.url || "").toLowerCase()
-  if (owner === CONSUMER_GITHUB_OWNER && repo === CONSUMER_GITHUB_REPO) return true
-  return url.includes(CONSUMER_GITHUB_URL)
+  const owner = normalize(ticket.kanban.owner)
+  const repo = normalize(ticket.kanban.repo)
+  const url = decode(String(ticket.kanban.url ?? "")).trim().toLowerCase()
+  if (repo === CONSUMER_GITHUB_REPO && (owner === CONSUMER_GITHUB_OWNER || owner === "")) return true
+  // Some providers put "owner/repo" in the repo field and leave owner empty.
+  if (repo === `${CONSUMER_GITHUB_OWNER}/${CONSUMER_GITHUB_REPO}`) return true
+  return url.includes(CONSUMER_GITHUB_URL) || CONSUMER_URL_PATTERN.test(url)
+}
+
+const isBlank = (value: unknown): boolean => normalize(value) === ""
+
+/**
+ * Allowlist: a visitor ticket keeps its kanban only when it is an Autodevelop
+ * host ticket that names no repository. Every other reference, including a real
+ * GitHub issue on any repo, a bare `{ provider: "github", number }`, or a
+ * missing provider, is rewritten to the host kanban. A host ticket that carries
+ * an owner, repo, or URL is rewritten too, so pointsAtConsumerRepo is no longer
+ * the gate; it stays exported to classify references in logs and tests.
+ */
+export const isAllowedVisitorTicket = (ticket: VisitorTicket | undefined): boolean => {
+  if (!ticket?.kanban) return true
+  const { provider, owner, repo, url } = ticket.kanban
+  if (normalize(provider) !== "host") return false
+  return isBlank(owner) && isBlank(repo) && isBlank(url)
 }
 
 const hostOnlyTicket = (ticket: VisitorTicket): VisitorTicket => ({
@@ -56,13 +105,13 @@ const hostOnlyTicket = (ticket: VisitorTicket): VisitorTicket => ({
   kanban: { ...HOST_KANBAN },
 })
 
-/** Drop file payloads and rewrite tickets that name the consumer GitHub repo. */
+/** Drop file payloads and rewrite every ticket that is not a bare host ticket. */
 export const sanitizeVisitorTryJob = <T extends object>(job: T): T => {
   const next = { ...(job as T & VisitorTryJob) }
   delete next.files
   if (Array.isArray(next.tickets)) {
     next.tickets = next.tickets.map((ticket) =>
-      pointsAtConsumerRepo(ticket) ? hostOnlyTicket(ticket) : ticket,
+      isAllowedVisitorTicket(ticket) ? ticket : hostOnlyTicket(ticket),
     )
   }
   return next as T
