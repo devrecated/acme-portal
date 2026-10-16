@@ -41,13 +41,31 @@ const HOST_KANBAN: Kanban = {
   url: null,
 }
 
+const normalize = (value: unknown): string =>
+  String(value ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/\.git$/, "")
+
+/**
+ * GitHub URL forms that name the consumer repo but do not contain
+ * CONSUMER_GITHUB_URL verbatim: REST API (`api.github.com/repos/...`) and
+ * SSH remotes (`git@github.com:...`), with or without `.git`.
+ */
+const CONSUMER_URL_PATTERN = new RegExp(
+  String.raw`(?:^|[^a-z0-9.-])(?:www\.)?(?:api\.github\.com/repos/|github\.com[/:])` +
+    String.raw`${CONSUMER_GITHUB_OWNER}/${CONSUMER_GITHUB_REPO}(?:\.git)?(?:$|[/?#])`,
+)
+
 export const pointsAtConsumerRepo = (ticket: VisitorTicket | undefined): boolean => {
   if (!ticket?.kanban) return false
-  const owner = String(ticket.kanban.owner || "").toLowerCase()
-  const repo = String(ticket.kanban.repo || "").toLowerCase()
-  const url = String(ticket.kanban.url || "").toLowerCase()
-  if (owner === CONSUMER_GITHUB_OWNER && repo === CONSUMER_GITHUB_REPO) return true
-  return url.includes(CONSUMER_GITHUB_URL)
+  const owner = normalize(ticket.kanban.owner)
+  const repo = normalize(ticket.kanban.repo)
+  const url = String(ticket.kanban.url ?? "").trim().toLowerCase()
+  if (repo === CONSUMER_GITHUB_REPO && (owner === CONSUMER_GITHUB_OWNER || owner === "")) return true
+  // Some providers put "owner/repo" in the repo field and leave owner empty.
+  if (repo === `${CONSUMER_GITHUB_OWNER}/${CONSUMER_GITHUB_REPO}`) return true
+  return url.includes(CONSUMER_GITHUB_URL) || CONSUMER_URL_PATTERN.test(url)
 }
 
 const hostOnlyTicket = (ticket: VisitorTicket): VisitorTicket => ({
