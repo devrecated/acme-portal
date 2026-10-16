@@ -58,6 +58,8 @@ const normalize = (value: unknown): string =>
     .replace(/\/+$/, "")
     .replace(/\.git$/, "")
 
+const escapeRegExp = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+
 /**
  * GitHub URL forms that name the consumer repo but do not contain
  * CONSUMER_GITHUB_URL verbatim: REST API (`api.github.com/repos/...`) and
@@ -65,7 +67,8 @@ const normalize = (value: unknown): string =>
  */
 const CONSUMER_URL_PATTERN = new RegExp(
   String.raw`(?:^|[^a-z0-9.-])(?:www\.)?(?:api\.github\.com/repos/|github\.com[/:])` +
-    String.raw`${CONSUMER_GITHUB_OWNER}/${CONSUMER_GITHUB_REPO}(?:\.git)?(?:$|[/?#])`,
+    `${escapeRegExp(CONSUMER_GITHUB_OWNER)}/${escapeRegExp(CONSUMER_GITHUB_REPO)}` +
+    String.raw`(?:\.git)?(?:$|[/?#])`,
 )
 
 export const pointsAtConsumerRepo = (ticket: VisitorTicket | undefined): boolean => {
@@ -79,19 +82,36 @@ export const pointsAtConsumerRepo = (ticket: VisitorTicket | undefined): boolean
   return url.includes(CONSUMER_GITHUB_URL) || CONSUMER_URL_PATTERN.test(url)
 }
 
+const isBlank = (value: unknown): boolean => normalize(value) === ""
+
+/**
+ * Allowlist: a visitor ticket keeps its kanban only when it is an Autodevelop
+ * host ticket that names no repository. Every other reference, including a real
+ * GitHub issue on any repo, a bare `{ provider: "github", number }`, or a
+ * missing provider, is rewritten to the host kanban. A host ticket that carries
+ * an owner, repo, or URL is rewritten too, so pointsAtConsumerRepo is no longer
+ * the gate; it stays exported to classify references in logs and tests.
+ */
+export const isAllowedVisitorTicket = (ticket: VisitorTicket | undefined): boolean => {
+  if (!ticket?.kanban) return true
+  const { provider, owner, repo, url } = ticket.kanban
+  if (normalize(provider) !== "host") return false
+  return isBlank(owner) && isBlank(repo) && isBlank(url)
+}
+
 const hostOnlyTicket = (ticket: VisitorTicket): VisitorTicket => ({
   ...ticket,
   source: ticket.source || "try",
   kanban: { ...HOST_KANBAN },
 })
 
-/** Drop file payloads and rewrite tickets that name the consumer GitHub repo. */
+/** Drop file payloads and rewrite every ticket that is not a bare host ticket. */
 export const sanitizeVisitorTryJob = <T extends object>(job: T): T => {
   const next = { ...(job as T & VisitorTryJob) }
   delete next.files
   if (Array.isArray(next.tickets)) {
     next.tickets = next.tickets.map((ticket) =>
-      pointsAtConsumerRepo(ticket) ? hostOnlyTicket(ticket) : ticket,
+      isAllowedVisitorTicket(ticket) ? ticket : hostOnlyTicket(ticket),
     )
   }
   return next as T
