@@ -6,6 +6,7 @@ import { Providers } from "@/components/providers"
 import { ticketsEmbedSrc } from "@/lib/autodevelop"
 
 import "./globals.css"
+import { HyperDXInit } from "@/components/hyperdx-init";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -48,6 +49,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
     >
       <body>
+        <HyperDXInit service="acme-portal" disableReplay={true} />
         <Providers>{children}</Providers>
         {ticketsEmbedSrc() ? (
           <Script src={ticketsEmbedSrc()} strategy="afterInteractive" />
