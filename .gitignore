@@ -36,3 +36,5 @@ serviceAccount*.json
 *.njsproj
 *.sln
 *.sw?
+.env.local
+.env*.local
